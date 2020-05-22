@@ -1,7 +1,0 @@
-	section	.text
-	assume	adl = 1
-	section	.data
-	public	__huge_val
-__huge_val:
-	dd	0x7f7fffff
-

@@ -12,7 +12,7 @@ extern void (*__print_xputch)(char);
 /* The compiler may generate direct calls to this to bypass the runtime    */
 /* parsing of printf formats.                                              */
 
-void __print_putch(char ch) {
+void __print_putch(char ch)
+{
 	(*__print_xputch)(ch);
 }
-

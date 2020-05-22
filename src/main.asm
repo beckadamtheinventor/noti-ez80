@@ -1,6 +1,5 @@
 
 include '../include/ez80.inc'
-include '../include/ti84pceg.inc'
 
 macro paduntil? addr
 	assert $ <= addr
@@ -18,13 +17,20 @@ macro lock_flash?
 
 end macro
 
+macro .def
+end macro
+
+macro .assume
+end macro
+
+macro .ref
+end macro
 
 
 org 0
 __SECTOR_00h:		;Bootloader goes here
 include 'boot.asm'
 
-include 'loader.asm'
 
 
 paduntil $020000

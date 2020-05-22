@@ -1,7 +1,7 @@
 
 	di
 	rsmix
-	jp.lil loader_rst00_handler ;$000E4F ;rst 00
+	jp.lil loader_boot_handler ;$000E4F ;rst 00
 	di
 	rsmix
 	jp.lil loader_abort_and_restart ;rst 08
@@ -53,8 +53,10 @@ paduntil $80
 include 'table.asm'
 
 paduntil $1000
+include 'cstd.asm'
 include 'code.asm'
 include 'rtc_code.asm'
 include 'usb_code.asm'
 include 'font.asm'
+include 'loader.asm'
 

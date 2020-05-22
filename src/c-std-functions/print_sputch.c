@@ -4,10 +4,9 @@
  *************************************************/
 #include <format.h>
 
-/* Send a character to the sprintf destination */
+/* Send a character to the sprintf destination                             */
 
-extern char *__print_out;
-
-void __print_sputch(char ch) {
-    *__print_out++ = ch;
+reentrant void __print_sputch(char ch)
+{
+  *__print_out++ = ch;
 }

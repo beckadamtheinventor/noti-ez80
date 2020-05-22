@@ -5,14 +5,20 @@
 #include <format.h>
 #include <string.h>
 #include <stdlib.h>
+#include <cio.h>
+
 
 /* Send a string to the printf/sprintf destination                         */
 /* The compiler may generate direct calls to this to bypass the runtime    */
 /* parsing of printf formats.                                              */
 
-void __print_putch(char ch);
-
-void __print_sendstring(char *sp)
+#ifndef _MULTI_THREAD
+void __print_sendstring(char* sp)
+#else
+unsigned char __mt_print_sendstring(char* sp,struct fmt_type* print_fmt)
+#define __print_putch putch
+#define __print_fmt (*print_fmt)
+#endif
 {
   unsigned char i = 0;
   unsigned short j, jmax;
@@ -54,8 +60,13 @@ void __print_sendstring(char *sp)
         i++;
      }
   }
+#ifndef _MULTI_THREAD
   __print_len += i;
+#endif
   /*  Reset the data manipulated by the compiler, so that no code is needed */
   /*  to set default values.                                                */
   __print_fmt.field_width= __print_fmt.precision= __print_fmt.flags= 0;
+#ifdef _MULTI_THREAD
+  return i;
+#endif
 }
