@@ -1,0 +1,90 @@
+	section	.text
+	assume	adl = 1
+	section	.text
+	public	_malloc
+_malloc:
+	ld	hl, -6
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	bc, 0
+	ld	de, 6
+	push	hl
+	pop	iy
+	add	iy, de
+	ld	de, -6
+	or	a, a
+	sbc	hl, de
+	jq	nc, BB0_11
+	ld	hl, __alloc_base
+	lea	bc, iy + 0
+	push	hl
+	pop	iy
+	ld	(ix + -3), bc
+BB0_3:
+	lea	de, iy + 0
+	ld	iy, (iy)
+	lea	hl, iy + 0
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jq	z, BB0_7
+	ld	(ix + -6), de
+	ld	de, (iy + 3)
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	jq	c, BB0_3
+	ld	bc, 12
+	ld	hl, (ix + 6)
+	add	hl, bc
+	or	a, a
+	sbc	hl, de
+	jq	nc, BB0_9
+	ex	de, hl
+	ld	bc, (ix + -3)
+	or	a, a
+	sbc	hl, bc
+	push	hl
+	pop	de
+	ld	(iy + 3), de
+	add	iy, de
+	ld	(iy + 3), bc
+	jq	BB0_10
+BB0_7:
+	push	bc
+	call	__s_sbrk
+	ld	bc, 0
+	push	hl
+	pop	iy
+	pop	hl
+	lea	hl, iy + 0
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jq	z, BB0_11
+	ld	hl, (ix + -3)
+	ld	(iy + 3), hl
+	jq	BB0_10
+BB0_9:
+	ld	de, (iy)
+	ld	hl, (ix + -6)
+	ld	(hl), de
+BB0_10:
+	lea	bc, iy + 6
+BB0_11:
+	push	bc
+	pop	hl
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text
+
+	section	.bss
+	public	__alloc_base
+__alloc_base:
+	rb	6
+
+	extern	_llvm.stackprotector
+	extern	__s_sbrk
+	extern	__frameset

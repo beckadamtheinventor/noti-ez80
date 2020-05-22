@@ -1,0 +1,303 @@
+	section	.text
+	assume	adl = 1
+	section	.text
+	public	_qsort
+_qsort:
+	ld	hl, -123
+	call	__frameset
+	ld	hl, (ix + 9)
+	ld	bc, (ix + 12)
+	lea	de, ix + -96
+	ld	(ix + -123), de
+	dec	hl
+	call	__imulu
+	push	hl
+	pop	de
+	ld	iy, (ix + 6)
+	add	iy, de
+	or	a, a
+	sbc	hl, hl
+	or	a, a
+	sbc	hl, bc
+	ld	(ix + -114), hl
+	lea	de, iy + 0
+	ld	iy, (ix + 6)
+	ld	bc, 0
+BB0_1:
+	ld	(ix + -117), bc
+	ex	de, hl
+	ld	(ix + -111), hl
+	lea	de, iy + 0
+	or	a, a
+	sbc	hl, de
+	ld	de, (ix + 12)
+	push	de
+	pop	bc
+	call	__idivu
+	ld	c, 1
+	call	__ishru
+	push	de
+	pop	bc
+	call	__imulu
+	push	hl
+	pop	de
+	lea	hl, iy + 0
+	add	iy, de
+	ld	(ix + -120), hl
+	ld	(ix + -99), hl
+	ld	de, (ix + -111)
+BB0_2:
+	ld	(ix + -108), de
+	ld	hl, (ix + -99)
+	ld	(ix + -105), iy
+BB0_3:
+	ld	(ix + -102), hl
+	push	iy
+	push	hl
+	ld	hl, (ix + 15)
+	call	__indcallhl
+	pop	de
+	pop	de
+	ld	de, 0
+	or	a, a
+	sbc	hl, de
+	call	__setflag
+	jq	p, BB0_5
+	ld	de, (ix + 12)
+	ld	hl, (ix + -102)
+	add	hl, de
+	ld	iy, (ix + -105)
+	jq	BB0_3
+BB0_5:
+	ld	hl, (ix + -108)
+BB0_6:
+	ld	(ix + -99), hl
+	push	hl
+	ld	de, (ix + -105)
+	push	de
+	ld	hl, (ix + 15)
+	call	__indcallhl
+	pop	de
+	pop	de
+	ld	de, 0
+	or	a, a
+	sbc	hl, de
+	call	__setflag
+	jq	p, BB0_8
+	ld	de, (ix + -114)
+	ld	hl, (ix + -99)
+	add	hl, de
+	jq	BB0_6
+BB0_8:
+	ld	bc, (ix + -102)
+	push	bc
+	pop	hl
+	ld	de, (ix + -99)
+	or	a, a
+	sbc	hl, de
+	jq	nc, BB0_16
+	ld	de, 0
+BB0_10:
+	ld	hl, (ix + 12)
+	or	a, a
+	sbc	hl, de
+	jq	z, BB0_12
+	ld	iy, (ix + -102)
+	add	iy, de
+	ld	a, (iy)
+	ld	hl, (ix + -99)
+	add	hl, de
+	ld	c, (hl)
+	ld	(iy), c
+	ld	bc, (ix + -102)
+	ld	(hl), a
+	inc	de
+	jq	BB0_10
+BB0_12:
+	ld	hl, (ix + -105)
+	push	bc
+	pop	de
+	or	a, a
+	sbc	hl, de
+	ld	hl, (ix + -99)
+	push	hl
+	pop	iy
+	jq	z, BB0_18
+	ex	de, hl
+	ld	hl, (ix + -105)
+	or	a, a
+	sbc	hl, de
+	push	bc
+	pop	iy
+	jq	z, BB0_15
+	ld	iy, (ix + -105)
+BB0_15:
+	ld	bc, (ix + -102)
+	jq	BB0_17
+BB0_16:
+	ld	iy, (ix + -105)
+BB0_17:
+	ld	hl, (ix + -99)
+BB0_18:
+	or	a, a
+	sbc	hl, bc
+	ld	a, 1
+	jq	c, BB0_20
+	ld	a, 0
+BB0_20:
+	bit	0, a
+	jq	nz, BB0_22
+	ld	de, (ix + 12)
+	ld	hl, (ix + -102)
+	add	hl, de
+	ex	de, hl
+	jq	BB0_23
+BB0_22:
+	ld	de, (ix + -102)
+BB0_23:
+	ld	hl, (ix + -99)
+	bit	0, a
+	jq	nz, BB0_26
+	ld	bc, (ix + -114)
+	add	hl, bc
+BB0_26:
+	push	hl
+	pop	bc
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	ld	(ix + -99), de
+	push	bc
+	pop	de
+	jq	nc, BB0_2
+	ld	iy, (ix + -120)
+	ld	hl, (ix + -117)
+	ld	bc, 6
+	call	__imulu
+	push	hl
+	pop	bc
+	ld	hl, (ix + -123)
+	add	hl, bc
+	ld	(ix + -102), hl
+	push	de
+	pop	hl
+	lea	bc, iy + 0
+	or	a, a
+	sbc	hl, bc
+	push	hl
+	pop	iy
+	ld	hl, (ix + -111)
+	ld	bc, (ix + -99)
+	or	a, a
+	sbc	hl, bc
+	push	hl
+	pop	bc
+	lea	hl, iy + 0
+	or	a, a
+	sbc	hl, bc
+	call	__setflag
+	jq	p, BB0_31
+	ld	(ix + -108), de
+	ld	de, (ix + -99)
+	push	de
+	pop	hl
+	ld	bc, (ix + -111)
+	or	a, a
+	sbc	hl, bc
+	jq	nc, BB0_33
+	ld	hl, (ix + -102)
+	ld	(hl), de
+	ld	de, (ix + -117)
+	push	de
+	pop	hl
+	ld	bc, 6
+	call	__imulu
+	push	de
+	pop	bc
+	push	hl
+	pop	de
+	ld	iy, (ix + -123)
+	add	iy, de
+	ld	hl, (ix + -111)
+	ld	(iy + 3), hl
+	inc	bc
+	ld	de, (ix + -108)
+	jq	BB0_34
+BB0_31:
+	ld	bc, (ix + -120)
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	jq	nc, BB0_35
+	ld	hl, (ix + -102)
+	ld	(hl), bc
+	ld	hl, (ix + -117)
+	ld	bc, 6
+	call	__imulu
+	push	hl
+	pop	bc
+	ld	iy, (ix + -123)
+	add	iy, bc
+	ld	bc, (ix + -117)
+	ld	(iy + 3), de
+	inc	bc
+	ld	iy, (ix + -99)
+	jq	BB0_36
+BB0_33:
+	ld	de, (ix + -108)
+	ld	bc, (ix + -117)
+BB0_34:
+	ld	iy, (ix + -120)
+	jq	BB0_37
+BB0_35:
+	ld	iy, (ix + -99)
+	ld	bc, (ix + -117)
+BB0_36:
+	ld	de, (ix + -111)
+BB0_37:
+	lea	hl, iy + 0
+	or	a, a
+	sbc	hl, de
+	jq	c, BB0_1
+	push	bc
+	pop	hl
+	ld	de, 1
+	or	a, a
+	sbc	hl, de
+	call	__setflag
+	jq	m, BB0_40
+	dec	bc
+	push	bc
+	pop	hl
+	push	bc
+	pop	de
+	ld	bc, 6
+	call	__imulu
+	push	de
+	pop	bc
+	push	hl
+	pop	de
+	ld	iy, (ix + -123)
+	add	iy, de
+	ld	hl, (iy)
+	ld	de, (iy + 3)
+	push	hl
+	pop	iy
+	jq	BB0_1
+BB0_40:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text
+
+	extern	_llvm.lifetime.start.p0i8
+	extern	__setflag
+	extern	__frameset
+	extern	_llvm.stackprotector
+	extern	__ishru
+	extern	__indcallhl
+	extern	__imulu
+	extern	_llvm.lifetime.end.p0i8
+	extern	__idivu

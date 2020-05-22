@@ -1,0 +1,69 @@
+	section	.text
+	assume	adl = 1
+	section	.text
+	public	___assert_fail_loc
+___assert_fail_loc:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	bc, (iy)
+	ld	de, (iy + 3)
+	ld	hl, (iy + 6)
+	ld	iy, (iy + 9)
+	push	iy
+	push	hl
+	push	de
+	push	bc
+	ld	hl, L_.str
+	push	hl
+	ld	hl, -262144
+	push	hl
+	call	_sprintf
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	call	_abort
+	section	.text
+
+	section	.rodata
+	private	L_.str
+L_.str:
+	db	65
+	db	115
+	db	115
+	db	101
+	db	114
+	db	116
+	db	105
+	db	111
+	db	110
+	db	32
+	db	102
+	db	97
+	db	105
+	db	108
+	db	117
+	db	114
+	db	101
+	db	58
+	db	32
+	db	37
+	db	115
+	db	58
+	db	37
+	db	117
+	db	58
+	db	37
+	db	115
+	db	58
+	db	37
+	db	115
+	db	10
+	db	0
+
+	extern	_llvm.stackprotector
+	extern	__frameset0
+	extern	_sprintf
+	extern	_abort

@@ -1,0 +1,19 @@
+	section	.text
+	assume	adl = 1
+	section	.text
+	public	__u_uitoa
+__u_uitoa:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	de, 0
+	push	de
+	push	hl
+	call	__u_ultoa
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text
+
+	extern	_llvm.stackprotector
+	extern	__frameset0
+	extern	__u_ultoa

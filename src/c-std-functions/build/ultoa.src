@@ -1,0 +1,292 @@
+	section	.text
+	assume	adl = 1
+	section	.text
+	public	__u_ltoa
+__u_ltoa:
+	ld	hl, -22
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	e, (ix + 9)
+	ld	iyl, 0
+	ld	bc, 0
+	ld	(ix + -14), hl
+	ld	(ix + -15), e
+	call	__lcmpzero
+	call	__setflag
+	jq	m, BB0_2
+	ld	d, 0
+	jq	BB0_3
+BB0_2:
+	ld	d, 1
+BB0_3:
+	push	bc
+	pop	hl
+	ld	e, iyl
+	ld	bc, (ix + -14)
+	ld	a, (ix + -15)
+	call	__lsub
+	bit	0, d
+	jq	nz, BB0_5
+	ld	hl, (ix + -14)
+BB0_5:
+	bit	0, d
+	jq	nz, BB0_7
+	ld	e, (ix + -15)
+BB0_7:
+	ld	(ix + -4), hl
+	ld	iyh, 1
+	ld	a, (___print_fmt+6)
+	cp	a, 0
+	call	__setflag
+	jq	p, BB0_9
+	ld	a, iyh
+	ld	(___print_fmt+6), a
+BB0_9:
+	ld	(ix + -5), e
+	ld	a, (___print_fmt+5)
+	cp	a, 0
+	call	__setflag
+	jq	p, BB0_11
+	ld	hl, ___print_fmt+1
+	set	0, (hl)
+	neg
+	ld	(___print_fmt+5), a
+BB0_11:
+	ld	hl, 65
+	ld	(ix + -11), hl
+	ld	a, (___print_fmt+4)
+	ld	l, a
+	rlc	l
+	sbc	hl, hl
+	push	hl
+	pop	bc
+	ld	c, a
+	ld	de, 88
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	jq	z, BB0_17
+	ld	de, 120
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	jq	z, BB0_15
+	ld	de, 112
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	jq	nz, BB0_38
+BB0_15:
+	ld	a, (___print_fmt+1)
+	bit	5, a
+	jq	nz, BB0_17
+	ld	hl, 97
+	ld	(ix + -11), hl
+BB0_17:
+	ld	bc, 0
+	ld	a, 16
+BB0_19:
+	ld	(ix + -1), a
+BB0_20:
+	ld	hl, ___print_buff
+	ld	de, 246
+	ld	iy, (ix + -11)
+	add	iy, de
+	ld	(ix + -11), iy
+	ld	(ix + -8), hl
+	ld	iy, (ix + -4)
+	ld	d, (ix + -5)
+	ld	e, (ix + -1)
+BB0_21:
+	ld	c, e
+	lea	hl, iy + 0
+	ld	e, d
+	xor	a, a
+	call	__ldivu
+	ld	(ix + -18), hl
+	ld	(ix + -19), e
+	ld	(ix + -22), bc
+	xor	a, a
+	call	__lmulu
+	push	hl
+	pop	bc
+	ld	a, e
+	ld	(ix + -4), iy
+	lea	hl, iy + 0
+	ld	(ix + -5), d
+	ld	e, d
+	call	__lsub
+	push	hl
+	pop	bc
+	ld	a, c
+	add	a, 48
+	ld	iy, (ix + -11)
+	add	iy, bc
+	ld	de, 10
+	or	a, a
+	sbc	hl, de
+	jq	c, BB0_23
+	ld	a, iyl
+BB0_23:
+	ld	iy, (ix + -8)
+	ld	(iy), a
+	ld	hl, (ix + -4)
+	ld	e, (ix + -5)
+	ld	bc, (ix + -22)
+	xor	a, a
+	call	__lcmpu
+	ld	a, 1
+	ld	e, (ix + -1)
+	jq	nc, BB0_25
+	ld	a, 0
+BB0_25:
+	inc	iy
+	ld	(ix + -8), iy
+	bit	0, a
+	ld	iy, (ix + -18)
+	ld	d, (ix + -19)
+	ld	bc, 0
+	jq	nz, BB0_21
+	ld	iy, (ix + -8)
+BB0_27:
+	lea	hl, iy + 0
+	ld	de, ___print_buff
+	or	a, a
+	sbc	hl, de
+	ld	a, (___print_fmt+6)
+	push	bc
+	pop	de
+	ld	e, a
+	or	a, a
+	sbc	hl, de
+	call	__setflag
+	jq	p, BB0_29
+	ld	(iy), 48
+	inc	iy
+	jq	BB0_27
+BB0_29:
+	ld	a, (___print_fmt+1)
+	ld	c, a
+	ld	a, (ix + -1)
+	cp	a, 16
+	jq	nz, BB0_36
+	ld	hl, (ix + -14)
+	ld	e, (ix + -15)
+	call	__lcmpzero
+	jq	z, BB0_32
+	ld	a, 0
+	jq	BB0_33
+BB0_32:
+	ld	a, 1
+BB0_33:
+	bit	0, a
+	jq	nz, BB0_36
+	bit	3, c
+	jq	z, BB0_36
+	ld	(iy), 88
+	lea	hl, iy + 0
+	lea	de, iy + 2
+	ld	(iy + 1), 48
+	push	de
+	pop	iy
+BB0_36:
+	ld	hl, (ix + -14)
+	ld	e, (ix + -15)
+	call	__lcmpzero
+	call	__setflag
+	jq	m, BB0_40
+	ld	a, 0
+	jq	BB0_41
+BB0_40:
+	ld	a, 1
+BB0_41:
+	ld	e, 45
+	bit	0, a
+	jq	nz, BB0_44
+	bit	1, c
+	ld	e, 43
+	jq	nz, BB0_44
+	ld	b, 3
+	ld	a, c
+	call	__bshl
+	and	a, 32
+	ld	e, a
+BB0_44:
+	ld	a, (___print_fmt+6)
+	or	a, a
+	jq	z, BB0_46
+	ld	a, c
+	and	a, -65
+	ld	c, a
+	ld	(___print_fmt+1), a
+BB0_46:
+	bit	6, c
+	jq	nz, BB0_49
+	ld	a, e
+	or	a, a
+	jq	nz, BB0_50
+	lea	hl, iy + 0
+	jq	BB0_52
+BB0_49:
+	lea	hl, iy + 0
+	ld	iy, ___print_leading_char
+	jq	BB0_51
+BB0_50:
+	lea	hl, iy + 0
+	inc	hl
+BB0_51:
+	ld	(iy), e
+BB0_52:
+	ld	(hl), 0
+	ld	hl, ___print_buff
+	push	hl
+	call	__u_reverse
+	pop	hl
+	ld	hl, ___print_buff
+	ld	(ix + 6), hl
+	ld	sp, ix
+	pop	ix
+	jq	___print_sendstring
+BB0_38:
+	ld	de, 111
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	jq	z, BB0_53
+	ld	a, 0
+	jq	BB0_54
+BB0_53:
+	ld	a, 1
+BB0_54:
+	ld	bc, 0
+	xor	a, iyh
+	bit	0, a
+	jq	nz, BB0_56
+	push	af
+	ld	a, iyl
+	ld	(ix + -1), a
+	pop	af
+	jq	BB0_20
+BB0_56:
+	ld	a, 10
+	jq	BB0_19
+	section	.text
+
+	extern	__ldivu
+	extern	__setflag
+	extern	__bshl
+	extern	___print_buff
+	extern	__frameset
+	extern	__lcmpu
+	extern	___print_leading_char
+	extern	__lcmpzero
+	extern	__lmulu
+	extern	__u_reverse
+	extern	_llvm.stackprotector
+	extern	___print_fmt
+	extern	__lsub
+	extern	___print_sendstring

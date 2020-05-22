@@ -1,0 +1,244 @@
+	section	.text
+	assume	adl = 1
+	section	.text
+	public	_strtoul
+_strtoul:
+	ld	hl, -11
+	call	__frameset
+	ld	de, (ix + 6)
+	ld	a, 16
+	ld	(ix + -10), a
+BB0_1:
+	ld	(ix + -6), de
+	ex	de, hl
+	ld	(ix + -3), hl
+	ld	a, (hl)
+	ld	l, a
+	rlc	l
+	sbc	hl, hl
+	ld	l, a
+	push	hl
+	call	_isspace
+	pop	de
+	ld	de, (ix + -6)
+	inc	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jq	nz, BB0_1
+	ld	iy, (ix + -3)
+	ld	a, (iy)
+	cp	a, 43
+	jq	nz, BB0_4
+	push	de
+	pop	iy
+	xor	a, a
+	ld	e, a
+	ld	bc, (ix + 12)
+	jq	BB0_6
+BB0_4:
+	ex	de, hl
+	cp	a, 45
+	ld	a, 0
+	ld	e, a
+	ld	bc, (ix + 12)
+	jq	nz, BB0_6
+	push	hl
+	pop	iy
+	ld	e, 1
+BB0_6:
+	push	bc
+	pop	hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	ld	(ix + -11), e
+	jq	nz, BB0_10
+	ld	a, (iy)
+	cp	a, 48
+	jq	nz, BB0_15
+	ld	a, (iy + 1)
+	cp	a, 88
+	jq	z, BB0_26
+	cp	a, 120
+	jq	z, BB0_26
+	ld	a, 8
+	jq	BB0_21
+BB0_10:
+	ld	de, 16
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	jq	nz, BB0_16
+	ld	a, (iy)
+	cp	a, 48
+	jq	nz, BB0_26
+	ld	a, (iy + 1)
+	cp	a, 120
+	jq	z, BB0_24
+	cp	a, 88
+	jq	z, BB0_22
+	ld	a, 0
+	jq	BB0_23
+BB0_15:
+	ld	a, 10
+	jq	BB0_21
+BB0_16:
+	ld	a, c
+BB0_21:
+	ld	(ix + -10), a
+BB0_26:
+	or	a, a
+	sbc	hl, hl
+	ld	(ix + -9), hl
+	xor	a, a
+	ld	(ix + -6), a
+BB0_27:
+	ld	(ix + -3), iy
+	ld	a, (iy)
+	ld	l, a
+	rlc	l
+	sbc	hl, hl
+	ld	l, a
+	push	hl
+	call	_toupper
+	push	hl
+	pop	de
+	pop	hl
+	push	de
+	pop	hl
+	ld	bc, 255
+	call	__iand
+	ld	bc, 65
+	or	a, a
+	sbc	hl, bc
+	ld	a, -55
+	jq	nc, BB0_29
+	ld	a, -48
+BB0_29:
+	add	a, e
+	ld	d, a
+	ld	l, (ix + -10)
+	cp	a, l
+	ld	a, l
+	jq	nc, BB0_34
+	ld	bc, 0
+	ld	c, a
+	xor	a, a
+	ld	iy, (ix + -9)
+	lea	hl, iy + 0
+	ld	e, (ix + -6)
+	call	__lmulu
+	ld	bc, 0
+	ld	c, d
+	call	__ladd
+	lea	bc, iy + 0
+	ld	a, (ix + -6)
+	call	__lcmpu
+	ld	a, 1
+	jq	nc, BB0_32
+	ld	a, 0
+BB0_32:
+	ld	iy, (ix + -3)
+	inc	iy
+	bit	0, a
+	ld	(ix + -9), hl
+	ld	(ix + -6), e
+	jq	nz, BB0_27
+	ld	hl, 5
+	ld	(_errno), hl
+	ld	hl, -1
+	ld	(ix + -9), hl
+	ld	a, -1
+	ld	(ix + -6), a
+	jq	BB0_27
+BB0_34:
+	ld	a, (ix + -11)
+	or	a, a
+	jq	z, BB0_36
+	ld	d, 0
+	jq	BB0_37
+BB0_36:
+	ld	d, 1
+BB0_37:
+	or	a, a
+	sbc	hl, hl
+	ld	e, 0
+	ld	bc, (ix + -9)
+	ld	a, (ix + -6)
+	call	__lsub
+	bit	0, d
+	jq	nz, BB0_39
+	ld	(ix + -9), hl
+BB0_39:
+	bit	0, d
+	ld	iy, (ix + -3)
+	ld	bc, (ix + 12)
+	jq	nz, BB0_41
+	ld	(ix + -6), e
+BB0_41:
+	ld	hl, (ix + 9)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jq	z, BB0_54
+	push	bc
+	pop	hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jq	nz, BB0_52
+	ld	l, 1
+	ld	e, 0
+	ld	c, 1
+BB0_44:
+	ld	a, (iy)
+	cp	a, 76
+	jq	z, BB0_50
+	cp	a, 104
+	jq	z, BB0_50
+	cp	a, 117
+	jq	z, BB0_50
+	cp	a, 108
+	ld	a, l
+	jq	z, BB0_49
+	ld	a, e
+BB0_49:
+	xor	a, c
+	bit	0, a
+	jq	nz, BB0_52
+BB0_50:
+	inc	iy
+	jq	BB0_44
+BB0_52:
+	ld	hl, (ix + 9)
+	ld	(hl), iy
+BB0_54:
+	ld	hl, (ix + -9)
+	ld	e, (ix + -6)
+	ld	sp, ix
+	pop	ix
+	ret
+BB0_22:
+	ld	a, 1
+BB0_23:
+	ld	l, 1
+	xor	a, l
+	bit	0, a
+	jq	nz, BB0_26
+BB0_24:
+	lea	iy, iy + 2
+	jq	BB0_26
+	section	.text
+
+	extern	_toupper
+	extern	__frameset
+	extern	__iand
+	extern	__lcmpu
+	extern	_llvm.stackprotector
+	extern	_errno
+	extern	_isspace
+	extern	__lmulu
+	extern	__ladd
+	extern	__lsub

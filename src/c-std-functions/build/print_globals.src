@@ -1,0 +1,33 @@
+	section	.text
+	assume	adl = 1
+	section	.data
+	public	___print_xputch
+___print_xputch:
+	dl	___print_sputch
+
+	section	.bss
+	public	___print_buff
+___print_buff:
+	rb	14
+
+	section	.bss
+	public	___print_fmt
+___print_fmt:
+	rb	19
+
+	section	.bss
+	public	___print_len
+___print_len:
+	rb	1
+
+	section	.bss
+	public	___print_leading_char
+___print_leading_char:
+	rb	1
+
+	section	.bss
+	public	___print_out
+___print_out:
+	rb	3
+
+	extern	___print_sputch

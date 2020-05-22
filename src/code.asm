@@ -69,6 +69,8 @@ _WriteFlashByte:
 	ld a,b
 _WriteFlashA: ;probably here?
 	
+	; -- TODO --
+	
 	ret
 
 ; HL = sector address to erase
@@ -105,19 +107,9 @@ eraseSectorRaw:
 
 ;   de = dest, hl = data, bc = size
 _WriteFlash:
-	push hl
-	push de
-	push bc
-	ld hl,.data
-	ld de,ti.cursorImage
-	ld bc,.len
-	pop bc
-	pop de
-	pop hl
-.data:
-	unlock_flash
-	
-	lock_flash
+
+	; -- TODO --
+
 	ret
 .len:=$-.data
 

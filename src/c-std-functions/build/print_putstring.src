@@ -1,0 +1,217 @@
+	section	.text
+	assume	adl = 1
+	section	.text
+	public	___print_sendstring
+___print_sendstring:
+	ld	hl, -11
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	d, 0
+	ld	a, (___print_fmt+5)
+	ld	l, a
+	or	a, a
+	ld	c, d
+	ld	e, d
+	jq	z, BB0_10
+	ld	a, (___print_fmt+1)
+	and	a, 1
+	ld	e, a
+	ld	b, 7
+	ld	a, l
+	call	__bshru
+	ld	l, a
+	ld	a, e
+	or	a, l
+	ld	e, a
+	or	a, a
+	ld	c, d
+	jq	nz, BB0_10
+	push	iy
+	call	_strlen
+	push	hl
+	pop	iy
+	pop	hl
+	ld	a, (___print_fmt+1)
+	bit	4, a
+	jq	z, BB0_5
+	ld	c, 16
+	lea	hl, iy + 0
+	call	__ishl
+	call	__ishrs
+	push	hl
+	pop	de
+	ld	a, (___print_fmt+6)
+	ld	c, a
+	rlc	a
+	sbc	hl, hl
+	ld	l, c
+	or	a, a
+	sbc	hl, de
+	call	__setflag
+	jq	m, BB0_6
+BB0_5:
+	ld	c, iyl
+BB0_6:
+	ld	iy, (ix + 6)
+	ld	l, -1
+	ld	a, (___print_fmt+5)
+	sub	a, c
+	ld	c, l
+	ld	b, h
+	ld	l, a
+	ld	d, 0
+	ld	b, d
+BB0_7:
+	ld	a, l
+	add	a, b
+	cp	a, 1
+	call	__setflag
+	jq	m, BB0_9
+	ld	(ix + -5), l
+	ld	hl, 32
+	push	hl
+	ld	(ix + -2), c
+	ld	(ix + -1), b
+	call	___print_putch
+	ld	c, (ix + -2)
+	ld	b, (ix + -1)
+	ld	iy, (ix + 6)
+	ld	d, 0
+	pop	hl
+	ld	l, (ix + -5)
+	dec	b
+	jq	BB0_7
+BB0_9:
+	mlt	bc
+	ld	e, d
+BB0_10:
+	ld	(ix + -6), e
+	ld	(ix + -2), c
+	ld	(ix + -1), b
+	ld	a, (___print_fmt+1)
+	ld	e, a
+	ld	a, (___print_fmt+6)
+	ld	l, a
+	rlc	l
+	sbc	hl, hl
+	ld	l, a
+	ld	bc, 65535
+	ld	(ix + -5), bc
+	call	__iand
+	bit	4, e
+	jq	z, BB0_12
+	ld	(ix + -5), hl
+BB0_12:
+	ld.sis	bc, 0
+BB0_13:
+	or	a, a
+	sbc	hl, hl
+	ld	(ix + -8), c
+	ld	(ix + -7), b
+	ld	l, c
+	ld	h, b
+	ld	bc, (ix + -5)
+	or	a, a
+	sbc	hl, bc
+	jq	nc, BB0_16
+	ld	l, (iy)
+	ld	a, l
+	or	a, a
+	jq	z, BB0_16
+	inc	iy
+	ld	(ix + -11), iy
+	push	hl
+	call	___print_putch
+	ld	iy, (ix + -11)
+	ld	d, 0
+	pop	hl
+	ld	c, (ix + -8)
+	ld	b, (ix + -7)
+	inc.sis	bc
+	ld	l, (ix + -2)
+	ld	h, (ix + -1)
+	inc	l
+	ld	(ix + -2), l
+	ld	(ix + -1), h
+	jq	BB0_13
+BB0_16:
+	ld	a, (ix + -6)
+	or	a, a
+	jq	nz, BB0_18
+	ld	l, (ix + -2)
+	ld	h, (ix + -1)
+	jq	BB0_22
+BB0_18:
+	ld	a, (___print_fmt+5)
+	ld	l, a
+	rlc	l
+	sbc	hl, hl
+	ld	l, a
+	push	hl
+	call	_abs
+	pop	de
+	ld	a, l
+	ld	(___print_fmt+5), a
+	ld	c, (ix + -2)
+	ld	b, (ix + -1)
+BB0_19:
+	ld	de, 0
+	ld	e, c
+	ld	l, a
+	rlc	l
+	sbc	hl, hl
+	ld	iyl, c
+	ld	iyh, b
+	push	hl
+	pop	bc
+	ld	c, a
+	ex	de, hl
+	or	a, a
+	sbc	hl, bc
+	call	__setflag
+	jq	p, BB0_21
+	ld	hl, 32
+	push	hl
+	push	iy
+	ex	(sp), hl
+	ld	(ix + -2), l
+	ld	(ix + -1), h
+	pop	hl
+	call	___print_putch
+	pop	hl
+	ld	c, (ix + -2)
+	ld	b, (ix + -1)
+	inc	c
+	ld	a, (___print_fmt+5)
+	jq	BB0_19
+BB0_21:
+	ld	d, 0
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+BB0_22:
+	ld	a, (___print_len)
+	add	a, l
+	ld	(___print_len), a
+	ld	a, d
+	ld	(___print_fmt+1), a
+	ld	(___print_fmt+6), a
+	ld	(___print_fmt+5), a
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text
+
+	extern	__setflag
+	extern	__frameset
+	extern	__iand
+	extern	_llvm.stackprotector
+	extern	__bshru
+	extern	__ishrs
+	extern	___print_putch
+	extern	__ishl
+	extern	___print_fmt
+	extern	___print_len
+	extern	_abs
+	extern	_strlen

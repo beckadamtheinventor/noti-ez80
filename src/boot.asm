@@ -35,7 +35,7 @@ handle_rst38: ;rst 38
 	pop hl
 	jp nz,$00140C
 	pop af
-	jp loader_bcall_handler ;$0220A8 ;OS bcall handler?
+	jp loader_interrupt_handler ;$0220A8 ;OS interrupt handler
 
 paduntil $66
 flash_nmi_handler:
