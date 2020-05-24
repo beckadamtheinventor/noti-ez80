@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Integer store (ix+nnnnnn),HL
@@ -12,9 +13,9 @@
 ; Registers Used:
 ;      
 ;-------------------------------------------------------------------------
-	.assume adl=1
-        .def    __sstix
-__sstix:
+;	.assume adl=1
+;        .def    __sstix
+_sstix:
         push    ix
         push    af              ; Preserve flags
         add     ix,bc

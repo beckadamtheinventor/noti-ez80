@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2007-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Set flag for comparison of 32-bit scalar with constant value zero
@@ -11,18 +12,18 @@
 ;	None
 ;-------------------------------------------------------------------------
  
-	.def	__lcmpzero
-	.ref	__lcmpu
-	.assume adl=1
+;	.def	__lcmpzero
+;	.ref	__lcmpu
+;	.assume adl=1
 
-__lcmpzero:
+_lcmpzero:
 	push	iy
 	push	bc
 	
 	ld		iyh,a
 	xor		a,a
 	ld		bc,%0
-	call	__lcmpu
+	call	_lcmpu
 	ld		a,iyh
 	
 	pop		bc

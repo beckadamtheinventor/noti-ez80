@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Integer Shift Right Signed
@@ -13,17 +14,17 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.def	__ishrs, __ishrs_b
-	.assume adl=1
+;	.def	__ishrs, __ishrs_b
+;	.assume adl=1
 
-__ishrs_b:
+_ishrs_b:
 	push bc
 	ld c,a
-	call __ishrs
+	call _ishrs
 	pop bc
 	ret
 	
-__ishrs:
+_ishrs:
 	push	af
 	push	bc
 
@@ -34,14 +35,14 @@ __ishrs:
 
 	ld	b,c
 	inc	b
-	jr	test
+	jr	.test
 
-loop:
+.loop:
 	sra	a
 	rr	h
 	rr	l
-test:
-	djnz	loop
+.test:
+	djnz	.loop
 
 	push	hl
 	ld	hl,2

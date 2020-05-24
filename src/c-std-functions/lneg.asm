@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Long NEG.
@@ -10,10 +11,10 @@
 ; Registers Used:
 ;	flags
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	 
-	.def	__lneg
-__lneg:
+;	.assume adl=1
+;	 
+;	.def	__lneg
+_lneg:
 	push	af
 	push	de
 	ex	de,hl

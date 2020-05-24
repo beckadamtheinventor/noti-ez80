@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Set flag for comparison of 16-bit scalar with constant value zero
@@ -11,10 +12,10 @@
 ;	None
 ;-------------------------------------------------------------------------
  
-	.def	__scmpzero
-	.assume adl=1
+;	.def	__scmpzero
+;	.assume adl=1
 
-__scmpzero:
+_scmpzero:
 	push hl
 	push de
 	

@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Signed Integer Division
@@ -14,10 +15,10 @@
 ; Registers Used:
 ;	a, de
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__idivs
-	.ref	__idivu
-__idivs:
+;	.assume adl=1
+;	.def	__idivs
+;	.ref	__idivu
+_idivs:
 	push	af
 	push	de
 	push	bc
@@ -29,17 +30,17 @@ __idivs:
 	or	a,a
 	sbc	hl,hl
 	sbc	hl,de
-	jp	m,_L0
+	jp	m,.L0
 	ex	de,hl
-_L0:
+.L0:
 	or	a,a
 	sbc	hl,hl
 	sbc	hl,bc
-	jp	m,_L1
+	jp	m,.L1
 	ld	bc,hl
-_L1:
+.L1:
 	ex	de,hl
-	call	__idivu
+	call	_idivu
 	;;
 	;; quotient in hl
 	;; Check signs
@@ -53,11 +54,11 @@ _L1:
 	inc	hl
 	inc	hl
 	xor	a,(hl)
-	jp	p,_L2
+	jp	p,.L2
 	sbc	hl,hl
 	sbc	hl,de
 	ex	de,hl
-_L2:
+.L2:
 	ex	de,hl
 	pop	bc
 	pop	de

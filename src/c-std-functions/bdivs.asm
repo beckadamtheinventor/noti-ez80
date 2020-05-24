@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog Inc.
 ;-------------------------------------------------------------------------
 ; Signed Byte Division. 
@@ -13,27 +14,27 @@
 ; Registers Used:
 ;	d, e
 ;-------------------------------------------------------------------------
-	.def	__bdivs
-	.ref	__bdivu
-	.assume adl=1
+;	.def	__bdivs
+;	.ref	__bdivu
+;	.assume adl=1
 
-__bdivs:
+_bdivs:
 	push	bc
 	;;
 	;; Check the sign
 	;; 
 	xor	a,a
 	sub a,b
-	jp m,_L0
+	jp m,._L0
 	ld b,a
-_L0:
+._L0:
 	xor	a,a
 	sub a,c
-	jp m,_L1
+	jp m,._L1
 	ld c,a
-_L1:
+._L1:
 
-	call	__bdivu
+	call	_bdivu
 	;;
 	;; Check the sign of the quotient
 	;; 
@@ -43,9 +44,9 @@ _L1:
 	ld	a,b
 	xor	a,c
 	ld	a,l
-	jp	p,_L2
+	jp	p,._L2
 	neg
-_L2:
+._L2:
 	pop	hl
 
 	ret	

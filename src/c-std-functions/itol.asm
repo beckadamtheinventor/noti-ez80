@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Signed Integer to Long conversion
@@ -10,10 +11,10 @@
 ; Registers Used:
 ;       
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	 
-        .def    __itol
-__itol:
+;	.assume adl=1
+;	 
+;        .def    __itol
+_itol:
 	dec	sp
 	push	bc
 	inc	sp

@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Integer Multiplication Signed.
@@ -13,9 +14,9 @@
 ; Registers Used:
 ;	de,af
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__imuls
-__imuls:
+;	.assume adl=1
+;	.def	__imuls
+_imuls:
 	push	ix
 	ld	ix,0
 	add	ix,sp
@@ -36,12 +37,12 @@ __imuls:
 	;; 
 	ld	a,(ix-7)	; HOB Op2
 	xor	a,(ix-4)	; HOB Op1
-	jp	p,__ssign
+	jp	p,_ssign
 	;;
 	;; Different signs
 	;;
 	xor	a,(ix-4)	; S-bit sign of Op2
-	jp	m,__op2neg
+	jp	m,_op2neg
 	;;
 	;; Op1 is negative
 	;;
@@ -53,20 +54,20 @@ __imuls:
 	push	hl
 	pop	bc
 	ex	de,hl
-	jp	__ustart
-__op2neg:
+	jp	_ustart
+_op2neg:
 	ld	de,0
 	ex	de,hl		; put Op2 in de
 	or	a,a
 	sbc	hl,de
 	ld	(ix-9),hl	; save positive version of Op2
-	jp	__ustart
+	jp	_ustart
 	;;
 	;; same sign, but which?
 	;; 
-__ssign:
+_ssign:
 	xor	a,(ix-4)
-	jp	p,__ustart
+	jp	p,_ustart
 	;;
 	;; both negative
 	;;
@@ -77,11 +78,11 @@ __ssign:
 	ld	(ix-6),hl	; save positive version of Op1
 	ld	bc,hl
 	ex	de,hl
-	jp	__op2neg
+	jp	_op2neg
 	;; 
 	;; Calculate middle byte
 	;;
-__ustart:	
+_ustart:	
 	ld	hl,0
 	ld	l,(ix-8)
 	ld	h,(ix-6)
@@ -145,12 +146,12 @@ __ustart:
 	;;
 	ld	a,(ix-1)
 	xor	a,(ix-10)
-	jp	p,__popregs
+	jp	p,_popregs
 	ld	de,0
 	ex	de,hl
 	or	a,a
 	sbc	hl,de
-__popregs:
+_popregs:
 	pop	af		; restore af
 	pop	de		; restore de
 	pop	bc		; discard Saved Op1

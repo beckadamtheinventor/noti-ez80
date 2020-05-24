@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Short XOR.
@@ -13,10 +14,10 @@
 ; Registers Used:
 ;	a
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__sxor
+;	.assume adl=1
+;	.def	__sxor
 
-__sxor:
+_sxor:
 	push	af	
 	
 	ld	a,l

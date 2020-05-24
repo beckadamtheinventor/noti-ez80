@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Long Division Unsigned
@@ -13,13 +14,13 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__ldivu,__ldvrmu
+;	.assume adl=1
+;	.def	__ldivu,__ldvrmu
 
-__ldivu:
+_ldivu:
 	push	ix
 	push	iy
-	call	__ldvrmu
+	call	_ldvrmu
 	ld	a,iyh
 	push	ix
 	pop	hl
@@ -33,29 +34,29 @@ __ldivu:
 ; Output:
 ;	EuIX = quotient
 ;	AuHL = remainder
-__ldvrmu:
+_ldvrmu:
 	push	hl
 	pop	ix
 	ld	iyh,a
 	ld	iyl,32
 	xor	a,a
 	sbc	hl,hl
-_loop:
+.loop:
 	add	ix,ix		;shift AuHLEuIX left
 	rl	e
 	adc	hl,hl
 	rla
 	sbc	hl,bc
 	sbc	a,iyh
-	jr	nc,_L1
+	jr	nc,.L1
 	add	hl,bc
 	adc	a,iyh
-	jr	_L2
-_L1:
+	jr	.L2
+.L1:
 	inc	ix
-_L2:
+.L2:
 	dec	iyl
-	jr	nz,_loop
+	jr	nz,.loop
 	ret
 
 

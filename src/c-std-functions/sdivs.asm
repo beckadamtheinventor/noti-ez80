@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Short Division Signed
@@ -14,10 +15,10 @@
 ; Registers Used:
 ;	
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__sdivs
-	.ref	__idivs
-__sdivs:
+;	.assume adl=1
+;	.def	__sdivs
+;	.ref	__idivs
+_sdivs:
 	push	af
 	push	bc
 	push	hl
@@ -35,5 +36,5 @@ __sdivs:
 	pop	hl
 	pop	bc
 	pop	af
-	jp	__idivs
+	jp	_idivs
 

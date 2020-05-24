@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Long XOR.
@@ -13,12 +14,12 @@
 ; Registers Used:
 ;	
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__lxor
-	.ref	__ixor
+;	.assume adl=1
+;	.def	__lxor
+;	.ref	__ixor
 
-__lxor:
-	call	__ixor		;XOR HL, BC
+_lxor:
+	call	_ixor		;XOR HL, BC
 	push	af			;save a
 	xor		a,	e
 	ld		e,	a		;XOR E, A

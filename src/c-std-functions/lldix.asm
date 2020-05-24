@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; long load e:hl,(ix+nnnnnn)
@@ -11,9 +12,9 @@
 ; Registers Used:
 ;      
 ;-------------------------------------------------------------------------
-	.assume adl=1
-        .def    __lldix
-__lldix:
+;	.assume adl=1
+;        .def    __lldix
+_lldix:
         push    ix
         push    af              ; Preserve flags
         add     ix,bc

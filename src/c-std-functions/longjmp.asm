@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ;************************************************************************
 ;*									*
 ;*		eZ80 Runtime Assembly Routine				*
@@ -7,10 +8,10 @@
 ;*			     San Jose, CA 				*
 ;************************************************************************
 
-	.assume adl=1
+;	.assume adl=1
 ;	.def	_0_longjmp
 ;	.def	_1_longjmp
-	.def	_longjmp
+;	.def	_longjmp
 
 ;--------------------------------------------------------------
 ;
@@ -30,7 +31,7 @@
 ;
 ;--------------------------------------------------------------
 
-		SEGMENT CODE
+;		SEGMENT CODE
 
 _longjmp:
 	ld iy,0
@@ -39,9 +40,9 @@ _longjmp:
 	ld bc,0
 	or a,a
 	sbc	hl,bc
-	jr nz,__L0
+	jr nz,.L0
 	ld l,1
-__L0:
+.L0:
 	ld iy,(iy+3)	;get jmp_buf
 	ld ix,(iy+3)	;load ix
 	ld bc,(iy+0)	;return address
@@ -100,5 +101,5 @@ __L0:
 ;_2_longjmp:
 ;	DS 3
 
-		end
+;		end
 

@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2007-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; CASE branch resolution.
@@ -20,10 +21,10 @@
 ;	DW24 defaultLab             6+3*numCases
 ; 
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__seqcaseD
+;	.assume adl=1
+;	.def	__seqcaseD
 
-__seqcaseD:
+_seqcaseD:
 	ex		(sp),iy		;store iy and take table address into iy
 	push		iy		;store return address
 	push		af
@@ -38,15 +39,15 @@ __seqcaseD:
 	ld		bc,(iy-3)	; start case value
 	or		a,a		; clear C
 	sbc		hl,bc		; index into table
-	jp		M,defaultCase	; br if hl less than first case
+	jp		M,.defaultCase	; br if hl less than first case
 	push		hl
 	or		a,a		; 
 	sbc		hl,de		; 
 	pop		hl
-	jp		M,index		; branch if hl < numCases
-defaultCase:
+	jp		M,.index		; branch if hl < numCases
+.defaultCase:
 	ld		hl,de		; index to default case
-index:
+.index:
 	ld		bc,hl		; hl = 3*hl
 	add		hl,hl
 	add		hl,bc

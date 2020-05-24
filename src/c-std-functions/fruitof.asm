@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; fract unsigned integer to float conversion.
@@ -11,24 +12,24 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__fruitof
+;	.assume adl=1
+;	.def	__fruitof
 
-__fruitof:
+_fruitof:
 	push	de
 	ld	de,0h
 	or	a,a
 	sbc	hl,de
 	pop	de
-	jr	nz,_L0
+	jr	nz,.L0
 	ld	e,0h
 	ret
-_L0:
+.L0:
 	ld	e,7fh
-_L1:
+.L1:
 	dec	e
 	add	hl,hl
-	jr	nc,_L1
+	jr	nc,.L1
 	push	hl
 	ld	hl,2
 	add	hl,sp

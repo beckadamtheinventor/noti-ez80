@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Indirect Call 
@@ -8,8 +9,8 @@
 ; Output:
 ; Registers Used:
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__indcall
-__indcall:
+;	.assume adl=1
+;	.def	__indcall
+_indcall:
         jp      (iy)
 

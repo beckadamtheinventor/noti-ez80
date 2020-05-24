@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2007-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Unsigned Byte Modulus
@@ -13,26 +14,26 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.def	__bremu
-	.assume adl=1
+;	.def	__bremu
+;	.assume adl=1
 
-__bremu:
+_bremu:
 	push	bc
 	push	hl
 	ld	h,a
 	xor	a,a
 	ld	b,8		;i = 8 (bit counter)
-loop:
+.loop:
 	sla	h
 	rla
-	jr	c,over
+	jr	c,.over
 	cp	a,c
-	jr	c,under
-over:
+	jr	c,.under
+.over:
 	sub	a,c
 	inc	h
-under:
-	djnz	loop
+.under:
+	djnz	.loop
 	;;
 	;; Quotient in h
 	;; Remainder in a

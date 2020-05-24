@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Signed Short to Integer Conversion
@@ -10,10 +11,10 @@
 ; Registers Used:
 ;	a
 ;-------------------------------------------------------------------------
-        .def    __stoi
-	.assume adl=1
+;        .def    __stoi
+;	.assume adl=1
 
-__stoi:
+_stoi:
 	ld	h,b
 	sla	h
 	sbc	hl,hl

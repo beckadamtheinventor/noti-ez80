@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Unsigned Integer Modulus
@@ -14,14 +15,14 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.assume adl=1
-        .def    __iremu
-	.ref	__idvrmu
+;	.assume adl=1
+;        .def    __iremu
+;	.ref	__idvrmu
 
-__iremu:
+_iremu:
 	push	af
 	push	de
-	call	__idvrmu
+	call	_idvrmu
 	pop	de
 	pop	af
 	ret

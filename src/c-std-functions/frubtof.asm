@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2004-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; fract unsigned char to float conversion.
@@ -11,22 +12,22 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__frubtof
+;	.assume adl=1
+;	.def	__frubtof
 
-__frubtof:
+_frubtof:
 	or	a,a
-	jr	nz,_L0
+	jr	nz,.L0
 	sbc	hl,hl
 	ld	e,a
 	ret
-_L0:
+.L0:
 	ld	l,a
 	ld	e,7fh
-_L1:
+.L1:
 	dec	e
 	add	a,a
-	jr	nc,_L1
+	jr	nc,.L1
 	sra	e
 	rra
 	push	af

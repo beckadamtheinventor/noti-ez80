@@ -36,10 +36,6 @@ _dbgout: ;$ = $000669
 
 
 
-paduntil $23E9
-;C standard library functions
-file 'cstd.bin'
-
 
 ;   Doesn't seem to be used by TI-OS - breakpoint did nothing
 ;   Is only called directly in the bootcode by a function at 32F4h
@@ -420,37 +416,46 @@ _boot_kb_Scan:
 
 
 _PutSpinner:
-
+	
+	ret
 
 _boot_GetLFontPtr:
-
+	ld hl,boot_font
+	ret
 
 _boot_InitializeHardware:
-
+	
+	ret
 
 _boot_TurnOffHardware:
-
+	
+	ret
 
 _MakeColCmd:
 
 
 _PutBootVersion:
-
+	
+	ret
 
 _DrawSectorProtectionTable:
 
 
 _boot_Set6MHzMode:
-
+	ret
 
 _boot_Set48MHzMode:
-
+	ret
 
 _boot_Set6MHzModeI:
-
+	xor a,a
+	out ($01),a
+	ret
 
 _boot_Set48MHzModeI:
-
+	ld a,3
+	out ($01),a
+	ret
 
 _CheckHardware:
 
@@ -529,6 +534,7 @@ flash_unlock:
 	ld	a,$4
 	out (bc),a
 	ret
+.len:=$-.
 
 flash_lock:
 	ld	bc,$28
@@ -542,4 +548,5 @@ flash_lock:
 	ld	a,$88
 	out (bc),a
 	ret
+.len:=$-.
 

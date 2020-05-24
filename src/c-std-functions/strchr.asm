@@ -1,7 +1,8 @@
+;Edited for use with open-ce
 ; (c) Copyright 2007-2008 Zilog, Inc.
-	FILE	".\strchr.asm"
-	.assume ADL=1
-	SEGMENT code
+;	FILE	".\strchr.asm"
+;	.assume ADL=1
+;	SEGMENT code
 
 ;   char *strchr(char *s,int c)
 _strchr:
@@ -23,12 +24,12 @@ _strchr:
 	dec		hl
 	ret		z			;if found return HL
 
-_notfound:
+.notfound:
 	or		a,	a
 	sbc		hl,	hl
 	ret
 
 
-	XREF _strlen
-	XDEF _strchr
-	END
+;	XREF _strlen
+;	XDEF _strchr
+;	END

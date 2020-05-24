@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2007-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; byte load a,(iy+nnnnnn)
@@ -11,9 +12,9 @@
 ; Registers Used:
 ;      
 ;-------------------------------------------------------------------------
-	.assume adl=1
-        .def    __bldiy
-__bldiy:
+;	.assume adl=1
+;        .def    __bldiy
+_bldiy:
         push    iy
         push    af      ; Preserve flags
         add     iy,bc

@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Short Division Unsigned
@@ -14,10 +15,10 @@
 ; Registers Used:
 ;	
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__sdivu
-	.ref	__idivu
-__sdivu:
+;	.assume adl=1
+;	.def	__sdivu
+;	.ref	__idivu
+_sdivu:
 	push	bc
 	push	hl
 	ld	hl,2
@@ -29,5 +30,5 @@ __sdivu:
 	ld	(hl),0
 	pop	hl
 	pop	bc
-	jp	__idivu
+	jp	_idivu
 

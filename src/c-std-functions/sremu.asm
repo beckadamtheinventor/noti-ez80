@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Short Modulus Unsigned
@@ -14,10 +15,10 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__sremu
-	.ref	__iremu
-__sremu:
+;	.assume adl=1
+;	.def	__sremu
+;	.ref	__iremu
+_sremu:
 	push	bc
 	push	hl
 	ld	hl,2
@@ -29,5 +30,5 @@ __sremu:
 	ld	(hl),0
 	pop	hl
 	pop	bc
-	jp	__iremu
+	jp	_iremu
 

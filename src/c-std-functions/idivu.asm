@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Unsigned Integer Division.
@@ -14,13 +15,13 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__idivu,__idvrmu
+;	.assume adl=1
+;	.def	__idivu,__idvrmu
 
-__idivu:
+_idivu:
 	push	af
 	push	de
-	call	__idvrmu
+	call	_idvrmu
 	ex	de,hl
 	pop	de
 	pop	af
@@ -34,26 +35,26 @@ __idivu:
 ;	uHL = remainder
 ; Uses:
 ;	AF, BC
-__idvrmu:
+_idvrmu:
 	ex de,hl
 	ld	a,24		;24 bit counter
 	or	a,a
 	sbc	hl,hl
-loop1:
+.loop1:
 	ex	de,hl		;shift uHLuDE left
 	add	hl,hl
 	ex	de,hl
 	adc	hl,hl		;carry out not possible
 	sbc	hl,bc
-	jr	nc,over
+	jr	nc,.over
 
 	add	hl,bc		;restore dividend
-	jr	under
-over:
+	jr	.under
+.over:
 	inc	e		;update quotient
-under:
+.under:
 	dec	a
-	jr	nz,loop1
+	jr	nz,.loop1
 
 	ret
 

@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Long Shift Right Unsigned
@@ -13,10 +14,10 @@
 ; Registers Used:
 ;	flags
 ;-------------------------------------------------------------------------
-	.def	__lshru
-	.assume adl=1
+;	.def	__lshru
+;	.assume adl=1
 
-__lshru:
+_lshru:
     push    hl
 
 	push	af		; save A
@@ -33,16 +34,16 @@ __lshru:
 	pop	af			; restore A
 
 	inc	b			; b = count
-	jr	test
+	jr	.test
 
-loop:
+.loop:
         srl	a
         rr	c
         rr	h
         rr	l
 
-test:
-        djnz    loop
+.test:
+        djnz    .loop
 
 	push	hl
 	ld		hl,	2

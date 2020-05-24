@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2007-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Unsigned Byte Division. 
@@ -13,25 +14,25 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.def	__bdivu
-	.assume adl=1
-__bdivu:
+;	.def	__bdivu
+;	.assume adl=1
+_bdivu:
 	push	bc
 	push	hl
 	ld	h,b
 	xor	a,a
 	ld	b,8		;i = 8 (bit counter)
-loop:
+.loop:
 	sla	h
 	rla
-	jr	c,over
+	jr	c,.over
 	cp	a,c
-	jr	c,under
-over:
+	jr	c,.under
+.over:
 	sub	a,c
 	inc	h
-under:
-	djnz	loop
+.under:
+	djnz	.loop
 	;;
 	;; Quotient in h
 	;; Remainder in a

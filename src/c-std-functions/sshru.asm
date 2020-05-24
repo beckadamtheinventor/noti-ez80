@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Short Shift Right Unsigned
@@ -13,26 +14,26 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.def	__sshru, __sshru_b
-	.assume adl=1
+;	.def	__sshru, __sshru_b
+;	.assume adl=1
 	
-__sshru_b:
+_sshru_b:
 	push bc
 	ld c,a
-	call __sshru
+	call _sshru
 	pop bc
 	ret
 
-__sshru:
+_sshru:
 	push	bc
 	ld	b,c
 	inc	b
-	jr	test
-loop:
+	jr	.test
+.loop:
 	srl	h
 	rr	l
-test:
-	djnz	loop
+.test:
+	djnz	.loop
 	pop	bc
 	ret	
 

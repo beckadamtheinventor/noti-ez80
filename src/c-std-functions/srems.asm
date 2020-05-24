@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Short Modulus Signed
@@ -14,11 +15,11 @@
 ; Registers Used:
 ;	
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.ref	__irems
-	.def	__srems
+;	.assume adl=1
+;	.ref	__irems
+;	.def	__srems
 
-__srems:
+_srems:
 	push	af
 	push	bc
 	push	hl
@@ -36,5 +37,5 @@ __srems:
 	pop	hl
 	pop	bc
 	pop	af
-	jp	__irems
+	jp	_irems
 

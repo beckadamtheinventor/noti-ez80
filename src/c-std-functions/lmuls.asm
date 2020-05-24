@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 1999-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Long Multiplication Signed.
@@ -13,10 +14,10 @@
 ; Registers Used:
 ;	de,af
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__lmuls
-	.ref	__lmulu
-__lmuls:
+;	.assume adl=1
+;	.def	__lmuls
+;	.ref	__lmulu
+_lmuls:
 	push	ix
 	ld	ix,0
 	add	ix,sp
@@ -33,12 +34,12 @@ __lmuls:
 	;; Check the sign
 	;; 
 	xor	a,e		; HOB Op1
-	jp	p,__ssign
+	jp	p,.ssign
 	;;
 	;; Different signs
 	;;
 	xor	a,e		; S-bit sign of Op2
-	jp	p,__op2neg
+	jp	p,.op2neg
 	;;
 	;; Op1 is negative
 	;;
@@ -49,8 +50,8 @@ __lmuls:
 	ld	a,0
 	sbc	a,d		; ABC has negated Op1
 	ld	hl,(ix-3)
-	jp	__ustart	
-__op2neg:
+	jp	.ustart	
+.op2neg:
 	ex	de,hl		; put Op2 in de
 	ld	hl,0
 	or	a,a
@@ -60,13 +61,13 @@ __op2neg:
 	sbc	a,(ix-6)
 	ld	e,a		; EHL has negated Op2
 	ld	a,d
-	jp	__ustart
+	jp	.ustart
 	;;
 	;; same sign, but which?
 	;; 
-__ssign:
+.ssign:
 	xor	a,e
-	jp	p,__ustart
+	jp	p,.ustart
 	;;
 	;; both negative
 	;;
@@ -78,8 +79,8 @@ __ssign:
 	ld	a,0
 	sbc	a,(ix-8)		; ABC positive
 	ex	de,hl
-	jp	__op2neg
-__ustart:
+	jp	.op2neg
+.ustart:
 	;;
 	;; Call unsigned multiply
 	;;
@@ -92,7 +93,7 @@ __ustart:
 	ld	a,(ix-8)	; HOB Op1
 	xor	a,(ix-9)	; HOB Op2
 	ld	a,d
-	jp	p,__restregs	; same sign, we're done
+	jp	p,.restregs	; same sign, we're done
 	;;
 	;; flip sign of abc
 	;;
@@ -104,7 +105,7 @@ __ustart:
 	ld	bc,hl
 	;; restore working regs
 	;;
-__restregs:
+.restregs:
 	ld	(ix-14),a
 	pop	af
 	pop	hl		; discard  old bc

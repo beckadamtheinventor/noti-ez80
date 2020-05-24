@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Unsigned Short to Integer Conversion
@@ -10,10 +11,10 @@
 ; Registers Used:
 ;	a
 ;-------------------------------------------------------------------------
-        .def    __stoiu
-	.assume adl=1
+;        .def    __stoiu
+;	.assume adl=1
 
-__stoiu:
+_stoiu:
 	or	a,a
 	sbc	hl,hl
 	ld	l,c

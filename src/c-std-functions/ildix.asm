@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Integer load hl,(ix+nnnnnn)
@@ -11,9 +12,9 @@
 ; Registers Used:
 ;      
 ;-------------------------------------------------------------------------
-	.assume adl=1
-        .def    __ildix
-__ildix:
+;	.assume adl=1
+;        .def    __ildix
+_ildix:
         push    ix
         push    af              ; Preserve flags
         add     ix,bc

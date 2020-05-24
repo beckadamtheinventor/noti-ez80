@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Short Shift Right Signed
@@ -13,26 +14,26 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.def	__sshrs, __sshrs_b
-	.assume adl=1
+;	.def	__sshrs, __sshrs_b
+;	.assume adl=1
 	
-__sshrs_b:
+_sshrs_b:
 	push bc
 	ld c,a
-	call __sshrs
+	call _sshrs
 	pop bc
 	ret
 
-__sshrs:
+_sshrs:
 	push	bc
 	ld	b,c
 	inc	b
-	jr	test
-loop:
+	jr	.test
+.loop:
     sra	h
 	rr	l
-test:
-	djnz	loop
+.test:
+	djnz	.loop
 	pop	bc
 	ret	
 

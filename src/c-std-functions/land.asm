@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Long AND.
@@ -13,12 +14,12 @@
 ; Registers Used:
 
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__land
-	.ref	__iand
+;	.assume adl=1
+;	.def	__land
+;	.ref	__iand
 
-__land:
-	call	__iand		;AND HL, BC
+_land:
+	call	_iand		;AND HL, BC
 	push	af			;save a
 	and		a,	e
 	ld		e,	a		;AND E, A

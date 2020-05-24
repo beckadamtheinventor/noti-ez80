@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Integer Multiplication Signed/Unsigned.
@@ -16,19 +17,19 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__imulu,__imuls,__imul_b
+;	.assume adl=1
+;	.def	__imulu,__imuls,__imul_b
 	
-__imul_b:
+_imul_b:
 	push bc
 	ld bc,0
 	ld c,a
-	call __imulu
+	call _imulu
 	pop bc
 	ret
 	
-__imuls:
-__imulu:
+_imuls:
+_imulu:
 	push	af
 	push	de
 	push	bc

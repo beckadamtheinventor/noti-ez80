@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 1999-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Unsigned Long Division.
@@ -20,10 +21,10 @@
 ; Registers Used:
 ;	a,b,c,d,e,h,l,iy
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	.uldiv
+;	.assume adl=1
+;	.def	.uldiv
 
-.uldiv:
+_uldiv:
 	push	ix
 	ld	ix,0
 	add	ix,sp
@@ -36,7 +37,7 @@
 
 	ld	iy,32		;i = 32;
 	
-loop:
+.loop:
 				;res = res << 1
 	ex	de,hl
 	add	hl,hl
@@ -87,13 +88,13 @@ loop:
 	ld	c,a
 
 	pop	de
-	jr	c, out		;if (num < y) goto out
+	jr	c, .out		;if (num < y) goto out
 
 	inc	de		;res = res | 1
 
-	jr	done		;goto done
+	jr	.done		;goto done
 
-out:
+.out:
 	push 	de
 				;num = num + y
 	ld	de,(ix+12)
@@ -108,20 +109,20 @@ out:
 done:
 				;i--, if (i != 0) go to loop 
 	dec 	iyl
-	jr	nz,loop
+	jr	nz,.loop
 
 
 	pop 	ix
 	ret	
 
-	.def	.uldivbdechl
-.uldivbdechl:
+;	.def	.uldivbdechl
+_uldivbdechl:
 	push	bc
 	push	hl
 	ld	c,b
 	push	bc
 	push	de
-	call	.uldiv
+	call	_uldiv
 	ld	iy,12
 	add	iy,sp
 	ld	sp,iy

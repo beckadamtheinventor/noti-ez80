@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 1999-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Long Modulus Unsigned.
@@ -13,14 +14,14 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__lremu
-	.ref	__ldvrmu
+;	.assume adl=1
+;	.def	__lremu
+;	.ref	__ldvrmu
 
-__lremu:
+_lremu:
 	push	ix
 	push	iy
-	call	__ldvrmu
+	call	_ldvrmu
 	ld	e,a
 	ld	a,iyh
 	pop	iy

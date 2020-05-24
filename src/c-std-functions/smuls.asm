@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Short Multiply Signed
@@ -14,10 +15,10 @@
 ; Registers Used:
 ;	
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__smuls
-	.ref	__imuls
-__smuls:
+;	.assume adl=1
+;	.def	__smuls
+;	.ref	__imuls
+_smuls:
 	push	ix
 	ld	ix,0
 	add	ix,sp
@@ -25,26 +26,26 @@ __smuls:
 	push	bc
 	ld	a,(ix-5)
 	bit	7,a
-	jr	z,_bcpos
+	jr	z,.bcpos
 	ld	a,FFH
-	jr	_testhl
-_bcpos:
+	jr	.testhl
+.bcpos:
 	ld	a,0
-_testhl:	
+.testhl:	
 	ld	(ix-4),a
 	pop	bc
 	push	hl
 	ld	a,(ix-5)
 	bit	7,a
-	jr	z,_hlpos
+	jr	z,.hlpos
 	ld	a,FFH
-	jr	_callit
-_hlpos:
+	jr	.callit
+.hlpos:
 	ld	a,0
-_callit:	
+.callit:	
 	ld	(ix-4),a
 	pop	hl
 	pop	af
-	call	__imuls
+	call	_imuls
 	pop 	ix
 	ret	

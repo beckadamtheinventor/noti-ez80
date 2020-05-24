@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Long Division Signed
@@ -13,15 +14,15 @@
 ; Registers Used:
 ;	
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__ldivs
-	.ref	__ldivu, __lneg
-__ldivs:
+;	.assume adl=1
+;	.def	__ldivs
+;	.ref	__ldivu, __lneg
+_ldivs:
 	push	bc
 	push	af
 	push	de
 	bit	7,a
-	jr	z,_L1
+	jr	z,.L1
 	push	hl
 	or	a,a		; CR 7885
 	sbc	hl,hl
@@ -31,19 +32,19 @@ __ldivs:
 	push	hl
 	pop	bc
 	pop	hl
-_L1:
+.L1:
 	bit	7,e
-	jr	z,_L2
-	call	__lneg
-_L2:
-	call	__ldivu
+	jr	z,.L2
+	call	_lneg
+.L2:
+	call	_ldivu
 	pop	bc
 	pop	af
 	ld	b,a
 	xor	a,c
-	jp	p,_L3
-	call	__lneg
-_L3:
+	jp	p,.L3
+	call	_lneg
+.L3:
 	ld	a,b
 	pop	bc
 	ret

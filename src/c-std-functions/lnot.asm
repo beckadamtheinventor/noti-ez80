@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Long NOT.
@@ -10,13 +11,13 @@
 ; Registers Used:
 ;	None
 ;-------------------------------------------------------------------------
-	.assume adl=1
+;	.assume adl=1
 	 
-    .def    __lnot
-	.ref	__inot
+;    .def    __lnot
+;	.ref	__inot
 
-__lnot:
-	call	__inot	;CPL HL
+_lnot:
+	call	_inot	;CPL HL
 	push	af
 	ld		a,	e
 	cpl				

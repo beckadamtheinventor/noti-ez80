@@ -1,8 +1,9 @@
+;Edited for use with open-ce
 ;	        Copyright 1992-2008 Zilog, Inc. 
-	.assume adl=1
-	.def	__frameset
+	;.assume adl=1
+	;.def	__frameset
 	
-__frameset:
+_frameset:
   EX (SP),IX  ; (sp)=ix and ix=return address
   LEA DE,IX+0 ; hl=return address
   LD IX,0

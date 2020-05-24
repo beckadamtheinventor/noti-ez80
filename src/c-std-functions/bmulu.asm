@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2007-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Unsigned Byte Multiply
@@ -13,10 +14,10 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.def	__bmulu
-	.assume adl=1
+;	.def	__bmulu
+;	.assume adl=1
 
-__bmulu:
+_bmulu:
 	push	bc
 	mlt	bc
 	ld	a,c

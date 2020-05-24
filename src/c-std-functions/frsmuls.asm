@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2004-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; fract short Multiplication signed.
@@ -14,11 +15,11 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__frsmuls
-	.ref	__frsmulu
+;	.assume adl=1
+;	.def	__frsmuls
+;	.ref	__frsmulu
 
-__frsmuls:
+_frsmuls:
 	push	af
 	push	de
 	push	bc
@@ -27,15 +28,15 @@ __frsmuls:
 	;; Check sign info
 	;;
 	add.s	hl,hl
-	jr	nc,_L0
+	jr	nc,.L0
 	ex	de,hl
 	or	a,a
 	sbc	hl,hl
 	sbc	hl,de
-_L0:
+.L0:
 	rl	c
 	rl	b
-	jr	nc,_L1
+	jr	nc,.L1
 	ex	de,hl
 	or	a,a
 	sbc	hl,hl
@@ -43,18 +44,18 @@ _L0:
 	ld	b,h
 	ld	c,l
 	ex	de,hl
-_L1:
-	call	__frsmulu
+.L1:
+	call	_frsmulu
 	srl	h
 	rr	l
 	pop	af
 	pop	bc
 	xor	a,b
-	jp	p,_L2
+	jp	p,.L2
 	ex	de,hl
 	sbc	hl,hl
 	sbc	hl,de
-_L2:
+.L2:
 	pop	de
 	pop	af
 	ret

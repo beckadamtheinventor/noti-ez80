@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2007-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; byte store (iy+nnnnnn),A
@@ -12,9 +13,9 @@
 ; Registers Used:
 ;      
 ;-------------------------------------------------------------------------
-	.assume adl=1
-        .def    __bstiy
-__bstiy:
+;	.assume adl=1
+;        .def    __bstiy
+_bstiy:
         push    iy
         push    af              ; Preserve flags
         add     iy,bc

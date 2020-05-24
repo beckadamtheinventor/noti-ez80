@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; Copyright (C) 1999-2008 Zilog, Inc, All Rights Reserved
 ;-------------------------------------------------------------------------
 ; <string.h>

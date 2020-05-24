@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Integer load hl,(iy+nnnnnn)
@@ -11,9 +12,9 @@
 ; Registers Used:
 ;      
 ;-------------------------------------------------------------------------
-	.assume adl=1
-        .def    __ildiy
-__ildiy:
+;	.assume adl=1
+;        .def    __ildiy
+_ildiy:
         push    iy
         push    af              ; Preserve flags
         add     iy,bc

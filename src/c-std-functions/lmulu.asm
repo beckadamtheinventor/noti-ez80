@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 1999-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Long Multiplication Signed/Unsigned.
@@ -16,11 +17,11 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__lmulu,__lmuls
+;	.assume adl=1
+;	.def	__lmulu,__lmuls
 
-__lmuls:
-__lmulu:
+_lmuls:
+_lmulu:
 	push	af
 	push	de
 	push	bc

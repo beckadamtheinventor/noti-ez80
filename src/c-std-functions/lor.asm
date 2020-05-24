@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 1999-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Long OR.
@@ -13,12 +14,12 @@
 ; Registers Used:
 ;	
 ;-------------------------------------------------------------------------
-	.assume adl=1
-    .def    __lor
-	.ref	__ior
+;	.assume adl=1
+;    .def    __lor
+;	.ref	__ior
 
-__lor:
-	call	__ior		;OR HL, BC
+_lor:
+	call	_ior		;OR HL, BC
 	push	af			;save a
 	or		a,	e
 	ld		e,	a		;OR E, A

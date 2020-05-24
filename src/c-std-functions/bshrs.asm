@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2007-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Byte Shift Right Signed
@@ -12,18 +13,18 @@
 ; Registers Used:
 ;       flags
 ;-------------------------------------------------------------------------
-        .def    __bshrs
-	.assume adl=1
+;        .def    __bshrs
+;	.assume adl=1
 
-__bshrs:
+_bshrs:
         push    bc
         inc	b
-        jr      test
+        jr      .test
 
-loop:
+.loop:
         sra     a
-test:
-       	djnz	loop
+.test:
+       	djnz	.loop
 
 	pop	bc
 	ret	

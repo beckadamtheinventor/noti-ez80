@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2004-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; fract integer to float conversion.
@@ -11,26 +12,26 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__fritof
-	.ref	__fruitof
+;	.assume adl=1
+;	.def	__fritof
+;	.ref	__fruitof
 
-__fritof:
+_fritof:
 	push	de
 	ex	de,hl
 	ld	hl,800000h
 	or	a,a
 	sbc	hl,de
-	jr	c,_L0
+	jr	c,.L0
 	ex	de,hl
-_L0:
-	jr	nz,_L1
+.L0:
+	jr	nz,.L1
 	pop	de
 	ld	e,%bf
 	ret
-_L1:
+.L1:
 	add	hl,hl
-	call	__fruitof
+	call	_fruitof
 	ex	de,hl
 	add	hl,hl
 	ex	de,hl

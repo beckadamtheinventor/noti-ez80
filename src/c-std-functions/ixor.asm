@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Integer XOR.
@@ -13,10 +14,10 @@
 ; Registers Used:
 ;	a
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__ixor
+;	.assume adl=1
+;	.def	__ixor
 
-__ixor:
+_ixor:
 	push	af
 	push	bc
 	push	hl

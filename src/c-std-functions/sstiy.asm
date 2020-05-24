@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; short store (iy+nnnnnn),HL
@@ -12,9 +13,9 @@
 ; Registers Used:
 ;      
 ;-------------------------------------------------------------------------
-	.assume adl=1
-        .def    __sstiy
-__sstiy:
+;	.assume adl=1
+;        .def    __sstiy
+_sstiy:
         push    iy
         push    af              ; Preserve flags
         add     iy,bc

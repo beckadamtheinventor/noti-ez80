@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; long load e:hl,(iy+nnnnnn)
@@ -11,9 +12,9 @@
 ; Registers Used:
 ;      
 ;-------------------------------------------------------------------------
-	.assume adl=1
-        .def    __lldiy
-__lldiy:
+;	.assume adl=1
+;        .def    __lldiy
+_lldiy:
         push    iy
         push    af              ; Preserve flags
         add     iy,bc

@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Integer/short NEG.
@@ -10,13 +11,13 @@
 ; Registers Used:
 ;	a,de
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	 
-	.def	__ineg
-	.def	__sneg
+;	.assume adl=1
+;	 
+;	.def	__ineg
+;	.def	__sneg
 
-__ineg:
-__sneg:
+_ineg:
+_sneg:
 	push	de
 	ex	de,hl
 	or	a,a

@@ -1,7 +1,8 @@
+;Edited for use with open-ce
 ; (c) Copyright 2007-2008 Zilog, Inc.
-	FILE	".\strcmp.asm"
-	.assume ADL=1
-	SEGMENT code
+;	FILE	".\strcmp.asm"
+;	.assume ADL=1
+;	SEGMENT code
 
 ;   int strcmp(register char *s1, register char *s2)
 _strcmp:
@@ -13,16 +14,16 @@ _strcmp:
 	inc		hl
 	ld		hl,	(hl)
 
-_loop:
+.loop:
 	ld		a,	(de)
 	or		a,	a
-	jr		z,	_done
+	jr		z,	.done
 	cpi
 	inc		de
-	jr		z,	_loop
+	jr		z,	.loop
 
 	dec		hl
-_done:
+.done:
 	sub		a,	(hl)
 
 	ld		b,	a
@@ -32,6 +33,6 @@ _done:
 	ret
 
 	
-	XDEF _strcmp
-	END
+;	XDEF _strcmp
+;	END
 

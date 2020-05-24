@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2007-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Signed Byte Multiply
@@ -13,10 +14,10 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.def	__bmuls
-	.assume adl=1
+;	.def	__bmuls
+;	.assume adl=1
 
-__bmuls:
+_bmuls:
 	push	bc
         ld      c,a
 	mlt	bc

@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2004-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; float to fract unsigned short conversion.
@@ -11,10 +12,10 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__frftous
+;	.assume adl=1
+;	.def	__frftous
 
-__frftous:
+_frftous:
 	push	af
 	ld	a,e
 	add	hl,hl
@@ -24,34 +25,34 @@ __frftous:
 	inc	sp
 	pop	hl
 	cp	a,6Fh	;underflow
-	jr	c,_L0
+	jr	c,.L0
 	cp	a,96h	;overflow
-	jr	c,_L2
-_L0:
+	jr	c,.L2
+.L0:
 	or	a,a
 	sbc	hl,hl
-_L1:
+.L1:
 	pop	af
 	ret
-_L2:
+.L2:
 	sub	a,7fh
-	jr	z,_L1
+	jr	z,.L1
 	push	bc
-	jr	c,_L4
+	jr	c,.L4
 	ld	b,a
-_L3:
+.L3:
 	add	hl,hl
-	djnz	_L3
-	jr	_L6
-_L4:
+	djnz	.L3
+	jr	.L6
+.L4:
 	neg
 	ld	b,a
-_L5:
+.L5:
 	rr	h
 	rr	l
 	or	a,a
-	djnz	_L5
-_L6:
+	djnz	.L5
+.L6:
 	pop	bc
 	pop	af
 	ret

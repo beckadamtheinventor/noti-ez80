@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog Inc.
 ;-------------------------------------------------------------------------
 ; CASE branch resolution.
@@ -22,10 +23,10 @@
 ; 
 ; 
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__case
+;	.assume adl=1
+;	.def	__case
 
-__case:
+_case:
 	push	af
 	push	iy
 
@@ -34,11 +35,11 @@ __case:
 ;
 ;	Loop trough table entries looking for a match
 ;
-_loop:
+.loop:
 	ld		hl,(iy)	; Get case value from table
 	or		a,a		; Clear carry
 	sbc		hl,bc	; Match?
-	jr		z,match
+	jr		z,.match
 
 ;	lea		iy,iy + 7
 	lea		iy,iy + 6 ;new case table item length
@@ -49,18 +50,18 @@ _loop:
 	or		a,a		; clear carry
 	sbc		hl,de		; Done?
 	pop		de
-	jr		nz,_loop
+	jr		nz,.loop
 
 	; No match, iy points to default
 ;	LD		hl,iy	; return pointer to default case JP
 	LD		hl,(iy)	; single jump to the case
-	jr		done
+	jr		.done
 
-match:				; iy+3 points to destination
+.match:				; iy+3 points to destination
 ;	lea		hl,iy+3	; return pointer to JP
 	ld		hl,(iy+3)	; single jump to the case
 
-done:
+.done:
 	pop		iy
 	pop		af
 	ret

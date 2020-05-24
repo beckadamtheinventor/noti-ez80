@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2004-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; fract short to float conversion.
@@ -11,14 +12,14 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__frstof
-	.ref	__fritof
-__frstof:
+;	.assume adl=1
+;	.def	__frstof
+;	.ref	__fritof
+_frstof:
 	push	hl
 	dec	sp
 	pop	hl
 	inc sp
 	ld	l,0h
-	jp	__fritof
+	jp	_fritof
 

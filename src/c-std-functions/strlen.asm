@@ -1,7 +1,8 @@
+;Edited for use with open-ce
 ; (c) Copyright 2007-2008 Zilog, Inc.
-	FILE	".\strlen.asm"
-	.assume ADL=1
-	SEGMENT code
+;	FILE	".\strlen.asm"
+;	.assume ADL=1
+;	SEGMENT code
 
 ;   size_t strlen(char *s)
 _strlen:
@@ -17,6 +18,6 @@ _strlen:
 	sbc	hl,	bc
 	ret
 
-	XDEF _strlen
-	END
+;	XDEF _strlen
+;	END
 

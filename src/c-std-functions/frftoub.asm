@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2004-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; float to fract unsigned char conversion.
@@ -11,26 +12,26 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__frftoub
+;	.assume adl=1
+;	.def	__frftoub
 
-__frftoub:
+_frftoub:
 	push	hl
 	ld	a,e
 	add	hl,hl
 	rla
 	cp	a,77h	;underflow
-	jr	c,_L0
+	jr	c,.L0
 	cp	a,96h	;overflow
-	jr	c,_L1
-_L0:
+	jr	c,.L1
+.L0:
 	xor	a,a
 	pop	hl
 	ret
-_L1:
+.L1:
 	sub	a,7fh
-	jr	nz,_L2
-_L7:
+	jr	nz,.L2
+.L7:
 	push	hl
 	ld	hl,1
 	add	hl,sp
@@ -42,16 +43,16 @@ _L7:
 	ld	sp,hl
 	pop	hl
 	ret
-_L2:
+.L2:
 	push	bc
-	jr	c,_L4
+	jr	c,.L4
 	ld	b,a
-_L3:
+.L3:
 	add	hl,hl
-	djnz	_L3
+	djnz	.L3
 	pop	bc
-	jr	_L7
-_L4:
+	jr	.L7
+.L4:
 	ld	hl,5
 	add	hl,sp
 	neg
@@ -60,12 +61,12 @@ _L4:
 	or	a,a
 	rla
 	scf
-	jr	_L6
-_L5:
+	jr	.L6
+.L5:
 	or	a,a
-_L6:
+.L6:
 	rra
-	djnz	_L5
+	djnz	.L5
 	adc	a,0h
 	pop	bc
 	pop	hl

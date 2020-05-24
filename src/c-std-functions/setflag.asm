@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2007-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Set Sign flag for signed comparison
@@ -16,10 +17,10 @@
 ;	if ( V != 0)
 ;		S = S xor V
  
-	.def	__setflag
-	.assume adl=1
+;	.def	__setflag
+;	.assume adl=1
 
-__setflag:
+_setflag:
 
 	push	bc
 
@@ -27,12 +28,12 @@ __setflag:
 	pop	bc		; c <- flags
 
 	bit	2,c		; if (v == 1)
-	jr	z,_done		; else go to .done
+	jr	z,.done		; else go to .done
 	ld	a,c		; c <- c xor %80
 	xor	a,%80
 	ld	c,a
 
-_done:
+.done:
 	push 	bc
 	pop	af		; flags <- c
 	pop	bc

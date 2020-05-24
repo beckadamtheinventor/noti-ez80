@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2007-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; CASE branch resolution.
@@ -11,10 +12,10 @@
 ; Registers Used:
 ; 
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__case24D
+;	.assume adl=1
+;	.def	__case24D
 
-__case24D:
+_case24D:
 	ex		(sp),iy		;store iy and take table address into iy
 	push	iy			;store return address
 	push	af
@@ -24,14 +25,14 @@ __case24D:
 	lea		iy,iy+3		;table address starts after JP (HL) instruction and 16-bit count
 	ld		de,(iy-2)	;count
 
-_loop:
+.loop:
 	ld		bc,(iy)		;case value
 	lea		iy,iy+3		;case label
 	push	hl
 	or		a,a
 	sbc		hl,bc
 	pop		hl
-	jr		z, _done
+	jr		z, .done
 	
 	dec.s	de			;decrement count
 	ld		b,%0
@@ -41,9 +42,9 @@ _loop:
 	sbc.s	hl,bc
 	ex		de,hl
 	lea		iy,iy+3
-	jr		nz,_loop
+	jr		nz,.loop
 
-_done:	
+.done:	
 	ld		hl,(iy)
 
 	pop		de

@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Short NOT.
@@ -10,10 +11,10 @@
 ; Registers Used:
 ;	a
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	 
-	.def	__snot
-__snot:
+;	.assume adl=1
+;	 
+;	.def	__snot
+_snot:
 	push	af
 	;; 
 	;; low 8 bits

@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Short OR.
@@ -14,10 +15,10 @@
 ; Registers Used:
 ;	a
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__sor
+;	.assume adl=1
+;	.def	__sor
 
-__sor:
+_sor:
 	push	af	
 	
 	ld	a,l

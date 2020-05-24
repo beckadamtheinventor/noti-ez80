@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; Created 12/2001: G.Loegel
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
@@ -14,25 +15,25 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.def	__sshl, __sshl_b
-	.assume adl=1
+;	.def	__sshl, __sshl_b
+;	.assume adl=1
 
-__sshl_b:
+_sshl_b:
 	push bc
 	ld c,a
-	call __sshl
+	call _sshl
 	pop bc
 	ret
 
 
-__sshl:
+_sshl:
 	push	bc
 	ld	b,c
 	inc	b
-	jr	test
-loop:
+	jr	.test
+.loop:
 	add	hl,hl
-test:
+.test:
 	djnz	loop
 	pop	bc
 	ret	

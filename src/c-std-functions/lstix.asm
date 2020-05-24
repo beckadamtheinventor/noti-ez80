@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; long store (ix+nnnnnn),H:HL
@@ -11,9 +12,9 @@
 ; Registers Used:
 ;      
 ;-------------------------------------------------------------------------
-	.assume adl=1
-        .def    __lstix
-__lstix:
+;	.assume adl=1
+;        .def    __lstix
+_lstix:
         push    ix
         push    af              ; Preserve flags
         add     ix,bc

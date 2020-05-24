@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Integer Shift Left
@@ -13,25 +14,25 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.def	__ishl, __ishl_b
-	.assume adl=1
+;	.def	__ishl, __ishl_b
+;	.assume adl=1
 
-__ishl_b:
+_ishl_b:
 	push bc
 	ld c,a
-	call __ishl
+	call _ishl
 	pop bc
 	ret
 
-__ishl:
+_ishl:
 	push	bc
 	ld	b,c
 	inc	b
-	jr	test
-loop:
+	jr	.test
+.loop:
 	add	hl,hl
-test:
-	djnz	loop
+.test:
+	djnz	.loop
 	pop	bc
 	ret	
 

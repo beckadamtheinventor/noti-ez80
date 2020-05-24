@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Long Unsigned Comparison
@@ -14,24 +15,24 @@
 ;	None
 ;-------------------------------------------------------------------------
 
-	segment	code
+;	segment	code
+;
+;	.assume adl=1
+;	.def	__lcmpu, __lcmps
 
-	.assume adl=1
-	.def	__lcmpu, __lcmps
-
-__lcmps:
-__lcmpu:
+_lcmps:
+_lcmpu:
         push    hl
         or      a,a             ;clear carry
         sbc     hl,bc
 	ld	h,a
 	ld	a,e
-	jr	nz,lownz
+	jr	nz,.lownz
 
 	sbc	a,h
 	ld	a,h
-	jr	common
-lownz:
+	jr	.common
+.lownz:
 	sbc	a,h
 	ld	a,h
 	push	af
@@ -40,7 +41,7 @@ lownz:
 	push	hl
 	pop	af
 
-common:
+.common:
 	pop	hl
 	ret
 

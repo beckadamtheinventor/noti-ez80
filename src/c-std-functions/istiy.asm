@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Integer store (iy+nnnnnn),HL
@@ -12,9 +13,9 @@
 ; Registers Used:
 ;      
 ;-------------------------------------------------------------------------
-	.assume adl=1
-        .def    __istiy
-__istiy:
+;	.assume adl=1
+;        .def    __istiy
+_istiy:
         push    iy
         push    af              ; Preserve flags
         add     iy,bc

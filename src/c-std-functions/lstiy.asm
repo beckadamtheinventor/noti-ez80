@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; long store (iy+nnnnnn),E:HL
@@ -11,9 +12,9 @@
 ; Registers Used:
 ;      
 ;-------------------------------------------------------------------------
-	.assume adl=1
-        .def    __lstiy
-__lstiy:
+;	.assume adl=1
+;        .def    __lstiy
+_lstiy:
         push    iy
         push    af              ; Preserve flags
         add     iy,bc

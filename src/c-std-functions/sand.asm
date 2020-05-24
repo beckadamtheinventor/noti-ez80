@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Short AND.
@@ -13,9 +14,9 @@
 ; Registers Used:
 ;	a
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__sand
-__sand:
+;	.assume adl=1
+;	.def	__sand
+_sand:
 	push	af
 	ld	a,l
 	and	a,c

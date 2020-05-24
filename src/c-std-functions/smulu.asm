@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Short Multiply Signed/Unsigned
@@ -17,11 +18,11 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__smulu,__smuls
+;	.assume adl=1
+;	.def	__smulu,__smuls
 
-__smuls:
-__smulu:
+_smuls:
+_smulu:
 	push	af
 	push	bc
 	push	de

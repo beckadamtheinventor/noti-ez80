@@ -1,10 +1,5 @@
-; Copyright (C) 1999-2008 Zilog, Inc, All Rights Reserved
-;-------------------------------------------------------------------------
-; <memory.h> <string.h>
-; void *memset( void *dest, int c, size_t count );
-;-------------------------------------------------------------------------
-	.assume ADL=1
-	XDEF _memset
+
+; void *memset(void *dest, int c, int count);
 _memset:
 	ld	iy,0
 	add	iy,sp
@@ -12,16 +7,21 @@ _memset:
 	ld	hl,(iy+9)	;count
 	ld	a,(iy+6)	;c
 	ld	bc,0
-	jr	_L0
-_Loop:
-	ld	(de),a
-	inc	de
-	dec	hl
-_L0:
+	or a,a
 	sbc	hl,bc
-	jr	nz,_Loop
+	jr z,.exit
+	ld (de),a
+	inc bc
+	or a,a
+	sbc hl,bc
+	jr z,.exit
+	push hl
+	pop bc
+	push de
+	inc de
+	pop hl
+	ldir
+.exit:
 	ld	hl,(iy+3)	;dest
 	ret
-
-	END
 

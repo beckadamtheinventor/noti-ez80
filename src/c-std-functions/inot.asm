@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Integer/Short NOT.
@@ -9,12 +10,12 @@
 ;	Result:   hl : 24/16 bit
 ; Registers Used:
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	 
-	.def	__inot
-	.def	__snot
-__inot:
-__snot:
+;	.assume adl=1
+;	 
+;	.def	__inot
+;	.def	__snot
+_inot:
+_snot:
 	push	de
 	ex	de,hl
 	scf

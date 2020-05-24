@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Set flag for comparison of 24-bit scalar with constant value zero
@@ -11,10 +12,10 @@
 ;	None
 ;-------------------------------------------------------------------------
  
-	.def	__icmpzero
-	.assume adl=1
+;	.def	__icmpzero
+;	.assume adl=1
 
-__icmpzero:
+_icmpzero:
 	push hl
 	push de
 

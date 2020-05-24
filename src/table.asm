@@ -41,7 +41,7 @@
 	jp _strspn
 	jp _strstr
 	jp _strtok
-	jp _ret
+	jp _riemann
 	jp _bldiy
 	jp _bshl
 	jp _bshru

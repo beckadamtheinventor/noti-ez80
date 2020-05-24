@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2004-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; fract short Multiplication signed.
@@ -14,26 +15,26 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__frbmuls
+;	.assume adl=1
+;	.def	__frbmuls
 
-__frbmuls:
+_frbmuls:
 	push	hl
 	;;
 	;; Check sign info
 	;;
 	xor	a,a
 	rl	h
-	jr	nc,_L0
+	jr	nc,.L0
 	sub	a,h
 	ld	h,a
-_L0:
+.L0:
 	xor	a,a
 	rl	l
-	jr	nc,_L1
+	jr	nc,.L1
 	sub	a,l
 	ld	l,a
-_L1:
+.L1:
 	mlt	hl
 	ld	a,h
 	pop	hl
@@ -43,11 +44,11 @@ _L1:
 	push	af
 	ld	a,h
 	xor	a,l
-	jp	p,_L2
+	jp	p,.L2
 	pop	af
 	neg
 	ret
-_L2:
+.L2:
 	pop	af
 	ret
 

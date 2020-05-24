@@ -12,18 +12,18 @@
 ; Registers Used:
 ;       flags
 ;-------------------------------------------------------------------------
-        .def    __bshl
-	.assume adl=1
+;        .def    __bshl
+;	.assume adl=1
 
-__bshl:
+_bshl:
         push    bc
         inc	b
-        jr      test
+        jr      .test
 
-loop:
+.loop:
         add     a,a
-test:
-       	djnz	loop
+.test:
+       	djnz	.loop
 
        	pop	bc
 	ret	

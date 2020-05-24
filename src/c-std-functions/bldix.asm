@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2007-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; byte load a,(ix+nnnnnn)
@@ -11,9 +12,9 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.assume adl=1
-        .def    __bldix
-__bldix:
+;	.assume adl=1
+;        .def    __bldix
+_bldix:
         push    ix
         push    af              ; Preserve flags
         add     ix,bc

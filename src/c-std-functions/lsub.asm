@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Long Subtract Op1 - Op2
@@ -13,10 +14,10 @@
 ; Registers Used:
 ;	flags
 ;-------------------------------------------------------------------------
-	.assume adl=1
-        .def    __lsub
+;	.assume adl=1
+;        .def    __lsub
 
-__lsub:
+_lsub:
 		or		a,	a
 		sbc		hl,	bc		;SUB	HL, BC
 		push	bc

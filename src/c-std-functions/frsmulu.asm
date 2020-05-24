@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2004-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; fract interger Multiplication Unsigned.
@@ -14,10 +15,10 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__frsmulu
+;	.assume adl=1
+;	.def	__frsmulu
 
-__frsmulu:
+_frsmulu:
 	push	af
 	push	de
 	push	bc
@@ -33,9 +34,9 @@ __frsmulu:
 	mlt	bc
 	mlt	de
 	add	a,c
-	jr	nc,_L0
+	jr	nc,.L0
 	inc	de
-_L0:
+.L0:
 	ld	c,a
 	xor	a,a
 	add	hl,bc

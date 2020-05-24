@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2007-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; CASE branch resolution.
@@ -11,10 +12,10 @@
 ; Registers Used:
 ; 
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__case8D
+;	.assume adl=1
+;	.def	__case8D
 
-__case8D:
+_case8D:
 	ex		(sp),iy		;store iy and take table address into iy
 	push	iy			;store return address
 	push	af
@@ -24,7 +25,7 @@ __case8D:
 	lea		iy,iy+3		;table address starts after JP (HL) instruction and 16-bit count
 	ld		de,(iy-2)	;count
 
-_loop:
+.loop:
 	ld		a,(iy)		;case value (8-bit)
 	ld		bc,%0
 	ld		c,a
@@ -33,7 +34,7 @@ _loop:
 	or		a,a
 	sbc		hl,bc
 	pop		hl
-	jr		z, _done
+	jr		z, .done
 	
 	dec.s	de			;decrement count
 	ld		b,%0
@@ -43,9 +44,9 @@ _loop:
 	sbc.s	hl,bc
 	ex		de,hl
 	lea		iy,iy+3
-	jr		nz,_loop
+	jr		nz,.loop
 
-_done:	
+.done:	
 	ld		hl,(iy)
 
 	pop		de

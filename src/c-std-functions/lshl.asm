@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Long Shift Left
@@ -13,23 +14,23 @@
 ; Registers Used:
 ;	flags
 ;-------------------------------------------------------------------------
-	.def	__lshl
-	.assume adl=1
+;	.def	__lshl
+;	.assume adl=1
 
-__lshl:
+_lshl:
         push    hl
         push    bc
 	ld	b,l
 	pop	hl		; uHL = value
 	inc	b
-	jr	test
+	jr	.test
 
-loop:
+.loop:
 	add	hl,hl
 	rla
 
-test:
-        djnz    loop
+.test:
+        djnz    .loop
 
         push	hl
 	pop	bc		; uBC = result

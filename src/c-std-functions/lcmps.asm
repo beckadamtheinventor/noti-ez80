@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Long Comparison
@@ -13,12 +14,12 @@
 ; Registers Used:
 ;	None
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__lcmps
+;	.assume adl=1
+;	.def	__lcmps
 
-SILICON_BUG     EQU     0       ; Remove for non-simulation or fix simulator
+;SILICON_BUG     EQU     0       ; Remove for non-simulation or fix simulator
 
-__lcmps:
+_lcmps:
         push    bc
         push    hl
         push    de
@@ -31,7 +32,7 @@ __lcmps:
         ld      b,a
         ld      a,e
         ld      e,b
-        jr      z,maybe_zero    ; First sbc sets z flag
+        jr      z,.maybe_zero    ; First sbc sets z flag
 
         ; definitely not zero
         sbc     a,e
@@ -40,13 +41,13 @@ __lcmps:
         res     6,c             ; force z flag to zero, all others untouched
         push    bc
         pop     af
-        jr      next
+        jr      .next
 
-maybe_zero:
+.maybe_zero:
         ; This sbc dictates the value of all flags
         sbc     a,e
 
-next:
+.next:
 
 
 ;       if ( V != 0)

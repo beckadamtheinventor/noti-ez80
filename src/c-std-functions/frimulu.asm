@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2004-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; fract interger Multiplication Unsigned.
@@ -14,10 +15,10 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__frimulu
+;	.assume adl=1
+;	.def	__frimulu
 
-__frimulu:
+_frimulu:
 	push	af
 	push	de
 	push	iy
@@ -40,9 +41,9 @@ __frimulu:
 	adc	a,0h
 	ld	b,a
 	add.s	hl,bc
-	jr	nc,_L0
+	jr	nc,.L0
 	inc	d
-_L0:
+.L0:
 	ld	iy,0h
 	add	iy,sp
 	ld	b,(iy+2)
@@ -51,11 +52,11 @@ _L0:
 	ld	a,h
 	add	a,e
 	ld	e,a
-	jr	nc,_L1
+	jr	nc,.L1
 	inc	d
-	jr	nz,_L1
+	jr	nz,.L1
 	inc	bc
-_L1:
+.L1:
 	ld	h,(iy+2)
 	ld	l,(iy+3)
 	mlt	hl
@@ -68,16 +69,16 @@ _L1:
 	ld	h,a	
 
 	add.s	hl,de
-	jr	nc,_L2
+	jr	nc,.L2
 	inc	bc
-_L2:
+.L2:
 	ld	d,(iy+0)
 	ld	e,(iy+5)
 	mlt	de
 	add.s	hl,de
-	jr	nc,_L3
+	jr	nc,.L3
 	inc	bc
-_L3:
+.L3:
 	ld	a,h
 	ld	d,(iy+2)
 	ld	e,(iy+4)
@@ -86,17 +87,17 @@ _L3:
 	mlt	de
 	mlt	hl
 	add.s	hl,de
-	jr	nc,_L4
+	jr	nc,.L4
 	inc	b
-_L4:
+.L4:
 	add	a,l
 	ld	l,a
 	ld	a,h
 	adc	a,c
 	ld	h,a
-	jr	nc,_L5
+	jr	nc,.L5
 	inc	b
-_L5:
+.L5:
 	ex	de,hl
 	push	bc
 	dec	sp

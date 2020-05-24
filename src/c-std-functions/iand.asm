@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2001-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Integer AND.
@@ -13,9 +14,9 @@
 ; Registers Used:
 ;	a
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__iand
-__iand:
+;	.assume adl=1
+;	.def	__iand
+_iand:
 	push	af
 	push	bc
 	push	hl

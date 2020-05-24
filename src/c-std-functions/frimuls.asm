@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 2004-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; fract interger Multiplication Unsigned.
@@ -14,11 +15,11 @@
 ; Registers Used:
 ;	none
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__frimuls
-	.ref	__frimulu
+;	.assume adl=1
+;	.def	__frimuls
+;	.ref	__frimulu
 
-__frimuls:
+_frimuls:
 	push	af
 	push	de
 	push	bc
@@ -27,26 +28,26 @@ __frimuls:
 	;; Check sign info
 	;;
 	add	hl,hl
-	jr	nc,_L0
+	jr	nc,.L0
 	ex	de,hl
 	or	a,a
 	sbc	hl,hl
 	sbc	hl,de
-_L0:
+.L0:
 	ex	de,hl
 	or	a,a
 	sbc	hl,hl
 	add	hl,bc
 	add	hl,hl
-	jr	nc,_L1
+	jr	nc,.L1
 	or	a,a
 	sbc	hl,hl
 	sbc	hl,bc
 	add	hl,hl
-_L1:
+.L1:
 	ld	bc,hl
 	ex	de,hl
-	call	__frimulu
+	call	_frimulu
 	push	hl
 	ex de,hl
 	ld	hl,2
@@ -69,11 +70,11 @@ _L1:
 	inc	hl
 	inc	hl
 	xor	a,(hl)
-	jp	p,_L2
+	jp	p,.L2
 	sbc	hl,hl
 	sbc	hl,de
 	ex	de,hl
-_L2:
+.L2:
 	ex	de,hl
 	pop	bc
 	pop	de

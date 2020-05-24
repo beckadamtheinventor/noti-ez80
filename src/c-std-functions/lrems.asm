@@ -1,3 +1,4 @@
+;Edited for use with open-ce
 ; (c) Copyright 1999-2008 Zilog, Inc.
 ;-------------------------------------------------------------------------
 ; Long Modulus Signed.
@@ -13,16 +14,16 @@
 ; Registers Used:
 ;	de,af
 ;-------------------------------------------------------------------------
-	.assume adl=1
-	.def	__lrems
-	.ref	__lremu, __lneg
-__lrems:
+;	.assume adl=1
+;	.def	__lrems
+;	.ref	__lremu, __lneg
+_lrems:
 	push	af
 	push	bc
 	push	de
 
 	bit	7,a
-	jr	z,_L1
+	jr	z,.L1
 	push	hl
 	sbc	hl,hl
 	sbc	hl,bc
@@ -31,17 +32,17 @@ __lrems:
 	push	hl
 	pop	bc
 	pop	hl
-_L1:
+.L1:
 	bit	7,e
-	jr	z,_L2
-	call	__lneg
-_L2:
-	call	__lremu
+	jr	z,.L2
+	call	_lneg
+.L2:
+	call	_lremu
 	pop	bc
 	bit	7,c
-	jr	z,_L3
-	call	__lneg
-_L3:
+	jr	z,.L3
+	call	_lneg
+.L3:
 	pop	bc
 	pop	af
 	ret
