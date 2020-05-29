@@ -26,7 +26,7 @@ _case8:
 
 .loop:
 	ld		a,(iy)		;case value (8-bit)
-	ld		bc,%0
+	ld		bc,0
 	ld		c,a
 	inc		iy			;case label
 	push	hl
@@ -36,8 +36,8 @@ _case8:
 	jr		z, .done
 	
 	dec.s	de			;decrement count
-	ld		b,%0
-	ld		c,%0
+	ld		b,0
+	ld		c,0
 	ex		de,hl
 	or		a,a
 	sbc.s	hl,bc

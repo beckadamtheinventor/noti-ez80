@@ -19,8 +19,8 @@ _scmpzero:
 	push hl
 	push de
 	
-	ld d,%0
-	ld e,%0
+	ld d,0
+	ld e,0
 	or a,a
 	sbc.s hl,de
 	

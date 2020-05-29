@@ -98,7 +98,7 @@ boot_check_os_signature:
 boot_invalid_os:
 	ret
 boot_interrupt_handler:
-	ret
+	jp $0220A8
 
 paduntil $1000
 include 'cstd.asm'

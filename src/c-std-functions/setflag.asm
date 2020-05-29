@@ -30,7 +30,7 @@ _setflag:
 	bit	2,c		; if (v == 1)
 	jr	z,.done		; else go to .done
 	ld	a,c		; c <- c xor %80
-	xor	a,%80
+	xor	a,$80
 	ld	c,a
 
 .done:

@@ -1,5 +1,6 @@
 
 include '../include/ez80.inc'
+include '../include/ti84pceg.inc'
 
 macro paduntil? addr
 	assert $ <= addr

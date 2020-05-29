@@ -22,8 +22,8 @@ _frbtof:
 	jr	nc,.L1
 	jr	nz,.L0
 	rra	
-	ld	hl,%800000
-	ld	e,%bf
+	ld	hl,$800000
+	ld	e,$BF
 	ret
 .L0:
 	neg

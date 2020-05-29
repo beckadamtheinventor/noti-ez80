@@ -35,13 +35,11 @@ _dbgout: ;$ = $000669
 	ret ;prove riemann hypothesis for now
 
 
-_memclear:
-	
-	ret
 
-include 'routines/strtok.asm'
-include 'routines/printf.asm'
-include 'routines/sprintf.asm'
+;include 'routines/strtok.asm'
+;include 'routines/printf.asm'
+;include 'routines/sprintf.asm'
+include 'routines/FLTMAX.asm'
 
 
 ;   Doesn't seem to be used by TI-OS - breakpoint did nothing
@@ -114,7 +112,6 @@ _WriteFlash:
 	; -- TODO --
 
 	ret
-.len:=$-.data
 
 
 
@@ -557,3 +554,76 @@ flash_lock:
 	ret
 .len:=$-.
 
+boot_wait_key:
+	call boot_get_keycode
+	or a,a
+	jr z,.
+	ret
+
+boot_get_keycode:
+	call boot_scan_keypad
+	ld hl,$F50012
+	ld b,7
+	ld c,49
+.scanloop:
+	ld a,(hl)
+	or a,a
+	jr nz,.keyispressed
+	inc hl
+	inc hl
+	ld a,c
+	sub a,8
+	ld c,a
+	djnz .scanloop
+	xor a,a
+	ret
+.keyispressed:
+	ld b,8
+.keybitloop:
+	rrca
+	jr c,.this
+	inc c
+	djnz .keybitloop
+.this:
+	ld a,c
+	ret
+
+boot_scan_keypad:
+	di             ; Disable interrupts
+	ld hl,0F50000h
+	ld (hl),2      ; Set Single Scan mode
+	xor a,a
+.wait:
+	cp a,(hl)      ; Wait for Idle mode
+	jr nz,.wait
+	ret
+
+boot_Delay250ms:
+	ld b,25
+.loop:
+	call boot_Delay10ms
+	djnz .loop
+	ret
+
+boot_Delay10ms:
+	push bc
+	ld c,100
+.outer:
+	ld b,0
+.inner:
+repeat 12
+	nop
+end repeat
+	djnz .inner
+	ld b,44
+	dec c
+	jr nz,.inner
+	
+	pop bc
+	ret
+
+boot_homeup:
+	xor a,a
+	ld (ti.curCol),a
+	ld (ti.curRow),a
+	ret

@@ -21,7 +21,8 @@ _strstr:
 	add	hl,de
 	cp	a,(hl)
 	jr	z,.L3		; *s1 == '\0'
-	ld	bc,iy
+	push iy
+	pop bc
 	inc	de
 .L1:
 	ld	a,(bc)

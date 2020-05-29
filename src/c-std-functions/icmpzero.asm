@@ -19,7 +19,7 @@ _icmpzero:
 	push hl
 	push de
 
-	ld de,%0
+	ld de,0
 	or a,a
 	sbc hl,de
 

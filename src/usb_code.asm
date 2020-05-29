@@ -8,6 +8,7 @@ _usb_IsBusPowered:
 
 ;bit 6 or 7 of port $000F
 ;return nz if bus is powered_usb_BusPowered:
+_usb_BusPowered:
 	in a,($0F)
 	and a,$C0
 	ret

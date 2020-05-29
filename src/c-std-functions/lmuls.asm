@@ -86,7 +86,7 @@ _lmuls:
 	;;
 	;; Call unsigned multiply
 	;;
-	call	__lmulu
+	call	_lmulu
 	;;
 	;; abc has results
 	;; set sign of result

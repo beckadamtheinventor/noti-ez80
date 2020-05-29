@@ -22,7 +22,7 @@ _lcmpzero:
 	
 	ld		iyh,a
 	xor		a,a
-	ld		bc,%0
+	ld		bc,0
 	call	_lcmpu
 	ld		a,iyh
 	

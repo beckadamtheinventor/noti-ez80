@@ -34,7 +34,7 @@ _sshl:
 .loop:
 	add	hl,hl
 .test:
-	djnz	loop
+	djnz	.loop
 	pop	bc
 	ret	
 

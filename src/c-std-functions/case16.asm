@@ -25,7 +25,7 @@ _case16:
 	ld		de,(iy-2)	;count
 
 .loop:
-	ld		bc,%0
+	ld		bc,0
 	ld		a,(iy)		;case value (16-bit)
 	ld		c,a
 	ld		a,(iy+1)
@@ -38,8 +38,8 @@ _case16:
 	jr		z, .done
 	
 	dec.s	de			;decrement count
-	ld		b,%0
-	ld		c,%0
+	ld		b,0
+	ld		c,0
 	ex		de,hl
 	or		a,a
 	sbc.s	hl,bc

@@ -19,7 +19,7 @@
 _fritof:
 	push	de
 	ex	de,hl
-	ld	hl,800000h
+	ld	hl,$800000
 	or	a,a
 	sbc	hl,de
 	jr	c,.L0
@@ -27,7 +27,7 @@ _fritof:
 .L0:
 	jr	nz,.L1
 	pop	de
-	ld	e,%bf
+	ld	e,$BF
 	ret
 .L1:
 	add	hl,hl

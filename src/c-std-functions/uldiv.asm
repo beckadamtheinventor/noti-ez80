@@ -106,7 +106,7 @@ _uldiv:
 
 	pop	de
 
-done:
+.done:
 				;i--, if (i != 0) go to loop 
 	dec 	iyl
 	jr	nz,.loop

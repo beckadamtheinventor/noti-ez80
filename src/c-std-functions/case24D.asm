@@ -35,8 +35,8 @@ _case24D:
 	jr		z, .done
 	
 	dec.s	de			;decrement count
-	ld		b,%0
-	ld		c,%0
+	ld		b,0
+	ld		c,0
 	ex		de,hl
 	or		a,a
 	sbc.s	hl,bc

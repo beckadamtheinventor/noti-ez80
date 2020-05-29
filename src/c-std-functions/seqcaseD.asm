@@ -46,7 +46,8 @@ _seqcaseD:
 	pop		hl
 	jp		M,.index		; branch if hl < numCases
 .defaultCase:
-	ld		hl,de		; index to default case
+	push de
+	pop hl		; index to default case
 .index:
 	push hl ; hl = 3*hl
 	pop bc

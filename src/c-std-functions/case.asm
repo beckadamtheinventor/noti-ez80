@@ -30,8 +30,10 @@ _case:
 	push	af
 	push	iy
 
-	ld		iy,bc	; iy = table address
-	ld		bc,hl	; bc = match value
+	push bc
+	pop iy ; iy = table address
+	push hl
+	pop bc	; bc = match value
 ;
 ;	Loop trough table entries looking for a match
 ;

@@ -37,12 +37,12 @@ _imuls:
 	;; 
 	ld	a,(ix-7)	; HOB Op2
 	xor	a,(ix-4)	; HOB Op1
-	jp	p,_ssign
+	jp	p,.ssign
 	;;
 	;; Different signs
 	;;
 	xor	a,(ix-4)	; S-bit sign of Op2
-	jp	m,_op2neg
+	jp	m,.op2neg
 	;;
 	;; Op1 is negative
 	;;
@@ -54,20 +54,20 @@ _imuls:
 	push	hl
 	pop	bc
 	ex	de,hl
-	jp	_ustart
-_op2neg:
+	jq	.ustart
+.op2neg:
 	ld	de,0
 	ex	de,hl		; put Op2 in de
 	or	a,a
 	sbc	hl,de
 	ld	(ix-9),hl	; save positive version of Op2
-	jp	_ustart
+	jq	.ustart
 	;;
 	;; same sign, but which?
 	;; 
-_ssign:
+.ssign:
 	xor	a,(ix-4)
-	jp	p,_ustart
+	jq	p,.ustart
 	;;
 	;; both negative
 	;;
@@ -79,11 +79,11 @@ _ssign:
 	push hl
 	pop bc
 	ex	de,hl
-	jp	_op2neg
+	jq	.op2neg
 	;; 
 	;; Calculate middle byte
 	;;
-_ustart:	
+.ustart:	
 	ld	hl,0
 	ld	l,(ix-8)
 	ld	h,(ix-6)
@@ -147,12 +147,12 @@ _ustart:
 	;;
 	ld	a,(ix-1)
 	xor	a,(ix-10)
-	jp	p,_popregs
+	jp	p,.popregs
 	ld	de,0
 	ex	de,hl
 	or	a,a
 	sbc	hl,de
-_popregs:
+.popregs:
 	pop	af		; restore af
 	pop	de		; restore de
 	pop	bc		; discard Saved Op1

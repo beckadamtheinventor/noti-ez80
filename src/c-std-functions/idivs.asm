@@ -37,7 +37,8 @@ _idivs:
 	sbc	hl,hl
 	sbc	hl,bc
 	jp	m,.L1
-	ld	bc,hl
+	push hl
+	pop bc
 .L1:
 	ex	de,hl
 	call	_idivu
