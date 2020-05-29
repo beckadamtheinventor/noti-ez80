@@ -28,6 +28,7 @@ end macro
 
 define endif? end if
 
+
 org 0
 __SECTOR_00h:		;Bootloader goes here
 include 'boot.asm'

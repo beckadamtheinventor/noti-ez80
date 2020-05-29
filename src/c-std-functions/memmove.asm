@@ -12,7 +12,7 @@ _memmove:
 	ld	bc,(iy+9)	;count
 	sbc	hl,hl
 	sbc	hl,bc	;count==0?
-	jr	z,_L1
+	jr	z,.L1
 	ld	hl,(iy+6)	;src
 	ld	de,(iy+3)	;dest
 	or	a,a

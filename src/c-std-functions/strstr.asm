@@ -4,9 +4,9 @@
 ; <string.h>
 ; char * strstr(char *s1, char *s2);
 ;-------------------------------------------------------------------------
-	.assume ADL=1
-	SEGMENT code
-	XDEF _strstr
+;	.assume ADL=1
+;	SEGMENT code
+;	XDEF _strstr
 _strstr:
 	ld 	hl, 6
 	add hl, sp
@@ -15,30 +15,30 @@ _strstr:
 	dec hl
 	dec hl
 	ld  de, (hl)	; de = s1
-_L0:
+.L0:
 	xor	a,a
 	sbc	hl,hl
 	add	hl,de
 	cp	a,(hl)
-	jr	z,_L3		; *s1 == '\0'
+	jr	z,.L3		; *s1 == '\0'
 	ld	bc,iy
 	inc	de
-_L1:
+.L1:
 	ld	a,(bc)
 	or	a,a
-	jr	z,_L2		; *s2 == '\0'
+	jr	z,.L2		; *s2 == '\0'
 	cp	a,(hl)		; *s1 == *s2
 	inc hl			; s1 ++
 	inc bc			; s2 ++
-	jr	z,_L1
-	jr	_L0
-_L2:
+	jr	z,.L1
+	jr	.L0
+.L2:
 	ex	de,hl
 	dec hl
 	ret
-_L3:
+.L3:
 	sbc	hl,hl
 	ret
 
-	END
+;	END
 

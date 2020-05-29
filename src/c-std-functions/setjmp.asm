@@ -35,7 +35,8 @@
 _setjmp:
 	ld iy,0
 	add iy,sp
-	ld hl,iy
+	push iy
+	pop hl
 	ld iy,(iy+3)	;get jmp_buf
 	ld (iy+3),ix	;save ix
 	ld (iy+6),hl	;save sp
@@ -99,5 +100,5 @@ _setjmp:
 ;_0_setjmp:
 ;	DS 3
 
-		end
+;		end
 

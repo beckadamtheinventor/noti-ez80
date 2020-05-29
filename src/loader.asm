@@ -11,22 +11,12 @@ loader_boot_handler:
 	call _boot_NewLine
 	ld hl,loader_string_version
 	call _boot_PutS_and_new_line
-	call loader_wait_key
+	call boot_wait_key
 	jp $020108
-loader_rst10_handler:
-	jp $020110
-loader_rst18_handler:
-	jp $020114
-loader_rst20_handler:
-	jp $020118
-loader_rst28_handler:
-	jp $02011C
-loader_rst30_handler:
-	jp $020120
-loader_bcall_handler:
+boot_interrupt_handler:
 	jp $0220A8
-loader_abort_and_restart:
-	call loader_homeup
+boot_abort_and_restart:
+	call boot_homeup
 	ld hl,loader_string_something_went_wrong
 	call _boot_PutS_and_new_line
 	ld hl,loader_string_aborted
@@ -34,14 +24,17 @@ loader_abort_and_restart:
 	call guess_ill_die
 	call loader_wait_key
 	rst $00
-loader_check_are_you_sure:
+boot_check_are_you_sure:
 	ld hl,loader_string_are_you_sure
 	call _boot_PutS_and_new_line
 	ld hl,loader_string_enter_to_confirm
 	call _boot_PutS
-	call loader_get_keycode
+.wait:
+	call boot_get_keycode
 	cp a,9
 	jr z,.yes
+	cp a,15
+	jr nz,.wait
 	xor a,a
 	dec a
 	ret
@@ -51,13 +44,13 @@ loader_check_are_you_sure:
 guess_ill_die:
 	ld hl,loader_string_guess_ill_die
 
-loader_wait_key:
+boot_wait_key:
 	call loader_get_keycode
 	or a,a
 	jr z,loader_wait_key
 	ret
 
-loader_get_keycode:
+boot_get_keycode:
 	call loader_scan_keypad
 	ld hl,$F50012
 	ld b,7
@@ -85,7 +78,7 @@ loader_get_keycode:
 	ld a,c
 	ret
 
-loader_scan_keypad:
+boot_scan_keypad:
 	di             ; Disable interrupts
 	ld hl,0F50000h
 	ld (hl),2      ; Set Single Scan mode
@@ -95,14 +88,14 @@ loader_scan_keypad:
 	jr nz,.wait
 	ret
 
-loader_pause_250ms:
+boot_Delay250ms:
 	ld b,25
 .loop:
-	call ti.Delay10ms
+	call boot_Delay10ms
 	djnz .loop
 	ret
 
-loader_homeup:
+boot_homeup:
 	xor a,a
 	ld (ti.curCol),a
 	ld (ti.curRow),a
@@ -114,7 +107,7 @@ loader_crash_string:
 	db "crashed or reset!",0
 	db "    :-(",0
 loader_boot_tios_string:
-	db "Booting TI-OS...",0
+	db "Booting OS ",0
 loader_string_enter_to_confirm:
 	db "Press enter to confirm",0
 loader_string_are_you_sure:

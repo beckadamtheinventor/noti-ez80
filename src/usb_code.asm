@@ -1,13 +1,13 @@
-;bit 6 or 7 of port $000F
-;return nz if bus is powered
+
+;bit 7 of port $0F
+;return nz if bus is receiving power
 _usb_IsBusPowered:
 	in a,($0F)
 	bit 7,a
 	ret
 
-;bit 7 of port $0F
-;return nz if bus is receiving power
-_usb_BusPowered:
+;bit 6 or 7 of port $000F
+;return nz if bus is powered_usb_BusPowered:
 	in a,($0F)
 	and a,$C0
 	ret
@@ -100,5 +100,5 @@ _usb_ClrEndpointConfig:
 
 
 _usb_SetFifoConfig:
-
+	ret
 

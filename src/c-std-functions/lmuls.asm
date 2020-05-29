@@ -46,7 +46,8 @@ _lmuls:
 	ld	hl,0
 	or	a,a
 	sbc	hl,bc
-	ld	bc,hl		
+	push hl
+	pop bc
 	ld	a,0
 	sbc	a,d		; ABC has negated Op1
 	ld	hl,(ix-3)
@@ -75,7 +76,8 @@ _lmuls:
 	ld	hl,0
 	or	a,a
 	sbc	hl,bc
-	ld	bc,hl
+	push hl
+	pop bc
 	ld	a,0
 	sbc	a,(ix-8)		; ABC positive
 	ex	de,hl
@@ -102,7 +104,8 @@ _lmuls:
 	sbc	hl,bc
 	ld	a,0
 	sbc	a,d
-	ld	bc,hl
+	push hl
+	pop bc
 	;; restore working regs
 	;;
 .restregs:

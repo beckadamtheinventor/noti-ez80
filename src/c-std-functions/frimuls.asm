@@ -45,7 +45,8 @@ _frimuls:
 	sbc	hl,bc
 	add	hl,hl
 .L1:
-	ld	bc,hl
+	push hl
+	pop bc
 	ex	de,hl
 	call	_frimulu
 	push	hl

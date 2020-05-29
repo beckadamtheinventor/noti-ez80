@@ -35,6 +35,13 @@ _dbgout: ;$ = $000669
 	ret ;prove riemann hypothesis for now
 
 
+_memclear:
+	
+	ret
+
+include 'routines/strtok.asm'
+include 'routines/printf.asm'
+include 'routines/sprintf.asm'
 
 
 ;   Doesn't seem to be used by TI-OS - breakpoint did nothing

@@ -1,56 +1,104 @@
 
 	di
 	rsmix
-	jp.lil loader_boot_handler ;$000E4F ;rst 00
+	jp.lil boot_boot_os ;$000E4F ;rst 00
 	di
 	rsmix
-	jp.lil loader_abort_and_restart ;rst 08
+	jp.lil boot_abort_and_restart ;rst 08
+;rst 10 - 30 are handled by OS
 	di
 	rsmix
-	jp.lil loader_rst10_handler ;$020110 ;rst 10
+	jp.lil $020110 ;rst 10
 	di
 	rsmix
-	jp.lil loader_rst18_handler ;$020114 ;rst 18
+	jp.lil $020114 ;rst 18
 	di
 	rsmix
-	jp.lil loader_rst20_handler ;$020118 ;rst 20
+	jp.lil $020118 ;rst 20
 	di
 	rsmix
-	jp.lil loader_rst28_handler ;$02011C ;rst 28
+	jp.lil $02011C ;rst 28
 	di
 	rsmix
-	jp.lil loader_rst30_handler ;$020120 ;rst 30
-handle_rst38: ;rst 38
+	jp.lil $020120 ;rst 30
+handle_rst38: ;rst 38 - interrupt handler
 	ex af,af'
 	exx
 	push ix
 	push iy
 	ld iy, $D00080
-	jp $000654
-;$ = $47. Not sure what this does
+	jp boot_interrupt_handler
+;$ = $47. Validate/check OS
+boot_check_os:
 	push hl
 	push bc
-	call $0006C6 ;--!-- fix this --!--
+	call boot_check_os_signature ;check the first two bytes of OS equal 0xA55A
 	pop bc
 	pop hl
-	jp nz,$00140C
+	jp nz,boot_invalid_os
 	pop af
-	jp loader_interrupt_handler ;$0220A8 ;OS interrupt handler
+	jp boot_boot_os ;$0220A8
 
 paduntil $66
-flash_nmi_handler:
+nmi_handler:
 	push af
 	in0 a,($3D)
 	and a,$03
 	out0 ($3E),a
-	jr z,$000047
+	jr z,boot_check_os
 	pop af
-	jp $0015F5
+	jp boot_setup_hardware
 
 paduntil $80
 
 ;follow with the jump table
 include 'table.asm'
+
+boot_boot_os:
+	call boot_setup_hardware
+	
+	jp $020108
+boot_setup_hardware:
+	xor a,a
+	out ($1D),a
+	out ($1E),a
+	ld a,2
+	out ($1F),a
+	ld bc,$1005  ;set wait states
+	ld a,3
+	out (bc),a
+	ld c,$06
+	ld a,6
+	out (bc),a
+	ld a,$81     ;configure stack protector
+	out ($3A),a
+	ld a,$98
+	out ($3B),a
+	ld a,$D1
+	out ($3C),a
+	ld a,$7C     ;configure protected memory region
+	out ($20),a
+	out ($23),a
+	ld a,$88
+	out ($21),a
+	out ($24),a
+	ld a,$D1
+	out ($22),a
+	out ($25),a
+	ret
+boot_check_os_signature:
+	ld hl,$020100
+	ld a,$5A
+	cp a,(hl)
+	ret nz
+	add a,a ;$5A*2 = $A5
+	inc hl
+	cp a,(hl)
+	ret
+boot_invalid_os:
+	ret
+boot_interrupt_handler:
+	ret
 
 paduntil $1000
 include 'cstd.asm'

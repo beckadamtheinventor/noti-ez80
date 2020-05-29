@@ -76,7 +76,8 @@ _ssign:
 	or	a,a
 	sbc	hl,bc
 	ld	(ix-6),hl	; save positive version of Op1
-	ld	bc,hl
+	push hl
+	pop bc
 	ex	de,hl
 	jp	_op2neg
 	;; 

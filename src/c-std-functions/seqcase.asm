@@ -46,10 +46,12 @@ _seqcase:
 .defaultCase:
 	ld		hl,de		; index to default case
 .index:
-	ld		bc,hl		; hl = 3*hl
+	push hl ; hl = 3*hl
+	pop bc
 	add		hl,hl
 	add		hl,bc
-	ld		bc,hl
+	push hl
+	pop bc
 	add		iy,bc		; iy points to case label
 	ld		hl,(iy)
 	pop		de

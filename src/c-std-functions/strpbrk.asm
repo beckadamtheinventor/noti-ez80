@@ -1,7 +1,7 @@
 ; (c) Copyright 2007-2008 Zilog, Inc.
-	FILE	".\strpbrk.asm"
-	.ASSUME ADL=1
-	SEGMENT code
+;	FILE	".\strpbrk.asm"
+;	.ASSUME ADL=1
+;	SEGMENT code
 ;   char *strpbrk(char *s1,char *s2)
 _strpbrk:
 	ld	iy, 0
@@ -13,30 +13,30 @@ _strpbrk:
 
 	ld	de, (iy+3)		; de = s1
 
-_wloop:
+.wloop:
 	ld	a, (de)
 	or	a, a
-	jr	z, _notfound
+	jr	z, .notfound
 	ld	hl, (iy+6)
 	ld	bc, (iy-3)
 	cpir
 	inc de
-	jr	nz, _wloop
+	jr	nz, .wloop
 
-_found:
+.found:
 	ex  de, hl
 	dec hl
-	jr 	_done
+	jr 	.done
 
-_notfound:
+.notfound:
 	ld 	hl, 0
 
-_done:
+.done:
 	ld	sp, iy
 	ret
 
-	XREF _strchr:ROM
-	XREF _strlen
-	XDEF _strpbrk
-	END
+;	XREF _strchr:ROM
+;	XREF _strlen
+;	XDEF _strpbrk
+;	END
 
