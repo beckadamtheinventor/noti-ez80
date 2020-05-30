@@ -245,9 +245,9 @@
 	jp _boot_Set48MHzModeI
 	jp _CheckHardware
 	jp _GetBatteryStatus
-	jp _Delay10ms
+	jp boot_Delay10ms
 ;   wait 10 ms
-	jp _DelayTenTimesAms
+	jp boot_Delay10timesAms
 ;   wait 10 * a ms
 ; bunch of undocumented functions that crash the calc if ports are wrong
 ;   used in many places by both boot code and OS

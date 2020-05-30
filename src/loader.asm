@@ -1,6 +1,4 @@
 
-loader_string_version:
-	db "Some Loader Version 0.1",0
 
 loader_boot_handler:
 	call boot_homeup
@@ -9,8 +7,7 @@ loader_boot_handler:
 	call _boot_puts_and_new_line
 	call _boot_puts_and_new_line
 	call _boot_NewLine
-	ld hl,loader_string_version
-	call _boot_puts_and_new_line
+	call _boot_blit_buffer
 	call boot_wait_key
 	jp $020108
 boot_abort_and_restart:
@@ -19,7 +16,7 @@ boot_abort_and_restart:
 	call _boot_puts_and_new_line
 	ld hl,loader_string_aborted
 	call _boot_puts_and_new_line
-	call guess_ill_die
+	call _boot_blit_buffer
 	call boot_wait_key
 	rst $00
 boot_check_are_you_sure:
@@ -27,6 +24,7 @@ boot_check_are_you_sure:
 	call _boot_puts_and_new_line
 	ld hl,loader_string_enter_to_confirm
 	call _boot_PutS
+	call _boot_blit_buffer
 .wait:
 	call boot_get_keycode
 	cp a,9
@@ -39,8 +37,6 @@ boot_check_are_you_sure:
 .yes:
 	xor a,a
 	ret
-guess_ill_die:
-	ld hl,loader_string_guess_ill_die
 
 
 
@@ -58,6 +54,4 @@ loader_string_something_went_wrong:
 	db "Something went wrong",0
 loader_string_aborted:
 	db "Abort",0
-loader_string_guess_ill_die:
-	db "Guess I'll die \\o/",0
 

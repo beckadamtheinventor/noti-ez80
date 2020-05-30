@@ -1,4 +1,0 @@
-
-; -- TODO --
-_strtok:
-	ret

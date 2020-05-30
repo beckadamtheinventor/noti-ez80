@@ -33,10 +33,38 @@ _boot_GetBootVerBuild: ;$ = $000664
 ;   Unknown - seems rarely used, might log data
 _dbgout: ;$ = $000669
 	ret ;prove riemann hypothesis for now
+_dbgputs:
+	ld de,$FB0000
+	jr _dbgerrorputs.puts
+_dbgerrorputs:
+	ld de,$FC0000
+.puts:
+	xor a,a
+	ld (de),a
+.loop:
+	ldi
+	cp a,(hl)
+	jr nz,.loop
+	ret
+
+_boot_OutBC_s:
+	out (bc),l
+	inc c
+	out (bc),h
+	inc c
+	ret
+
+_boot_InBC_s:
+	in l,(bc)
+	inc c
+	in h,(bc)
+	inc c
+	ret
 
 
 
-;include 'routines/strtok.asm'
+
+include 'routines/strtok.asm'
 ;include 'routines/printf.asm'
 ;include 'routines/sprintf.asm'
 include 'routines/FLTMAX.asm'
@@ -291,6 +319,12 @@ _boot_ClearVRAM:
 	ldir
 	ret
 
+_boot_homeup:
+	xor a,a
+	ld (ti.curCol),a
+	ld (ti.curRow),a
+	ret
+
 _boot_puts_and_new_line:
 	call _boot_PutS
 _boot_NewLine:
@@ -299,6 +333,13 @@ _boot_NewLine:
 	ld a,(ti.curRow)
 	inc a
 	ld (ti.curRow),a
+	ret
+
+_boot_blit_buffer:
+	ld hl,vRamBuffer
+	ld de,vRam
+	ld bc,ti.lcdWidth*ti.lcdHeight
+	ldir
 	ret
 
 _boot_PutS:
@@ -316,23 +357,19 @@ vRamBuffer:=vRam+ti.lcdWidth*ti.lcdHeight
 	push	hl
 	push	af
 	push	de
+	push	af
 	ld a,(ti.curCol)
 	ld b,a
 	inc a
 	ld (ti.curCol),a
-	ld a,b
-	add a,a
-	add a,a
-	add a,a
-	add a,b
-	push	bc
+	ld c,9
+	mlt bc
 	ld	a,(ti.curRow)
-	inc a
-	ld (ti.curRow),a
-	dec a
+	ld l,a
 	add a,a
 	add a,a
 	add a,a
+	add a,l
 	ld l,a
 	ld	h,ti.lcdWidth / 2
 	mlt	hl
@@ -340,14 +377,15 @@ vRamBuffer:=vRam+ti.lcdWidth*ti.lcdHeight
 	ld	de,vRamBuffer
 	add	hl,de
 	add	hl,bc				; add x value
+	pop		af
 	push	hl
+	or a,a
 	sbc	hl,hl
 	ld	l,a
 	add	hl,hl
 	add	hl,hl
 	add	hl,hl
-	ex	de,hl
-	ld	hl,boot_font
+	ld	de,boot_font
 	add	hl,de				; hl -> correct character
 	pop	de				; de -> correct location
 	ld	a,character_width
@@ -358,12 +396,9 @@ vRamBuffer:=vRam+ti.lcdWidth*ti.lcdHeight
 ;	push	de
 .horiz_loop:
 	rlc	c
-	jr	nc,.bg
-	ld	(hl),$FF
-	jr .continue
-.bg:
+	jr nc,.bg
 	ld	(hl),0
-.continue:
+.bg:
 	inc	hl
 	djnz	.horiz_loop
 	ld	(hl),$FF
@@ -374,7 +409,9 @@ vRamBuffer:=vRam+ti.lcdWidth*ti.lcdHeight
 	inc	hl
 	dec	a
 	jr	nz,.vert_loop
-	pop	bc
+	ld a,(ti.curCol)
+	cp a,30
+	call nc,_boot_NewLine
 	pop	de
 	pop	af				; character
 	pop	hl
@@ -467,13 +504,14 @@ _CheckHardware:
 _GetBatteryStatus:
 
 
-;   wait 10 ms
-_Delay10ms:
 
 
-;   wait 10 * a ms
-_DelayTenTimesAms:
-
+boot_Delay10timesAms:
+	or a,a
+	ret z
+	call boot_Delay10ms
+	dec a
+	jr .
 
 ; bunch of undocumented functions that crash the calc if ports are wrong
 ;                          equ 00003BCh
