@@ -22,6 +22,7 @@ _strtok:
 ;if (!l && !*ptr)
 	jr nz,.continue ;!l
 	ld a,(bc)
+	or a,a ;forgot to test a==0
 	jr z,.return_null ;!*ptr
 .continue:
 	add hl,bc ;ptr+=l

@@ -48,6 +48,8 @@ paduntil $80
 
 ;follow with the jump table
 include 'table.asm'
+;pad until $800
+paduntil $800
 
 boot_setup_hardware:
 	ld a,$03
@@ -221,7 +223,7 @@ boot_check_os_signature:
 	ld a,$5A
 	cp a,(hl)
 	ret nz
-	add a,a ;$5A*2 = $A5
+	ld a,$A5
 	inc hl
 	cp a,(hl)
 	ret
@@ -244,7 +246,6 @@ boot_trap:
 boot_interrupt_handler:
 	jp $0220A8
 
-paduntil $1000
 include 'cstd.asm'
 include 'code.asm'
 include 'rtc_code.asm'
