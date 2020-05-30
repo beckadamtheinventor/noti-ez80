@@ -61,6 +61,12 @@ _boot_InBC_s:
 	inc c
 	ret
 
+boot_memset:
+	push hl
+	pop de
+	inc de
+	ldir
+	ret
 
 
 
@@ -310,19 +316,67 @@ _something_SHA_cert:
 
 _FindAppHeaderTimestamp:
 
-
+_boot_ZeroVRAM:
+	xor a,a
+	jr _boot_SetVRAM
 _boot_ClearVRAM:
+	ld a,$FF
+_boot_SetVRAM:
 	ld hl,vRam
 	ld de,vRam+1
 	ld bc,320*240*2
-	ld (hl),$FF
+	ld (hl),a
 	ldir
 	ret
+
 
 _boot_homeup:
 	xor a,a
 	ld (ti.curCol),a
 	ld (ti.curRow),a
+	ret
+
+_boot_drawstatusbar:
+	ld a,$9D
+	ld (textColors+2),a
+	or a,a
+	sbc hl,hl
+	ld e,l
+	ld a,18
+	ld bc,ti.lcdWidth
+	call boot_gfx_filled_rectangle
+	or a,a
+	sbc hl,hl
+	ld e,18
+	ld bc,ti.lcdWidth
+	ld a,$7D
+	jp boot_gfx_horizontal
+_PutSpinner:
+	ld hl,vRam+317
+	ld de,ti.lcdWidth-1
+	ld b,17
+	ld a,(hl)
+	or a,a
+	jr z,.loop
+	cp a,$E5
+	jr z,.loop
+	ld a,$E5
+.setloop:
+	ld (hl),a
+	inc hl
+	ld (hl),a
+	xor a,$E5
+	add hl,de
+	djnz .setloop
+	ret
+.loop:
+	ld a,(hl)
+	xor a,$E5
+	ld (hl),a
+	inc hl
+	ld (hl),a
+	add hl,de
+	djnz .loop
 	ret
 
 _boot_puts_and_new_line:
@@ -349,22 +403,24 @@ _boot_PutS:
 	ret z
 	call _boot_PutC
 	jr _boot_PutS
+
 _boot_PutC: ;taken and modified from Cesium
+	push	hl
 character_width:=8
 character_height:=8
 vRam:=$D40000
 vRamBuffer:=vRam+ti.lcdWidth*ti.lcdHeight
-	push	hl
-	push	af
-	push	de
-	push	af
+	push af
 	ld a,(ti.curCol)
 	ld b,a
 	inc a
 	ld (ti.curCol),a
 	ld c,9
 	mlt bc
+	inc bc
+	inc bc
 	ld	a,(ti.curRow)
+	add a,3
 	ld l,a
 	add a,a
 	add a,a
@@ -393,18 +449,21 @@ vRamBuffer:=vRam+ti.lcdWidth*ti.lcdHeight
 	ld	c,(hl)
 	ld	b,character_height
 	ex	de,hl
-;	push	de
+	push	de
+	ld de,(textColors) ;text colors
 .horiz_loop:
 	rlc	c
-	jr nc,.bg
-	ld	(hl),0
-.bg:
+	jr c,.fg
+	ld (hl),e
+	db $38 ;jr c
+.fg:
+	ld	(hl),d
 	inc	hl
 	djnz	.horiz_loop
-	ld	(hl),$FF
+	ld	(hl),e
 	ld	bc,ti.lcdWidth - character_width
 	add	hl,bc
-;	pop	de
+	pop	de
 	ex	de,hl
 	inc	hl
 	dec	a
@@ -412,13 +471,12 @@ vRamBuffer:=vRam+ti.lcdWidth*ti.lcdHeight
 	ld a,(ti.curCol)
 	cp a,30
 	call nc,_boot_NewLine
-	pop	de
-	pop	af				; character
-	pop	hl
+	pop hl
 	ret
 
 _boot_wait_key:
-	call _boot_kb_Scan
+	call boot_scan_keypad
+_boot_get_key:
 	ld hl,$F50012
 	ld b,7
 	ld c,49
@@ -445,27 +503,10 @@ _boot_wait_key:
 	ld a,c
 	ret
 
-_boot_kb_Scan:
-	di
-	ld	hl,$f50200		; DI_Mode = $f5xx00
-	ld	(hl),h
-	xor	a,a
-.loop:
-	cp	a,(hl)
-	jr	nz,.loop
-	ret
 
-
-_PutSpinner:
-	
-	ret
 
 _boot_GetLFontPtr:
 	ld hl,boot_font
-	ret
-
-_boot_InitializeHardware:
-	
 	ret
 
 _boot_TurnOffHardware:
@@ -476,8 +517,9 @@ _MakeColCmd:
 
 
 _PutBootVersion:
-	
-	ret
+	call _boot_homeup
+	ld hl,string_boot_version
+	jp _boot_puts_and_new_line
 
 _DrawSectorProtectionTable:
 
@@ -592,6 +634,16 @@ flash_lock:
 	ret
 .len:=$-.
 
+
+boot_wait_key_cycle:
+	call boot_wait_key
+	push af
+.loop:
+	call boot_get_keycode
+	or a,a
+	jr nz,.loop
+	pop af
+	ret
 boot_wait_key:
 	call boot_get_keycode
 	or a,a
@@ -628,10 +680,12 @@ boot_get_keycode:
 
 boot_scan_keypad:
 	di             ; Disable interrupts
-	ld hl,0F50000h
+	ld hl,$F50000
 	ld (hl),2      ; Set Single Scan mode
-	xor a,a
 .wait:
+	call _PutSpinner
+	ld hl,$F50000
+	xor a,a
 	cp a,(hl)      ; Wait for Idle mode
 	jr nz,.wait
 	ret
@@ -665,3 +719,83 @@ boot_homeup:
 	ld (ti.curCol),a
 	ld (ti.curRow),a
 	ret
+
+; bc = width
+; hl = x coordinate
+; e = y coordinate
+; a = height
+boot_gfx_filled_rectangle:
+	ld	d,ti.lcdWidth / 2
+	mlt	de
+	add	hl,de
+	add	hl,de
+	ex	de,hl
+.computed:
+	ld	ix,vRamBuffer			; de -> place to begin drawing
+.loop:
+	add	ix,de
+	lea	de,ix
+	ld	hl,textColors+2		; always just fill with the primary color
+	ldi					; check if we only need to draw 1 pixel
+	jp	po,.skip
+	inc bc
+	scf
+	sbc	hl,hl
+	add	hl,de
+	push bc
+	ldir					; draw the current line
+	pop bc
+.skip:
+	ld	de,ti.lcdWidth			; move to next line
+	dec	a
+	jr	nz,.loop
+	ret
+
+boot_gfx_rectangle:
+	push	bc
+	push	hl
+	push	de
+	call	boot_gfx_horizontal			; top horizontal line
+	pop	bc
+	push	bc
+	call	boot_gfx_vertical.computed		; left vertical line
+	pop	bc
+	pop	hl
+	ld	e,c
+	call	boot_gfx_vertical			; right vertical line
+	pop	bc
+	jr	boot_gfx_horizontal.computed		; bottom horizontal line
+
+; hl = x
+; e = y
+; a = color
+; bc = length
+boot_gfx_horizontal:
+	call	boot_gfx_compute			; hl -> drawing location
+.computed:
+	jp	boot_memset
+
+; hl = x
+; e = y
+; a = color
+; b = length
+boot_gfx_vertical:
+	dec	b
+	call	boot_gfx_compute			; hl -> drawing location
+.computed:
+	ld	de,ti.lcdWidth
+.loop:
+	ld	(hl),a				; loop for height
+	add	hl,de
+	djnz	.loop
+	ret
+
+boot_gfx_compute:
+	ld	d,ti.lcdWidth / 2
+	mlt	de
+	add	hl,de
+	add	hl,de
+	ld	de,vRamBuffer
+	add	hl,de
+	ret
+

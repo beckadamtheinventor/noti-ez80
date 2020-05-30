@@ -1,7 +1,7 @@
 
 	di
 	rsmix
-	jp.lil boot_check_os ;$000E4F ;rst 00
+	jp.lil boot_validate_os ;$000E4F ;rst 00
 	di
 	rsmix
 	jp.lil boot_abort_and_restart ;rst 08
@@ -28,9 +28,10 @@ handle_rst38: ;rst 38 - interrupt handler
 	push iy
 	ld iy, $D00080
 	jp boot_interrupt_handler
+paduntil $47
 ;$ = $47. Validate/check OS
-boot_check_os:
-	ld sp,$D1887C
+boot_validate_os:
+	ld sp,BaseSP
 	jp boot_boot_os ;$0220A8
 
 paduntil $66
@@ -39,9 +40,9 @@ nmi_handler:
 	in0 a,($3D)
 	and a,$03
 	out0 ($3E),a
-	jr z,boot_check_os
+	jr z,boot_validate_os
 	pop af
-	ld sp,$D1887C
+	ld sp,BaseSP
 	jp boot_boot_os
 
 paduntil $80
@@ -230,21 +231,51 @@ boot_check_os_signature:
 
 boot_boot_os:
 	call boot_setup_hardware
+boot_check_os:
 	call boot_check_os_signature
 	jp z,$0220A8
 
 boot_invalid_os:
-	ld hl,string_no_os
-	call _dbgerrorputs
 	call _boot_ClearVRAM
 	call _boot_homeup
-	ld hl,string_no_os+1
+	call _boot_drawstatusbar
+	ld bc,$FF
+	ld (textColors),bc
+	ld hl,string_no_os
+	call _boot_puts_and_new_line
+	ld a,10
+	ld (ti.curRow),a
+	call _boot_puts_and_new_line
 	call _boot_puts_and_new_line
 	call _boot_blit_buffer
-boot_trap:
-	jr .
+.keys:
+	call boot_wait_key_cycle
+	cp a,15
+	jr z,.keys
+boot_menu:
+	ld hl,-1
+	call _frameset
+	xor a,a
+	ld (ix-1),a
+	call _boot_homeup
+	ld bc,$FF00
+	ld (textColors),bc
+.loop:
+	call _boot_ZeroVRAM
+	ld hl,string_to_go_back
+	call _boot_puts_and_new_line
+	call _boot_blit_buffer
+.keys:
+	call boot_wait_key_cycle
+	cp a,15
+	jq z,boot_check_os
+	jr .keys
+
+
 boot_interrupt_handler:
-	jp $0220A8
+	call boot_check_os_signature
+	jp z,$0220A8
+	jq boot_invalid_os
 
 include 'cstd.asm'
 include 'code.asm'
@@ -279,8 +310,15 @@ SpiDefaultCommands:
 	db $13, $17, $B1, $01, $05, $14, $26, $00
 .len:=$-.
 
+string_to_go_back:
+	db "Press [clear] to go back",0
 
 string_no_os:
-	db $0A,"No OS installed; cannot boot.",0
+	db "No OS installed; cannot boot.",0
+string_boot_version:
+	db "OpenCE bootcode",0,"version 0.01.0004",0
 
 ScrapMem:=$D02AD7
+BaseSP:=$D1887C-3
+textColors:=$D1887C
+

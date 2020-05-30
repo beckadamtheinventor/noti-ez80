@@ -233,7 +233,7 @@
 	jp _boot_PutS
 	jp _PutSpinner
 	jp _boot_GetLFontPtr
-	jp _boot_InitializeHardware
+	jp boot_setup_hardware
 	jp _boot_TurnOffHardware
 	jp _MakeColCmd
 	jp _boot_NewLine
