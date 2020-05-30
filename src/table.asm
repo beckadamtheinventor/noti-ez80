@@ -270,25 +270,25 @@
 ;   may be related to auto-power-down
 ;   sets a bunch of ports
 ;   resets if ports are wrong
-	jp _usb_IsBusPowered
+	jp usb.IsBusPowered
 	jp _KeypadScan
 	jp _KeypadScanFull
 	jp _riemann
 	jp _riemann
 	jp _MarkOSInvalid
-	jp _usb_BusPowered
-	jp _usb_SelfPowered
+	jp usb.BusPowered
+	jp usb.SelfPowered
 	jp _riemann
 	jp _riemann
 	jp _riemann
 	jp _riemann
-	jp _usb_SetDeviceB
+	jp usb.SetDeviceB
 	jp _riemann
-	jp _usb_DMACXReadNext
-	jp _usb_DMACXWrite
-	jp _usb_DMACXRead
-	jp _usb_DMACXWriteNext
-	jp _usb_DMACXWriteCheck
+	jp usb.DmaCxReadNext
+	jp usb.DmaCxWrite
+	jp usb.DmaCxRead
+	jp usb.DmaCxWriteNext
+	jp usb.DmaCxWriteCheck
 	jp _riemann
 	jp _riemann
 	jp _riemann
@@ -324,15 +324,12 @@
 	jp _riemann
 	jp _riemann
 	jp _riemann
-	jp _usb_SetDMAState
-	jp _usb_DMATransfer
-	jp _usb_DMACXTransferWait
+	jp usb.SetDmaState
+	jp usb.DmaTransfer
+	jp usb.DmaCxTransferWait
 	jp _riemann
 	jp _riemann
-	jp _usb_ResetFIFOS
-	jp _riemann
-	jp _riemann
-	jp _riemann
+	jp usb.ResetFifos
 	jp _riemann
 	jp _riemann
 	jp _riemann
@@ -342,9 +339,12 @@
 	jp _riemann
 	jp _riemann
 	jp _riemann
-	jp _usb_ResetTimer
-	jp _usb_DisableTimer
-	jp _usb_EnableTimer
+	jp _riemann
+	jp _riemann
+	jp _riemann
+	jp usb.ResetTimers
+	jp usb.DisableTimers
+	jp usb.EnableTimers
 	jp _riemann
 	jp _riemann
 	jp _riemann
@@ -408,20 +408,20 @@
 	jp _boot_RTCSetFlags
 	jp _riemann
 	jp _CheckEmulationBit
-	jp _usb_SetDMAAddress
+	jp usb.SetDmaAddress
 	jp _riemann
 	jp _boot_SectorsBegin
-	jp _usb_InEndpointClrStall
-	jp _usb_InEndpointSetStall
-	jp _usb_InEndpointClrReset
-	jp _usb_InEndpointSetReset
-	jp _usb_InEndpointSendZlp
-	jp _usb_OutEndpointClrStall
-	jp _usb_OutEndpointSetStall
-	jp _usb_OutEndpointClrReset
-	jp _usb_OutEndpointSetReset
-	jp _usb_SetFifoMap
-	jp _usb_SetEndpointConfig
-	jp _usb_ClrEndpointConfig
-	jp _usb_SetFifoConfig
+	jp usb.InEndpointClrStall
+	jp usb.InEndpointSetStall
+	jp usb.InEndpointClrReset
+	jp usb.InEndpointSetReset
+	jp usb.InEndpointSendZlp
+	jp usb.OutEndpointClrStall
+	jp usb.OutEndpointSetStall
+	jp usb.OutEndpointClrReset
+	jp usb.OutEndpointSetReset
+	jp usb.SetFifoMap
+	jp usb.SetEndpointConfig
+	jp usb.ClrEndpointConfig
+	jp usb.SetFifoConfig
 	jp _riemann
