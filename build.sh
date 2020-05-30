@@ -4,7 +4,7 @@
 name='OPENCE.rom'
 #----------------------------------------
 
-mkdir "bin" || echo ""
+mkdir -p bin
 
 echo "compiling to $name"
 ~/CEdev/bin/fasmg src/main.asm bin/$name
