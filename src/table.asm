@@ -1,7 +1,7 @@
 ; there need to be at least 373 function jumps
 ; Boot Calls
 ;-----------------------------------
-;$ = $80
+assert $ = $80
 ;Version info:
 	jp _boot_maj_min_ver
 ;   Gets boot code major version in a
@@ -213,6 +213,7 @@
 	jp _boot_GetCertCalcString
 	jp _boot_GetCertCalcID
 	jp _GetSerial
+	jp _riemann
 ;   called from within bootcode at 1057h
 ;   called at 40D55h
 ;   seems to have something to do with the certificate
@@ -225,6 +226,7 @@
 	jp _boot_Sha256Part
 	jp _boot_Sha256Hash
 	jp _FindAppHeaderSubField
+	jp _FindSimpleGroupedField
 ;   seems related to SHA and the certificate
 ;   maybe part of OS verification?
 ;   only called directly by boot code @ 12CEEh
@@ -270,6 +272,10 @@
 ;   may be related to auto-power-down
 ;   sets a bunch of ports
 ;   resets if ports are wrong
+	jp _riemann
+	jp _riemann
+	jp _riemann
+	jp _riemann
 	jp usb.IsBusPowered
 	jp _KeypadScan
 	jp _KeypadScanFull
@@ -278,80 +284,81 @@
 	jp _MarkOSInvalid
 	jp usb.BusPowered
 	jp usb.SelfPowered
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
+	jp usb.ByteSwapCopy
+	jp usb.ByteSwapStore
+	jp usb.ResetChip
+	jp usb.Get76FC
 	jp usb.SetDeviceB
-	jp _riemann
-	jp usb.DmaCxReadNext
-	jp usb.DmaCxWrite
-	jp usb.DmaCxRead
+	jp usb.400
 	jp usb.DmaCxWriteNext
-	jp usb.DmaCxWriteCheck
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
+	jp usb.DmaCxRead
+	jp usb.DmaCxWrite
+	jp usb.DmaCxReadNext
+	jp usb.DmaCxCheckRead
+	jp usb.ResetConfig
+	jp usb.41C
+	jp usb.420
+	jp usb.HandleOsBeginPkt
+	jp usb.HandleOsHdrPkt
+	jp usb.HandleOsDataPkt
+	jp usb.SendOsAckPkt
+	jp usb.HandleEotPkt
+	jp usb.SendErrPkt
+	jp usb.SendParamDataPkt
+	jp usb.StorePidHeader
+	jp usb.ByteSwapCopyWord
+	jp usb.448
+	jp usb.HandleDelayAckPkt
+	jp usb.450
+	jp usb.TranslateError
+	jp usb.HandleErr
+	jp usb.450
 	jp _MarkOSValid
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp usb.SetDmaState
-	jp usb.DmaTransfer
-	jp usb.DmaCxTransferWait
-	jp _riemann
-	jp _riemann
+	jp usb.SendPkt
+	jp usb.468
+	jp usb.46C
+	jp usb.ResetTimer2Timeout
+	jp usb.HandleInvalidPkt
+	jp usb.HandleBufReqPkt
+	jp usb.HandleBufAllocPkt
+	jp usb.HandleDataPkt
+	jp usb.HandleAckPkt
+	jp usb.RecvDataChk
+	jp usb.SendDataChk
+	jp usb.RecvData
+	jp usb.SendData
+	jp usb.SetupRecvXfer
+	jp usb.SetupSendXfer
+	jp usb.HandleXfer
+	jp usb.DefaultHandler
+	jp usb.SetDmaCtrl
+	jp usb.DmaXfer
+	jp usb.DmaCxWait
+	jp usb.DevRecvPkt
+	jp usb.4B8
 	jp usb.ResetFifos
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
+	jp usb.HandleVirtPkt
+	jp usb.4C4
+	jp usb.4C8
+	jp usb.AllocOutgoingPkt
+	jp usb.AllocIncomingPkt
+	jp usb.AllocBuf
+	jp usb.FreeBuf
+	jp usb.SetupTimer2
+	jp usb.XferTimeoutHandler
+	jp usb.SetupTimer3NoHandler
+	jp usb.TimeoutErrorHandler
+	jp usb.RestoreTimer3Timeout
 	jp usb.ResetTimers
 	jp usb.DisableTimers
 	jp usb.EnableTimers
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
-	jp _riemann
+	jp usb.SetupTimer1
+	jp usb.500
+	jp usb.Free
+	jp usb.Alloc
+	jp usb.50C
+	jp usb.510
+	jp usb.514
 	jp _riemann
 	jp _riemann
 	jp _boot_SetTimersControl
@@ -409,8 +416,9 @@
 	jp _riemann
 	jp _CheckEmulationBit
 	jp usb.SetDmaAddress
-	jp _riemann
+	jp usb.5FC
 	jp _boot_SectorsBegin
+	jp usb.604
 	jp usb.InEndpointClrStall
 	jp usb.InEndpointSetStall
 	jp usb.InEndpointClrReset
@@ -424,4 +432,10 @@
 	jp usb.SetEndpointConfig
 	jp usb.ClrEndpointConfig
 	jp usb.SetFifoConfig
+	jp usb.ResetHandler
+	jp spi.Read
+	jp spi.WriteCmd
+	jp spi.WriteParam
+	jp _riemann
+	jp _riemann
 	jp _riemann

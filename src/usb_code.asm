@@ -7,7 +7,7 @@ numBufs := 6
 
 struc devDesc
 	local size
-	label .: size
+	label .:size
 	.bLength rb 1
 	.bDescriptorType rb 1
 	.bcdUSB rw 1
@@ -27,7 +27,7 @@ end struc
 
 struc otgDesc
 	local size
-	label .: size
+	label .:size
 	.bLength rb 1
 	.bDescriptorType rb 1
 	.bmAttributes rb 1
@@ -36,7 +36,7 @@ end struc
 
 struc confDesc
 	local size
-	label .: size
+	label .:size
 	.bLength rb 1
 	.bDescriptorType rb 1
 	.wTotalLength rw 1
@@ -50,7 +50,7 @@ end struc
 
 struc ifaceDesc
 	local size
-	label .: size
+	label .:size
 	.bLength rb 1
 	.bDescriptorType rb 1
 	.bInterfaceNumber rb 1
@@ -65,7 +65,7 @@ end struc
 
 struc hidDesc
 	local size
-	label .: size
+	label .:size
 	.bLength rb 1
 	.bDescriptorType rb 1
 	.bcdCDC rw 1
@@ -78,7 +78,7 @@ end struc
 
 struc endptDesc
 	local size
-	label .: size
+	label .:size
 	.bLength rb 1
 	.bDescriptorType rb 1
 	.bEndpointAddress rb 1
@@ -90,12 +90,12 @@ end struc
 
 struc conf
 	local size
-	label .: size
+	label .:size
 	.conf confDesc
- repeat 2, ifIndex: 0
+ repeat 2,ifIndex:0
 	.iface.ifIndex ifaceDesc
 	.iface.ifIndex.hid hidDesc
-  repeat 3, epIndex: 0
+  repeat 3,epIndex:0
 	.iface.ifIndex.endpt.epIndex endptDesc
   end repeat
  end repeat
@@ -104,7 +104,7 @@ end struc
 
 struc xfer
 	local size
-	label .: size
+	label .:size
 	.handler rl 1
 	.errHandler rl 1
 	.ptr rl 1
@@ -122,7 +122,7 @@ end struc
 
 struc timer
 	local size
-	label .: size
+	label .:size
 	.handler rl 1
 	.timeout rl 1
 	.offset rl 1
@@ -133,7 +133,7 @@ end struc
 
 struc curXfer
 	local size
-	label .: size
+	label .:size
 	.timeout rl 1
 	.len rw 1
 	.unknown1 rw 1
@@ -265,7 +265,7 @@ virtual at ti.usbArea
 	?41EB rb 1
 	?hwErr rb 1
 	?curDevDesc devDesc
- repeat 4, confIndex: 0
+ repeat 4,confIndex:0
 	?curConfDesc.confIndex conf
  end repeat
 	?otgDesc otgDesc
@@ -666,9 +666,9 @@ SetDmaAddress:
 	jp (hl)
 
 SetFifoMap:
-	pop de, bc
+	pop de,bc
 	ex (sp),hl
-	push bc, de
+	push bc,de
 	ld a,c
 	cp a,4
 	ret nc
@@ -699,9 +699,9 @@ end repeat
 	ret
 
 SetFifoConfig:
-	pop de, bc
+	pop de,bc
 	ex (sp),hl
-	push bc, de
+	push bc,de
 	ld a,c
 	cp a,4
 	ret nc
@@ -752,21 +752,24 @@ repeat 4
 	inc l
  end if
 end repeat
-	pop de, bc
-	push bc, de
+	pop de,bc
+	push bc,de
 	bit 0,c
 	ret z
-iterate fifo, 0, 3
+iterate fifo,0,3
 	ld l,ti.usbFifo#fifo#Cfg-$100
 	set ti.bUsbFifoEn,(hl)
 end iterate
 	ret
-.init	db $30, $03, $32, $33, $33, $33, $33, $33
-	db $22, $00, $23, $24, $06, $06, $02, $03
+.init	db $30,$03,$32,$33,$33,$33,$33,$33
+	db $22,$00,$23,$24,$06,$06,$02,$03
 .len := $-.
 
-DmaCxTransferWait:
+Get76FC:
+	ld hl,(?76FC)
 	ret
+
+; TODO: implement everything after here
 
 ResetTimers:
 	ret
@@ -775,6 +778,195 @@ DisableTimers:
 	ret
 
 EnableTimers:
+	ret
+
+ByteSwapCopy:
+	ret
+
+ByteSwapStore:
+	ret
+
+ResetChip:
+	ret
+
+?400:
+	ret
+
+ResetConfig:
+	ret
+
+?41C:
+	ret
+
+?420:
+	ret
+
+HandleOsBeginPkt:
+	ret
+
+HandleOsHdrPkt:
+	ret
+
+HandleOsDataPkt:
+	ret
+
+SendOsAckPkt:
+	ret
+
+HandleEotPkt:
+	ret
+
+SendErrPkt:
+	ret
+
+SendParamDataPkt:
+	ret
+
+StorePidHeader:
+	ret
+
+ByteSwapCopyWord:
+	ret
+
+?448:
+	ret
+
+HandleDelayAckPkt:
+	ret
+
+?450:
+	ret
+
+TranslateError:
+	ret
+
+HandleErr:
+	ret
+
+SendPkt:
+	ret
+
+?468:
+	ret
+
+?46C:
+	ret
+
+ResetTimer2Timeout:
+	ret
+
+HandleInvalidPkt:
+	ret
+
+HandleBufReqPkt:
+	ret
+
+HandleBufAllocPkt:
+	ret
+
+HandleDataPkt:
+	ret
+
+HandleAckPkt:
+	ret
+
+RecvDataChk:
+	ret
+
+SendDataChk:
+	ret
+
+RecvData:
+	ret
+
+SendData:
+	ret
+
+SetupRecvXfer:
+	ret
+
+SetupSendXfer:
+	ret
+
+HandleXfer:
+	ret
+
+DefaultHandler:
+	ret
+
+DmaXfer:
+	ret
+
+DevRecvPkt:
+	ret
+
+?4B8:
+	ret
+
+HandleVirtPkt:
+	ret
+
+?4C4:
+	ret
+
+?4C8:
+	ret
+
+AllocOutgoingPkt:
+	ret
+
+AllocIncomingPkt:
+	ret
+
+AllocBuf:
+	ret
+
+FreeBuf:
+	ret
+
+SetupTimer2:
+	ret
+
+XferTimeoutHandler:
+	ret
+
+SetupTimer3NoHandler:
+	ret
+
+TimeoutErrorHandler:
+	ret
+
+RestoreTimer3Timeout:
+	ret
+
+SetupTimer1:
+	ret
+
+?500:
+	ret
+
+Free:
+	ret
+
+Alloc:
+	ret
+
+?50C:
+	ret
+
+?510:
+	ret
+
+?514:
+	ret
+
+?5FC:
+	ret
+
+?604:
+	ret
+
+ResetHandler:
 	ret
 
 end namespace

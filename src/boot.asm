@@ -296,6 +296,7 @@ turn_calc_off:
 include 'cstd.asm'
 include 'code.asm'
 include 'rtc_code.asm'
+include 'spi_code.asm'
 include 'usb_code.asm'
 include 'font.asm'
 include 'loader.asm'

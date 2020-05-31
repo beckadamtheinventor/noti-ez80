@@ -303,6 +303,7 @@ _boot_Sha256Part:
 _boot_Sha256Hash:
 	ret
 _FindAppHeaderSubField:
+_FindSimpleGroupedField:
 	ret
 
 
