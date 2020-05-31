@@ -10,6 +10,13 @@ macro paduntil? addr
 end macro
 
 
+calminstruction (var) strcalc? val
+	compute val, val        ; compute expression
+	arrange val, val        ; convert result to a decimal token
+	stringify val           ; convert decimal token to string
+	publish var, val
+end calminstruction
+
 macro unlock_flash?
 
 end macro

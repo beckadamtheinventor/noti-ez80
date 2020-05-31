@@ -68,6 +68,7 @@ paduntil $700
 ;pad until $7F0, place OpenCE bootcode notice, so OSs can take advantage of more jumps
 paduntil $7F0
 	db "OpenCE bootcode",0
+START_OF_CODE:
 boot_setup_hardware:
 	ld a,$03
 	out0 ($00),a
@@ -297,10 +298,14 @@ include 'cstd.asm'
 include 'code.asm'
 include 'rtc_code.asm'
 include 'usb_code.asm'
-include 'font.asm'
 include 'loader.asm'
 include 'hexeditor.asm'
 
+LEN_OF_CODE strcalc $-START_OF_CODE
+display "Main code length: ",LEN_OF_CODE,$0A
+
+START_OF_DATA:
+include 'font.asm'
 LCD_Controller_init_data:
 	db $38,$03,$0A,$1F
 	db $3F,$09,$02,$04
@@ -335,6 +340,8 @@ string_no_os:
 string_boot_version:
 	db "OpenCE bootcode",0,"version 0.01.0007",0
 
+LEN_OF_DATA strcalc $-START_OF_DATA
+display "Data length: ",LEN_OF_DATA,$0A
 ScrapMem:=$D02AD7
 BaseSP:=$D1887C-6
 textColors:=$D1887C-3
