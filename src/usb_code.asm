@@ -1,34 +1,39 @@
+namespace usb
 
-;bit 7 of port $0F
-;return nz if bus is receiving power
-_usb_IsBusPowered:
-	in a,($0F)
-	bit 7,a
+;bit 7 of port $000F
+;return nz if bus is powered by the power controller
+IsBusPowered:
+	in0 a,($0A)
+	res 1,a
+	out0 ($0A),a
+	in0 a,($0B)
+	and a,1 shl 1
 	ret
 
-;bit 6 or 7 of port $000F
-;return nz if bus is powered_usb_BusPowered:
-_usb_BusPowered:
-	in a,($0F)
-	and a,$C0
+;bit 7 of port $000F
+;return a = 1 if bus is powered externally
+BusPowered:
+	in0 a,($0F)
+.enter:
+	rlca
+	and a,1
 	ret
 
-;bit 6 of port $0F
-;return nz if bus is self-powered
-_usb_SelfPowered:
-	in a,($0F)
-	bit 6,a
+;bit 6 of port $000F
+;return a = 1 if bus is self-powered
+SelfPowered:
+	in0 a,($0F)
+	rlca
+	jq BusPowered.enter
+
+SetDeviceB:
+	ld hl,ti.mpOtgCsr
+	ld a,(hl)
+	or a,ti.bmUsbBHnp or ti.bmUsbBBusReq
+	ld (hl),a
 	ret
 
-
-_usb_SetDeviceB:
-	ld bc,$3080
-	in a,(bc)
-	or a,3 ;set bits 0 and 1
-	out (bc),a
-	ret
-
-_usb_DMACXReadNext:
+DmaCxReadNext:
 	ld hl,-2
 	call _frameset
 	ld bc,$4000
@@ -52,7 +57,7 @@ _usb_DMACXReadNext:
 	ld (hl),b
 	ld bc,($D14023)
 	push bc
-	call _usb_DMACXRead
+	call DmaCxRead
 	pop bc
 	pop bc
 	call _stoiu
@@ -71,7 +76,7 @@ _usb_DMACXReadNext:
 	pop ix
 	ret
 
-_usb_DMACXWrite:
+DmaCxWrite:
 	call _frameset0
 	ld hl,(ix+$09)
 	call _scmpzero
@@ -80,14 +85,14 @@ _usb_DMACXWrite:
 	push bc
 	call _Out_31C0_b
 	push bc
-	call _usb_SetDMAAddress
+	call SetDmaAddress
 	pop bc
 	ld hl,1
 	push hl
 	push bc
-	call _usb_SetDMAState
+	call SetDmaState
 	ld sp,ix
-	call _usb_DMACXTransferWait
+	call DmaCxTransferWait
 	pop ix
 	ret
 .exit:
@@ -95,7 +100,7 @@ _usb_DMACXWrite:
 	pop ix
 	ret
 
-_usb_DMACXRead:
+DmaCxRead:
 	call _frameset0
 	ld hl,(ix+$09)
 	call _scmpzero
@@ -104,15 +109,15 @@ _usb_DMACXRead:
 	push bc
 	call _Out_31C0_b
 	push bc
-	call _usb_SetDMAAddress
+	call SetDmaAddress
 	pop bc
 	or a,a
 	sbc hl,hl
 	push hl
 	push bc
-	call _usb_SetDMAState
+	call SetDmaState
 	ld sp,ix
-	call _usb_DMACXTransferWait
+	call DmaCxTransferWait
 	pop ix
 	ret
 .exit:
@@ -147,7 +152,7 @@ _Out_31C9_s:
 	ret
 	
 
-_usb_DMACXWriteNext:
+DmaCxWriteNext:
 	ld hl,-2
 	call _frameset
 	ld bc,$4000
@@ -171,7 +176,7 @@ _usb_DMACXWriteNext:
 	ld (hl),b
 	ld bc,($D14023)
 	push bc
-	call _usb_DMACXWrite
+	call DmaCxWrite
 	pop bc
 	pop bc
 	call _stoiu
@@ -190,19 +195,19 @@ _usb_DMACXWriteNext:
 	pop ix
 	ret
 
-_usb_DMACXWriteCheck:
+DmaCxWriteCheck:
 	ld bc,2
 	ld hl,($D140AF)
 	or a,a
 	sbc hl,bc
-	jp z,_usb_DMACXWriteNext
+	jp z,DmaCxWriteNext
 	ld bc,$3120
 	in a,(bc)
 	or a,5
 	out (bc),a
 	ret
 
-_usb_SetDMAState:
+SetDmaState:
 	call _frameset0
 	ld bc,(ix+6)
 	push bc
@@ -220,65 +225,189 @@ _usb_SetDMAState:
 	pop ix
 	ret
 
-_usb_DMATransfer:
+DmaTransfer:
 	
 	ret
 
-_usb_DMACXTransferWait:
-
-
-_usb_ResetFIFOS:
-
-
-_usb_ResetTimer:
-
-
-_usb_DisableTimer:
-
-
-_usb_EnableTimer:
-
-
-_usb_SetDMAAddress:
-
-
-
-_usb_InEndpointClrStall:
-
-
-_usb_InEndpointSetStall:
-
-
-_usb_InEndpointClrReset:
-
-
-_usb_InEndpointSetReset:
-
-
-_usb_InEndpointSendZlp:
-
-
-_usb_OutEndpointClrStall:
-
-
-_usb_OutEndpointSetStall:
-
-
-_usb_OutEndpointClrReset:
-
-
-_usb_OutEndpointSetReset:
-
-
-_usb_SetFifoMap:
-
-
-_usb_SetEndpointConfig:
-
-
-_usb_ClrEndpointConfig:
-
-
-_usb_SetFifoConfig:
+..GetEpReg:
+	ld hl,6
+	add hl,sp
+	ld a,(hl)
+	ld hl,ti.mpUsbInEp1
+	jq z,.in
+	ld l,ti.usbOutEp1-$100
+.in:
+	dec a
+	cp a,8
+	pop de
+	ret nc
+	push de
+	rlca
+	rlca
+	or a,l
+	ld l,a
 	ret
 
+virtual
+	or a,1
+	load ..or_a_n: byte from $$
+end virtual
+
+OutEndpointClrStall:
+	db ..or_a_n
+InEndpointClrStall:
+	cp a,a
+	call ..GetEpReg
+	res ti.bUsbEpStall-8,(hl)
+	ret
+
+OutEndpointSetStall:
+	db ..or_a_n
+InEndpointSetStall:
+	cp a,a
+	call ..GetEpReg
+	set ti.bUsbEpStall-8,(hl)
+	ret
+
+OutEndpointClrReset:
+	db ..or_a_n
+InEndpointClrReset:
+	cp a,a
+	call ..GetEpReg
+	res ti.bUsbEpReset-8,(hl)
+	ret
+
+OutEndpointSetReset:
+	db ..or_a_n
+InEndpointSetReset:
+	cp a,a
+	call ..GetEpReg
+	set ti.bUsbEpReset-8,(hl)
+	ret
+
+InEndpointSendZlp:
+	cp a,a
+	call ..GetEpReg
+	set ti.bUsbInEpSendZlp-8,(hl)
+	ret
+
+SetDmaAddress:
+	pop de
+	ex (sp),hl
+	ld (ti.mpUsbDmaAddr),hl
+	ex de,hl
+	jp (hl)
+
+SetFifoMap:
+	pop de, bc
+	ex (sp),hl
+	push bc, de
+	ld a,c
+	cp a,4
+	ret nc
+	or a,ti.usbFifo0Map-$100
+	ld c,a
+	ld b,ti.pUsbFifo0Map shr 8
+	out (bc),l
+	ret
+
+ClrEndpointConfig:
+	ld hl,2*long
+	ld c,h
+	ld b,h
+	add hl,sp
+	jq SetEndpointConfig.enter
+
+SetEndpointConfig:
+	ld hl,3*long
+	add hl,sp
+	ld bc,(hl)
+repeat long
+	dec hl
+end repeat
+.enter:
+	bit 0,(hl)
+	call ..GetEpReg
+	ld (hl),bc
+	ret
+
+SetFifoConfig:
+	pop de, bc
+	ex (sp),hl
+	push bc, de
+	ld a,c
+	cp a,4
+	ret nc
+	or a,ti.usbFifo0Cfg-$100
+	ld c,a
+	ld b,ti.pUsbFifo0Cfg shr 8
+	out (bc),l
+	ret
+
+ResetFifos:
+	ld a,($D14074)
+	or a,a
+	ret nz
+	cpl
+	ld hl,ti.mpUsbFifoRxImr
+	ld (hl),a
+	ld l,ti.usbFifoTxImr-$100
+	ld (hl),a
+	ld l,ti.usbFifo0Cfg-$100
+repeat 4
+	res ti.bUsbFifoEn,(hl)
+ if % <> %%
+	inc l
+ end if
+end repeat
+	ld l,ti.usbEp1Map-$100
+	ld de,.init
+	ld bc,.len
+	ex de,hl
+	ldir
+	ex de,hl
+	ld c,64
+repeat 4
+ if % <> 2
+	ld l,ti.usbInEp#%-$100
+ else
+	ld l,ti.usbOutEp#%-$100
+ end if
+	ld (hl),bc
+end repeat
+	ld l,ti.usbFifo0Cfg-$100
+repeat 4
+	set ti.bUsbFifoEn,(hl)
+.wait#%:
+	bit ti.bUsbFifoEn,(hl)
+	jq nz,.wait#%
+ if % <> %%
+	inc l
+ end if
+end repeat
+	pop de, bc
+	push bc, de
+	bit 0,c
+	ret z
+iterate fifo, 0, 3
+	ld l,ti.usbFifo#fifo#Cfg-$100
+	set ti.bUsbFifoEn,(hl)
+end iterate
+	ret
+.init	db $30, $03, $32, $33, $33, $33, $33, $33
+	db $22, $00, $23, $24, $06, $06, $02, $03
+.len := $-.
+
+DmaCxTransferWait:
+	ret
+
+ResetTimers:
+	ret
+
+DisableTimers:
+	ret
+
+EnableTimers:
+	ret
+
+end namespace
