@@ -249,22 +249,7 @@ boot_check_os_signature:
 boot_boot_os:
 	call boot_setup_hardware
 boot_menu:
-	call _boot_ClearVRAM
-	call _boot_ClearBuffer
-	call _boot_homeup
-	call _boot_drawstatusbar
-	ld bc,$FF
-	ld (textColors),bc
-	call boot_check_os_signature
-	jr z,.dont_say_no_os
-	ld hl,string_no_os
-	call _boot_puts_and_new_line
-.dont_say_no_os:
-	ld a,21
-	ld (ti.curRow),a
-	ld hl,string_boot_version
-	call _boot_puts_and_new_line
-	call _boot_puts_and_new_line
+	call boot_menu_draw
 	call _boot_blit_buffer
 .keys:
 	call boot_wait_key_cycle
@@ -281,7 +266,8 @@ boot_menu:
 .launch_os:
 	call boot_check_os_signature
 	jp z,$020108
-	jq boot_menu
+	ld iy,string_no_os
+	rst 8
 turn_calc_off:
 	call _boot_TurnOffHardware
 .loop:
@@ -289,6 +275,47 @@ turn_calc_off:
 	or a,a
 	jr z,.loop
 	rst 0
+
+boot_abort_and_restart:
+	call boot_menu_draw
+	ld a,3
+	ld (ti.curRow),a
+	xor a,a
+	ld (ti.curCol),a
+	ld a,$C0
+	ld (textColors+1),a
+	ld hl,string_oh_no
+	call _boot_puts_and_new_line
+	xor a,a
+	ld (textColors+1),a
+	call _boot_puts_and_new_line
+	call _boot_puts_and_new_line
+	call _boot_blit_buffer
+.keys:
+	call boot_wait_key_cycle
+	cp a,9
+	jr nz,.keys
+	call _boot_TurnOffHardware
+	rst 0
+
+boot_menu_draw:
+	call _boot_ClearVRAM
+	call _boot_ClearBuffer
+	call _boot_homeup
+	call _boot_drawstatusbar
+	ld bc,$FF
+	ld (textColors),bc
+	call boot_check_os_signature
+	jr z,.dont_say_no_os
+	ld hl,string_no_os
+	call _boot_puts_and_new_line
+.dont_say_no_os:
+	ld a,21
+	ld (ti.curRow),a
+	ld hl,string_boot_version
+	call _boot_puts_and_new_line
+	jp _boot_puts_and_new_line
+
 
 include 'cstd.asm'
 include 'code.asm'
@@ -327,6 +354,18 @@ SpiDefaultCommands:
 	db $10, $0F, $09, $2B, $43, $40, $3B, $18, $17
 	db $13, $17, $B1, $01, $05, $14, $26, $00
 .len:=$-.
+
+
+string_oh_no:
+	db "Oh no!",0
+string_something_went_wrong:
+	db "Something went wrong.",0
+	db "Abort and "
+string_restart:
+	db "Restart.",0
+string_error_message:
+	db "Error message:",0
+
 
 string_to_go_back:
 	db "Press [clear] to go back",0
