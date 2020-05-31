@@ -22,7 +22,7 @@
 	rsmix
 	jp.lil $020120 ;rst 30
 handle_rst38: ;rst 38 - interrupt handler
-	ex af,af'
+	ex af,af' ;'
 	exx
 	push ix
 	push iy
@@ -297,6 +297,7 @@ turn_calc_off:
 include 'cstd.asm'
 include 'code.asm'
 include 'rtc_code.asm'
+include 'spi_code.asm'
 include 'usb_code.asm'
 include 'loader.asm'
 include 'hexeditor.asm'
