@@ -27,7 +27,7 @@ handle_rst38: ;rst 38 - interrupt handler
 	push ix
 	push iy
 	ld iy, $D00080
-	jp boot_interrupt_handler
+	jp $0220A8
 paduntil $47
 ;$ = $47. Validate/check OS
 boot_validate_os:
@@ -43,7 +43,7 @@ nmi_handler:
 	jr z,boot_validate_os
 	pop af
 	ld sp,BaseSP
-	jp boot_boot_os
+	jp $0220A8
 
 paduntil $80
 
@@ -80,10 +80,10 @@ boot_setup_hardware:
 	in a,(bc)
 	set 4,a
 	out (bc),a
-	xor a,a
+	xor a,a      ;set priviledged memory region ($<0x100000)
 	out0 ($1D),a
 	out0 ($1E),a
-	ld a,2
+	ld a,$10
 	out0 ($1F),a
 	ld bc,$1005  ;set wait states
 	ld a,3
@@ -282,10 +282,6 @@ boot_menu:
 	call boot_check_os_signature
 	jp z,$020108
 	jq boot_menu
-boot_interrupt_handler:
-	call boot_check_os_signature
-	jp z,$0220A8
-	jq boot_menu
 turn_calc_off:
 	call _boot_TurnOffHardware
 .loop:
@@ -299,7 +295,6 @@ include 'code.asm'
 include 'rtc_code.asm'
 include 'spi_code.asm'
 include 'usb_code.asm'
-include 'loader.asm'
 include 'hexeditor.asm'
 
 LEN_OF_CODE strcalc $-START_OF_CODE
@@ -344,6 +339,6 @@ string_boot_version:
 LEN_OF_DATA strcalc $-START_OF_DATA
 display "Data length: ",LEN_OF_DATA,$0A
 ScrapMem:=$D02AD7
-BaseSP:=$D1887C-6
+BaseSP:=$D1A87E
 textColors:=$D1887C-3
 

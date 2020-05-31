@@ -119,7 +119,9 @@ _EraseFlashSector:
 	sbc hl,hl
 	ld l,a
 	di
-	call eraseSectorRaw
+	ld hl,eraseSectorRaw
+	ld bc,eraseSectorRaw.len
+	call _ExecuteInRAM
 	ei
 	ret
 eraseSectorRaw:
@@ -137,7 +139,7 @@ eraseSectorRaw:
 	ld	a, 30h ; Do not change this value. You could superbrick your calculator.
 	ld	(hl), a
 	ret
-
+.len:=$-.
 
 ;   de = dest, hl = data, bc = size
 _WriteFlash:
@@ -168,6 +170,10 @@ _ChkHeapTop:
 
 ;   TODO: determine registers
 _ExecuteInRAM:
+	ld de,ti.heapBot
+	ldir
+	jp ti.heapBot
+	
 
 ;   Identical to _ExecuteInRAM
 _ExecuteInRAMDup:
