@@ -457,13 +457,13 @@ DmaCxRead:
 .enter:
 	sbc.s hl,de
 	ret z
-	ld iy,ti.mpUsbDmaCtrl
+	ld iy,ti.mpUsbRange+$180
 	and a,ti.usbDmaMem2Fifo
-	ld (ti.usbDmaCtrl+iy-ti.usbDmaCtrl),a
+	ld (ti.usbDmaCtrl+iy-$180),a
 	ld a,ti.bmUsbDmaCxFifo
-	ld (ti.usbDmaFifo+iy-ti.usbDmaCtrl),a
-	ld (ti.usbDmaAddr+iy-ti.usbDmaCtrl),de
-	ld (ti.usbDmaLen+iy-ti.usbDmaCtrl),hl
+	ld (ti.usbDmaFifo+iy-$180),a
+	ld (ti.usbDmaAddr+iy-$180),de
+	ld (ti.usbDmaLen+iy-$180),hl
 	jq DmaCxWait
 
 DmaCxWait:
@@ -472,9 +472,45 @@ DmaCxWait:
 	push hl
 	call SetupTimer1
 	pop hl
-	; TODO: implement
+	ld iy,ti.mpUsbRange+$180
+	set ti.bUsbDmaStart, (ti.usbDmaCtrl+iy-$180)
+.loop:
+	ld hl,(ti.usbDevIsr+iy-$180)
+	bit ti.bUsbIntDevDmaErr,hl
+	jq nz,.err
+	bit ti.bUsbIntDevDmaFin,hl
+	jq nz,.fin
+	ld a,(timer1.tripped)
+	or a,h
+	and a,ti.bmUsbIntDevResume or ti.bmUsbIntDevSuspend or ti.bmUsbIntDevReset
+	ld c,a
+	ld a,(sillyState)
+	sub a,$55
+	or a,c
+	jq z,.loop
+.timeout:
+	sbc hl,hl
+	ld (curXfer.timeout),hl
+	jq .cont
+.err:
+	set ti.bCxFifoClr,(ti.usbCxFifo+iy-$180)
+	ld (ti.usbDevIsr+1+iy-$180),ti.bmUsbIntDevDmaErr shr 8
+	jq .cont
+.fin:
+	ld (ti.usbDevIsr+iy-$180),ti.bmUsbIntDevDmaFin
+	jq .cont
+.cont:
+	ld hl,(curXfer.timeout)
+	add hl,de
 	xor a,a
-	ld (ti.usbDmaFifo+iy-ti.usbDmaCtrl),a
+	sbc hl,de
+	ld (timer1.enabled),a
+	ld (ti.usbDmaFifo+iy-$180),a
+	ret nz
+	set 8-8,(ti.usbDevCtrl+1+iy-$180)
+	set ti.bCxFifoClr,(ti.usbCxFifo+iy-$180)
+	ld hl,ti.bmUsbIntDevDmaErr or ti.bmUsbIntDevDmaFin
+	ld (ti.usbDevIsr+iy-$180),hl
 	ret
 
 SetDmaCtrl:
@@ -662,16 +698,19 @@ Get76FC:
 	ld hl,(?76FC)
 	ret
 
-; TODO: implement everything after here
-
 ResetTimers:
+	call	DisableTimers
+	jq	EnableTimers
+
+EnableTimers:
+	; TODO: Implement
 	ret
 
 DisableTimers:
+	; TODO: Implement
 	ret
 
-EnableTimers:
-	ret
+; TODO: implement everything after here
 
 ByteSwapCopy:
 	ret
