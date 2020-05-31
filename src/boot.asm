@@ -22,7 +22,7 @@
 	rsmix
 	jp.lil $020120 ;rst 30
 handle_rst38: ;rst 38 - interrupt handler
-	ex af,af'
+	ex af,af' ;'
 	exx
 	push ix
 	push iy
