@@ -49,9 +49,25 @@ paduntil $80
 
 ;follow with the jump table
 include 'table.asm'
-;pad until $800
-paduntil $800
-
+;pad until $700. Hopefully enough room for standard bootcode functions
+paduntil $700
+	jp boot_wait_key_cycle
+	jp _boot_SetVRAM
+	jp _boot_SetBuffer
+	jp boot_gfx_compute
+	jp boot_gfx_horizontal
+	jp boot_gfx_vertical
+	jp boot_gfx_rectangle
+	jp boot_gfx_filled_rectangle
+	jp boot_homeup
+	jp _boot_PutS
+	jp _boot_PutC
+	jp _boot_puts_and_new_line
+	jp _boot_drawstatusbar
+	jp _boot_blit_buffer
+;pad until $7F0, place OpenCE bootcode notice, so OSs can take advantage of more jumps
+paduntil $7F0
+	db "OpenCE bootcode",0
 boot_setup_hardware:
 	ld a,$03
 	out0 ($00),a
@@ -231,20 +247,21 @@ boot_check_os_signature:
 
 boot_boot_os:
 	call boot_setup_hardware
-boot_check_os:
-	call boot_check_os_signature
-	jp z,$0220A8
-
-boot_invalid_os:
+boot_menu:
 	call _boot_ClearVRAM
+	call _boot_ClearBuffer
 	call _boot_homeup
 	call _boot_drawstatusbar
 	ld bc,$FF
 	ld (textColors),bc
+	call boot_check_os_signature
+	jr z,.dont_say_no_os
 	ld hl,string_no_os
 	call _boot_puts_and_new_line
-	ld a,10
+.dont_say_no_os:
+	ld a,21
 	ld (ti.curRow),a
+	ld hl,string_boot_version
 	call _boot_puts_and_new_line
 	call _boot_puts_and_new_line
 	call _boot_blit_buffer
@@ -252,30 +269,22 @@ boot_invalid_os:
 	call boot_wait_key_cycle
 	cp a,15
 	jr z,.keys
-boot_menu:
-	ld hl,-1
-	call _frameset
-	xor a,a
-	ld (ix-1),a
-	call _boot_homeup
-	ld bc,$FF00
-	ld (textColors),bc
-.loop:
-	call _boot_ZeroVRAM
-	ld hl,string_to_go_back
-	call _boot_puts_and_new_line
-	call _boot_blit_buffer
-.keys:
-	call boot_wait_key_cycle
-	cp a,15
-	jq z,boot_check_os
+	cp a,31 ;[prgm] key
+	jr z,.launch_hex_editor
+	cp a,9
+	jr z,.launch_os
 	jr .keys
-
-
+.launch_hex_editor:
+	call hex_editor
+	jr boot_menu
+.launch_os:
+	call boot_check_os_signature
+	jp z,$020108
+	jq boot_menu
 boot_interrupt_handler:
 	call boot_check_os_signature
 	jp z,$0220A8
-	jq boot_invalid_os
+	jq boot_menu
 
 include 'cstd.asm'
 include 'code.asm'
@@ -283,6 +292,7 @@ include 'rtc_code.asm'
 include 'usb_code.asm'
 include 'font.asm'
 include 'loader.asm'
+include 'hexeditor.asm'
 
 LCD_Controller_init_data:
 	db $38,$03,$0A,$1F
@@ -316,9 +326,9 @@ string_to_go_back:
 string_no_os:
 	db "No OS installed; cannot boot.",0
 string_boot_version:
-	db "OpenCE bootcode",0,"version 0.01.0004",0
+	db "OpenCE bootcode",0,"version 0.01.0007",0
 
 ScrapMem:=$D02AD7
-BaseSP:=$D1887C-3
-textColors:=$D1887C
+BaseSP:=$D1887C-6
+textColors:=$D1887C-3
 

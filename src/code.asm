@@ -30,9 +30,8 @@ _boot_GetBootVerBuild: ;$ = $000664
 	ret
 
 
-;   Unknown - seems rarely used, might log data
-_dbgout: ;$ = $000669
-	ret ;prove riemann hypothesis for now
+;log data to emulator console
+_dbgout:
 _dbgputs:
 	ld de,$FB0000
 	jr _dbgerrorputs.puts
@@ -154,7 +153,7 @@ _WriteFlashByteDuplicate:=_WriteFlashByte
 
 
 ;   TODO
-_CleanupCertificate:=$00002EC
+_CleanupCertificate:;=$00002EC
 
 ;   Empties out the OS heap
 ;   I think that only the bootcode directly accesses the heap, so you can implement it any way you want
@@ -222,8 +221,8 @@ _GetSerial:
 ;   called at 40D55h
 ;   seems to have something to do with the certificate
 _something_cert_related:
-
 	ret
+
 _Mult16By8: ; DE * A
 	ld l,a
 	ld h,d
@@ -324,11 +323,22 @@ _boot_ClearVRAM:
 _boot_SetVRAM:
 	ld hl,vRam
 	ld de,vRam+1
-	ld bc,320*240*2
+	ld bc,320*240
 	ld (hl),a
 	ldir
 	ret
-
+_boot_ZeroBuffer:
+	xor a,a
+	jr _boot_SetBuffer
+_boot_ClearBuffer:
+	ld a,$FF
+_boot_SetBuffer:
+	ld hl,vRamBuffer
+	ld de,vRamBuffer+1
+	ld bc,320*240
+	ld (hl),a
+	ldir
+	ret
 
 _boot_homeup:
 	xor a,a
@@ -337,6 +347,7 @@ _boot_homeup:
 	ret
 
 _boot_drawstatusbar:
+	push ix
 	ld a,$9D
 	ld (textColors+2),a
 	or a,a
@@ -350,7 +361,9 @@ _boot_drawstatusbar:
 	ld e,18
 	ld bc,ti.lcdWidth
 	ld a,$7D
-	jp boot_gfx_horizontal
+	call boot_gfx_horizontal
+	pop ix
+	ret
 _PutSpinner:
 	ld hl,vRam+317
 	ld de,ti.lcdWidth-1
@@ -582,12 +595,6 @@ boot_Delay10timesAms:
 ;   resets if ports are wrong
 
 
-_KeypadScan:
-
-
-_KeypadScanFull:
-
-
 _MarkOSInvalid:
 
 
@@ -678,6 +685,8 @@ boot_get_keycode:
 	ld a,c
 	ret
 
+_KeypadScan:
+_KeypadScanFull:
 boot_scan_keypad:
 	di             ; Disable interrupts
 	ld hl,$F50000
