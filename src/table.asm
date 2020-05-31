@@ -294,7 +294,7 @@ assert $ = $80
 	jp usb.DmaCxRead
 	jp usb.DmaCxWrite
 	jp usb.DmaCxReadNext
-	jp usb.DmaCxCheckRead
+	jp usb.DmaCxTryRead
 	jp usb.ResetConfig
 	jp usb.41C
 	jp usb.420
@@ -439,3 +439,4 @@ assert $ = $80
 	jp _riemann
 	jp _riemann
 	jp _riemann
+assert $ = $658

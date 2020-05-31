@@ -400,201 +400,99 @@ SetDeviceB:
 	ld (hl),a
 	ret
 
-DmaCxReadNext:
-	ld hl,-2
-	call _frameset
-	ld bc,$4000
-	push bc
-	ld hl,($D14040)
-	xor a,a
-	sbc.s hl,bc
-	jr nc,.next
-	ld b,a
-	ld a,($D14040)
-	ld c,a
+virtual
+	or a,not 0
+	load ..or_a_n:byte from $$
+end virtual
+
+DmaCxTryRead:
+	ld bc,2
+	ld hl,(?40AF)
 	or a,a
-	ld hl,($D14040)
-	sbc.s hl,bc
-.next:
-	push hl
-	pop bc
-	ld hl,$D14040
-	ld (hl),c
-	inc hl
-	ld (hl),b
-	ld bc,($D14023)
-	push bc
-	call DmaCxRead
-	pop bc
-	pop bc
-	call _stoiu
-	ld bc,($D14023)
-	add hl,bc
-	ld ($D14023),hl
-	ld a,1
-	ld ($D140B2),a
-	ld hl,($D14040)
-	call _scmpzero
-	jr nz,.exit
-	ld bc,0
-	ld ($D140AF),bc
-.exit:
-	ld sp,ix
-	pop ix
+	sbc hl,bc
+	jq z,DmaCxReadNext
+	ld hl,ti.mpUsbCxFifo
+	ld a,(hl)
+	or a,ti.bmCxFifoStall or ti.bmCxFifoFin
+	ld (hl),a
+	ret
+
+DmaCxWriteNext:
+	db ..or_a_n
+DmaCxReadNext:
+	xor a,a
+	ld hl,(devResLen)
+	ld de,$40
+	sbc hl,de
+	jq nc,.min
+	add hl,de
+	ex de,hl
+	or a,a
+	sbc hl,hl
+.min:
+	push af
+	ld (devResLen),hl
+	ld hl,(devRes)
+	ex de,hl
+	add hl,de
+	ld (devRes),hl
+	call DmaCxRead.enter
+	pop af
+	ret nz
+	xor a,a
+	ld (?40AF),a
+	inc a
+	ld (reqStatus),a
 	ret
 
 DmaCxWrite:
-	call _frameset0
-	ld hl,(ix+$09)
-	call _scmpzero
-	jr z,.exit
-	ld bc,$10
-	push bc
-	call _Out_31C0_b
-	push bc
-	call SetDmaAddress
-	pop bc
-	ld hl,1
-	push hl
-	push bc
-	call SetDmaState
-	ld sp,ix
-	call DmaCxTransferWait
-	pop ix
-	ret
-.exit:
-	ld sp,ix
-	pop ix
-	ret
-
+	db ..or_a_n
 DmaCxRead:
-	call _frameset0
-	ld hl,(ix+$09)
-	call _scmpzero
-	jr z,.exit
-	ld bc,$10
-	push bc
-	call _Out_31C0_b
-	push bc
-	call SetDmaAddress
-	pop bc
-	or a,a
-	sbc hl,hl
-	push hl
-	push bc
-	call SetDmaState
-	ld sp,ix
-	call DmaCxTransferWait
-	pop ix
-	ret
-.exit:
-	ld sp,ix
-	pop ix
-	ret
-
-_Out_31C0_b:
-	ld hl,6
-	add hl,sp
-	ld bc,$31C0
-	ld a,(hl)
-	out (bc),a
-	ret
-
-_Out_31C8_b:
-	ld hl,6
-	add hl,sp
-	ld bc,$31C8
-	ld a,(hl)
-	out (bc),a
-	ret
-
-_Out_31C9_s:
-	ld hl,6
-	add hl,sp
-	ld hl,(hl)
-	ld bc,$31C9
-	call _boot_OutBC_s
 	xor a,a
-	out (bc),a
-	ret
-	
-
-DmaCxWriteNext:
-	ld hl,-2
-	call _frameset
-	ld bc,$4000
-	push bc
-	ld hl,($D14040)
-	xor a,a
-	sbc.s hl,bc
-	jr nc,.next
-	ld b,a
-	ld a,($D14040)
-	ld c,a
+	pop bc,de
+	ex (sp),hl
+	push de,bc
+	add hl,de
 	or a,a
-	ld hl,($D14040)
-	sbc.s hl,bc
-.next:
+.enter:
+	sbc.s hl,de
+	ret z
+	ld iy,ti.mpUsbDmaCtrl
+	and a,ti.usbDmaMem2Fifo
+	ld (ti.usbDmaCtrl+iy-ti.usbDmaCtrl),a
+	ld a,ti.bmUsbDmaCxFifo
+	ld (ti.usbDmaFifo+iy-ti.usbDmaCtrl),a
+	ld (ti.usbDmaAddr+iy-ti.usbDmaCtrl),de
+	ld (ti.usbDmaLen+iy-ti.usbDmaCtrl),hl
+	jq DmaCxWait
+
+DmaCxWait:
+	ld hl, 2000
+	ld (curXfer.timeout),hl
 	push hl
-	pop bc
-	ld hl,$D14040
-	ld (hl),c
-	inc hl
-	ld (hl),b
-	ld bc,($D14023)
-	push bc
-	call DmaCxWrite
-	pop bc
-	pop bc
-	call _stoiu
-	ld bc,($D14023)
-	add hl,bc
-	ld ($D14023),hl
-	ld a,1
-	ld ($D140B2),a
-	ld hl,($D14040)
-	call _scmpzero
-	jr nz,.exit
-	ld bc,0
-	ld ($D140AF),bc
-.exit:
-	ld sp,ix
-	pop ix
+	call SetupTimer1
+	pop hl
+	; TODO: implement
+	xor a,a
+	ld (ti.usbDmaFifo+iy-ti.usbDmaCtrl),a
 	ret
 
-DmaCxWriteCheck:
-	ld bc,2
-	ld hl,($D140AF)
-	or a,a
-	sbc hl,bc
-	jp z,DmaCxWriteNext
-	ld bc,$3120
-	in a,(bc)
-	or a,5
-	out (bc),a
-	ret
-
-SetDmaState:
-	call _frameset0
-	ld bc,(ix+6)
+SetDmaCtrl:
+	pop de,bc
+	ex (sp),hl
 	push bc
-	call _stoiu
-	ld a,1
-	sub a,(ix+9)
-	add a,a
-	ld c,a
-	ld b,0
-	push bc
-	call _Out_31C8_b
-	pop bc
-	call _Out_31C9_s
-	ld sp,ix
-	pop ix
-	ret
-
-DmaTransfer:
-	
-	ret
+	ld a,l
+	cpl
+	rlca
+	and a,ti.usbDmaMem2Fifo
+	ld hl,ti.mpUsbDmaCtrl
+	ld (hl),a
+	inc l
+	inc bc
+	dec.s bc
+	ld (hl),bc
+	ex de,hl
+	jp (hl)
 
 ..GetEpReg:
 	ld hl,6
@@ -614,11 +512,6 @@ DmaTransfer:
 	or a,l
 	ld l,a
 	ret
-
-virtual
-	or a,1
-	load ..or_a_n: byte from $$
-end virtual
 
 OutEndpointClrStall:
 	db ..or_a_n
