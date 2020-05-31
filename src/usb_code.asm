@@ -27,7 +27,7 @@ SelfPowered:
 	jq BusPowered.enter
 
 SetDeviceB:
-	ld hl,ti.mpOtgCsr
+	ld hl,ti.mpUsbOtgCsr
 	ld a,(hl)
 	or a,ti.bmUsbBHnp or ti.bmUsbBBusReq
 	ld (hl),a
