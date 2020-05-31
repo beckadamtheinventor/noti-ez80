@@ -268,7 +268,7 @@ boot_menu:
 .keys:
 	call boot_wait_key_cycle
 	cp a,15
-	jr z,.keys
+	jr z,turn_calc_off
 	cp a,31 ;[prgm] key
 	jr z,.launch_hex_editor
 	cp a,9
@@ -285,6 +285,13 @@ boot_interrupt_handler:
 	call boot_check_os_signature
 	jp z,$0220A8
 	jq boot_menu
+turn_calc_off:
+	call _boot_TurnOffHardware
+.loop:
+	call boot_get_keycode
+	or a,a
+	jr z,.loop
+	rst 0
 
 include 'cstd.asm'
 include 'code.asm'

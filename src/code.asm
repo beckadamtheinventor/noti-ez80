@@ -523,7 +523,31 @@ _boot_GetLFontPtr:
 	ret
 
 _boot_TurnOffHardware:
-	
+	call _boot_BacklightOff
+	ld a,$10
+	call spiCmd
+	call boot_Delay10ms
+	ld bc,$4019
+	ld a,1
+	out (bc),a
+	ld a,$0A
+	call boot_Delay10timesAms
+	dec c
+	ld a,$2C
+	out (bc),a
+	ld bc,$D000
+	ld a,$09
+	out (bc),a
+	ret
+_boot_BacklightOff:
+	ld bc, $B024
+	ld a, $FF
+	out (bc),a
+	call boot_Delay10ms
+	in0 a, ($05)
+	res 6, a
+	res 4, a
+	out0 ($05), a
 	ret
 
 _MakeColCmd:
@@ -719,7 +743,6 @@ end repeat
 	ld b,44
 	dec c
 	jr nz,.inner
-	
 	pop bc
 	ret
 
