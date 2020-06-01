@@ -5,8 +5,9 @@ hex_editor:
 	call _frameset
 	ld hl,$D00000
 	ld (ix-3),hl
-	ld (ix-6),hl
 	xor a,a
+	sbc hl,hl
+	ld (ix-6),hl
 	ld (ix-7),a
 	ld (ix-8),a
 .main_loop:
@@ -16,9 +17,7 @@ hex_editor:
 	xor a,a
 	ld (ix-7),a
 .main_draw:
-	call _boot_ClearBuffer
-	call _boot_drawstatusbar
-	call _boot_homeup
+	call .clearscreen
 	ld bc,$FF
 	ld (textColors),bc
 	ld hl,(ix-3)
@@ -178,10 +177,14 @@ hex_editor:
 	ld (ix-7),a
 	jr .forwardpage
 .flashwrite:
-	push hl
-	ex de,hl
-	call _WriteFlashA
-	pop hl
+	inc hl
+	ld (ix-3),hl
+	dec hl
+	ex hl,de
+	lea hl,ix-8
+	ld (hl),e
+	ld bc,1
+	call _WriteFlash
 	jp .main_loop
 .loadcursor:
 	ld (ix-7),a
@@ -207,18 +210,23 @@ hex_editor:
 	add a,$41-10
 	jp _boot_PutC
 .setaddress:
-	call _boot_homeup ;c flag is always unset after this function
+	call .getaddress
+	jp c,.main_loop
+	ld hl,(ix-6)
+	ld (ix-3),hl
+	xor a,a
+	jp .main_loop
+.getaddress:
+	call .clearscreen ;c flag is always unset after _boot_homeup
 	sbc hl,hl
 	ld (ix-6),hl
 	lea hl,ix-4 ;upper byte of address
 	call .getaddrbyte
 	lea hl,ix-5 ;high byte of address
-	call .getaddrbyte
-	lea hl,ix-6 ;lower byte of address
-	call .getaddrbyte
-	ld hl,(ix-6)
-	ld (ix-3),hl
-	jp .main_loop
+	call nc,.getaddrbyte
+	lea hl,ix-6 ;low byte of address
+	call nc,.getaddrbyte
+	ret
 .getaddrbyte:
 	push hl
 	call boot_wait_key_cycle
@@ -239,17 +247,25 @@ hex_editor:
 	ld l,a
 	call .putnibble
 	ld a,(ix-8)
-	rla
-	rla
-	rla
-	rla
+	rlca
+	rlca
+	rlca
+	rlca
 	add a,l
 	pop hl
 	ld (hl),a
-	jp _boot_blit_buffer
+	call _boot_blit_buffer
+	or a,a
+	ret
 .exitaddrloop:
-	pop hl
-	jp .main_loop
+	pop bc
+	call _boot_blit_buffer
+	scf
+	ret
+.clearscreen:
+	call _boot_ClearBuffer
+	call _boot_drawstatusbar
+	jp _boot_homeup
 
 .nibblekeys:
 	db 33,34,26,18,35,27,19,36,28,20,47,39,31,46,38,30

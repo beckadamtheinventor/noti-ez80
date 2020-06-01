@@ -27,7 +27,7 @@ handle_rst38: ;rst 38 - interrupt handler
 	push ix
 	push iy
 	ld iy, $D00080
-	jp $0220A8
+	jp boot_interrupt_handler
 paduntil $47
 ;$ = $47. Validate/check OS
 boot_validate_os:
@@ -36,14 +36,11 @@ boot_validate_os:
 
 paduntil $66
 nmi_handler:
-	push af
 	in0 a,($3D)
 	and a,$03
 	out0 ($3E),a
 	jr z,boot_validate_os
-	pop af
-	ld sp,BaseSP
-	jp $0220A8
+	rst 0
 
 paduntil $80
 
@@ -70,6 +67,18 @@ paduntil $7F0
 	db "OpenCE bootcode",0
 START_OF_CODE:
 
+boot_interrupt_handler:
+	in0 a,($06)
+	bit 2,a
+	jr z,.dontsetport06
+	ld a,3
+	out0 ($06),a
+.dontsetport06:
+	ld hl,($D02AD7)
+	push hl
+	call boot_check_os_signature
+	jp z,$02010C
+	jq boot_menu
 
 include 'menus.asm'
 include 'code.asm'
@@ -128,11 +137,12 @@ string_to_go_back:
 string_no_os:
 	db "No OS installed; cannot boot.",0
 string_boot_version:
-	db "OpenCE bootcode",0,"version 0.01.0007",0
+	db "OpenCE bootcode",0,"version 0.01.0008",0
 
 LEN_OF_DATA strcalc $-START_OF_DATA
 display "Data length: ",LEN_OF_DATA,$0A
 ScrapMem:=$D02AD7
+FlashByte:=$D00125
 BaseSP:=$D1A87E
 textColors:=$D1887C-3
 

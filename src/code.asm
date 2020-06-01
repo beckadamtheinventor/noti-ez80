@@ -244,11 +244,56 @@ _ChkIfOSInterruptAvailable:
 ; DE = Address to write to
 _WriteFlashByte:
 	ld a,b
-_WriteFlashA: ;probably here?
-	
-	; -- TODO --
-	
-	ret
+_WriteFlashA:
+	push af
+	ld a,4
+	di
+	jr $+2
+	di
+	rsmix
+	im 1
+	out0 ($28),a
+	call flash_unlock
+	pop af
+	ld hl,FlashByte
+	ld (hl),a
+	ld bc,1
+	ld ix,write_flash_bytes_raw
+	call _ExecuteInRAM
+	jp flash_lock
+
+write_flash_bytes_raw:
+	dw .len
+.byte_loop:
+    ld a,($00007E)
+    bit 6,a
+    jr z,.skip_command
+    ld a,$AA
+    ld ($000AAA),a
+    ld a,$55
+    ld ($000555),a
+    ld a,$A0
+    ld ($000AAA),a
+.skip_command:
+    ld a,(hl)
+    ld (de),a
+    push bc
+    ld b,a
+.wait:
+    ld a,(de)
+    cp a,b
+    jr nz,.wait
+    pop bc
+    inc de
+    inc hl
+    dec bc
+    ld ($D02AD7),bc
+    ld a,($D02AD9)
+    or a,b
+    or a,c
+    jr nz,.byte_loop
+    ret
+.len:=$-.
 
 ; HL = sector address to erase
 _EraseFlash:
@@ -261,13 +306,21 @@ _EraseFlashSector:
 	or a,a
 	sbc hl,hl
 	ld l,a
+	push af
+	ld a,4
 	di
-	ld hl,eraseSectorRaw
-	ld bc,eraseSectorRaw.len
+	jr $+2
+	di
+	rsmix
+	im 1
+	out0 ($28),a
+	call flash_unlock
+	pop af
+	ld ix,eraseSectorRaw
 	call _ExecuteInRAM
-	ei
-	ret
+	jp flash_lock
 eraseSectorRaw:
+	dw .len
 ; Flash program sequence
 	ld	a, 0AAh	; First bus cycle---unlock
 	ld	(0AAAh), a
@@ -286,11 +339,19 @@ eraseSectorRaw:
 
 ;   de = dest, hl = data, bc = size
 _WriteFlash:
-
-	; -- TODO --
-
-	ret
-
+	push bc
+	ld a,4
+	di
+	jr $+2
+	di
+	rsmix
+	im 1
+	out0 ($28),a
+	call flash_unlock
+	pop bc
+	ld ix,write_flash_bytes_raw
+	call _ExecuteInRAM
+	jp flash_lock
 
 
 ;   identical to _WriteFlashByte
@@ -311,18 +372,39 @@ _CpyToHeap:
 ;   Probably returns the size of the heap in hl and the bottom of the heap in de?
 _ChkHeapTop:
 
-;   TODO: determine registers
+; input ix routine to execute.
+; routine must begin with two-byte length of routine
 _ExecuteInRAM:
-	ld de,ti.heapBot
+	push af
+	push hl
+	push de
+	push bc
+	lea hl,ix
+	ld bc,0
+	ld c,(hl)
+	inc hl
+	ld b,(hl)
+	inc hl
+	ex hl,de
+	ld hl,$D18C7C
+	or a,a
+	sbc hl,bc
+	ex hl,de
+	push de
 	ldir
-	jp ti.heapBot
+	pop ix
+	pop bc
+	pop de
+	pop hl
+	pop af
+	jp (ix)
 	
 
 ;   Identical to _ExecuteInRAM
-_ExecuteInRAMDup:
+_ExecuteInRAMDup:=_ExecuteInRAM
 
 ;   Identical to _ExecuteInRAM
-_ExecuteInRAMDup2:
+_ExecuteInRAMDup2:=_ExecuteInRAM
 
 
 _ChkCertSpace:
