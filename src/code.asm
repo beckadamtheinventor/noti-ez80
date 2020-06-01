@@ -246,13 +246,7 @@ _WriteFlashByte:
 	ld a,b
 _WriteFlashA:
 	push af
-	ld a,4
 	di
-	jr $+2
-	di
-	rsmix
-	im 1
-	out0 ($28),a
 	call flash_unlock
 	pop af
 	ld hl,FlashByte
@@ -306,16 +300,7 @@ _EraseFlashSector:
 	or a,a
 	sbc hl,hl
 	ld l,a
-	push af
-	ld a,4
-	di
-	jr $+2
-	di
-	rsmix
-	im 1
-	out0 ($28),a
 	call flash_unlock
-	pop af
 	ld ix,eraseSectorRaw
 	call _ExecuteInRAM
 	jp flash_lock
@@ -340,13 +325,6 @@ eraseSectorRaw:
 ;   de = dest, hl = data, bc = size
 _WriteFlash:
 	push bc
-	ld a,4
-	di
-	jr $+2
-	di
-	rsmix
-	im 1
-	out0 ($28),a
 	call flash_unlock
 	pop bc
 	ld ix,write_flash_bytes_raw
@@ -870,30 +848,24 @@ _boot_SectorsBegin:
 	ret
 
 flash_unlock:
-	ld	bc,$24
 	ld	a,$8c
-	out (bc),a
-	ld	bc,$06
-	in	a,(bc)
-	or	a,4
-	out (bc),a
-	ld	bc,$28
-	ld	a,$4
-	out (bc),a
+	out0 ($24),a
+	in0	a,($06)
+	set 2,a
+	out0 ($06),a
+	ld	a,4
+	out0 ($28),a
 	ret
 .len:=$-.
 
 flash_lock:
-	ld	bc,$28
 	xor	a,a
-	out (bc),a
-	ld	bc,$06
-	in a,(bc)
+	out0 ($28),a
+	in0 a,($06)
 	res	2,a
-	out (bc),a
-	ld	bc,$24
+	out0 ($06),a
 	ld	a,$88
-	out (bc),a
+	out0 ($24),a
 	ret
 .len:=$-.
 
