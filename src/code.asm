@@ -246,8 +246,15 @@ _WriteFlashByte:
 	ld a,b
 _WriteFlashA:
 	push af
-	di
-	call flash_unlock
+	ld a,$04
+    di
+    jr $+2
+    di
+    rsmix
+    im 1
+    out0 ($28),a
+    in0 a,($28)
+    bit 2,a
 	pop af
 	ld hl,FlashByte
 	ld (hl),a
@@ -300,7 +307,15 @@ _EraseFlashSector:
 	or a,a
 	sbc hl,hl
 	ld l,a
-	call flash_unlock
+	ld a,$04
+    di
+    jr $+2
+    di
+    rsmix
+    im 1
+    out0 ($28),a
+    in0 a,($28)
+    bit 2,a
 	ld ix,eraseSectorRaw
 	call _ExecuteInRAM
 	jp flash_lock
@@ -324,12 +339,22 @@ eraseSectorRaw:
 
 ;   de = dest, hl = data, bc = size
 _WriteFlash:
-	push bc
-	call flash_unlock
-	pop bc
+	ld a,$04
+    di
+    jr $+2
+    di
+    rsmix
+    im 1
+    out0 ($28),a
+    in0 a,($28)
+    bit 2,a
 	ld ix,write_flash_bytes_raw
 	call _ExecuteInRAM
-	jp flash_lock
+flash_lock:
+	in0 a,($28)
+	and a,3
+	out0 ($28),a
+	ret
 
 
 ;   identical to _WriteFlashByte
@@ -846,29 +871,6 @@ _CheckEmulationBit:
 
 _boot_SectorsBegin:
 	ret
-
-flash_unlock:
-	ld	a,$8c
-	out0 ($24),a
-	in0	a,($06)
-	set 2,a
-	out0 ($06),a
-	ld	a,4
-	out0 ($28),a
-	ret
-.len:=$-.
-
-flash_lock:
-	xor	a,a
-	out0 ($28),a
-	in0 a,($06)
-	res	2,a
-	out0 ($06),a
-	ld	a,$88
-	out0 ($24),a
-	ret
-.len:=$-.
-
 
 boot_wait_key_cycle:
 	call boot_wait_key
