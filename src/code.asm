@@ -246,18 +246,7 @@ _WriteFlashByte:
 	ld a,b
 _WriteFlashA:
 	push af
-	in0 a,($06)
-	set 2,a
-	out0 ($06),a
-	ld a,$04
-    di
-    jr $+2
-    di
-    rsmix
-    im 1
-    out0 ($28),a
-    in0 a,($28)
-    bit 2,a
+	call flash_unlock
 	pop af
 	ld hl,FlashByte
 	ld (hl),a
@@ -268,35 +257,38 @@ _WriteFlashA:
 
 write_flash_bytes_raw:
 	dw .len
+	ld (ScrapMem),hl
+	ld a,(ScrapMem+2)
+	cp a,$02
+	ret c
+	cp a,$D0
+	ccf
+	ret c
 .byte_loop:
-    ld a,($00007E)
-    bit 6,a
-    jr z,.skip_command
-    ld a,$AA
-    ld ($000AAA),a
-    ld a,$55
-    ld ($000555),a
-    ld a,$A0
-    ld ($000AAA),a
+	ld a,($00007E)
+	bit 6,a
+	jr z,.skip_command
+	ld hl,$AAA
+	ld (hl),$AA
+	ld a,$55
+	ld ($000555),a
+	ld (hl),$A0
 .skip_command:
-    ld a,(hl)
-    ld (de),a
-    push bc
-    ld b,a
+	ld a,(hl)
+	ld (de),a
+	push bc
+	ld c,a
 .wait:
-    ld a,(de)
-    cp a,b
-    jr nz,.wait
-    pop bc
-    inc de
-    inc hl
-    dec bc
-    ld ($D02AD7),bc
-    ld a,($D02AD9)
-    or a,b
-    or a,c
-    jr nz,.byte_loop
-    ret
+	ld a,(de)
+	cp a,c
+	jr nz,.wait
+	pop bc
+	inc de
+	inc hl
+	xor a,a
+	dec bc
+	ret po
+	jr .byte_loop
 .len:=$-.
 
 ; HL = sector address to erase
@@ -310,41 +302,48 @@ _EraseFlashSector:
 	or a,a
 	sbc hl,hl
 	ld l,a
-	in0 a,($06)
-	set 2,a
-	out0 ($06),a
-	ld a,$04
-    di
-    jr $+2
-    di
-    rsmix
-    im 1
-    out0 ($28),a
-    in0 a,($28)
-    bit 2,a
+	call flash_unlock
 	ld ix,eraseSectorRaw
 	call _ExecuteInRAM
 	jp flash_lock
 eraseSectorRaw:
 	dw .len
 ; Flash program sequence
-	ld	a, 0AAh	; First bus cycle---unlock
-	ld	(0AAAh), a
-	ld	a, 55h	; Second bus cycle---unlock
-	ld	(0555h), a
-	ld	a, 080h	; Third bus cycle---write command
-	ld	(0AAAh), a
-	ld	a, 0AAh	; Fourth bus cycle---unlock (again)
-	ld	(0AAAh), a
-	ld	a, 55h	; Fifth bus cycle---unlock (again)
-	ld	(0555h), a
-	ld	a, 30h ; Do not change this value. You could superbrick your calculator.
-	ld	(hl), a
+	ex hl,de
+	ld hl,$AAA
+	ld	c, $AA
+	ld	(hl), c
+	ld	a, $55
+	ld	($555), a
+	ld	(hl), $80
+	ld	(hl), c
+	ld	a, $55
+	ld	($555), a
+	ld	a, $30 ; Do not change this value. You could superbrick your calculator.
+	ld	(de), a
 	ret
 .len:=$-.
 
 ;   de = dest, hl = data, bc = size
 _WriteFlash:
+	call flash_unlock
+	ld ix,write_flash_bytes_raw
+	call _ExecuteInRAM
+flash_lock:
+	xor a,a
+	out0 ($1D),a
+	out0 ($1E),a
+	ld a,$10
+	out0 ($1F),a
+	in0 a,($28)
+	and a,3
+	out0 ($28),a
+	ret
+flash_unlock:
+	ld a,$FF
+	out0 ($1D),a
+	out0 ($1E),a
+	out0 ($1F),a
 	in0 a,($06)
 	set 2,a
 	out0 ($06),a
@@ -357,14 +356,7 @@ _WriteFlash:
     out0 ($28),a
     in0 a,($28)
     bit 2,a
-	ld ix,write_flash_bytes_raw
-	call _ExecuteInRAM
-flash_lock:
-	in0 a,($28)
-	and a,3
-	out0 ($28),a
-	ret
-
+    ret
 
 ;   identical to _WriteFlashByte
 _WriteFlashByteDuplicate:=_WriteFlashByte
