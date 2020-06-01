@@ -246,6 +246,9 @@ _WriteFlashByte:
 	ld a,b
 _WriteFlashA:
 	push af
+	in0 a,($06)
+	set 2,a
+	out0 ($06),a
 	ld a,$04
     di
     jr $+2
@@ -307,6 +310,9 @@ _EraseFlashSector:
 	or a,a
 	sbc hl,hl
 	ld l,a
+	in0 a,($06)
+	set 2,a
+	out0 ($06),a
 	ld a,$04
     di
     jr $+2
@@ -339,6 +345,9 @@ eraseSectorRaw:
 
 ;   de = dest, hl = data, bc = size
 _WriteFlash:
+	in0 a,($06)
+	set 2,a
+	out0 ($06),a
 	ld a,$04
     di
     jr $+2
