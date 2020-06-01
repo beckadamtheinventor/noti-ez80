@@ -10,12 +10,23 @@ hex_editor:
 	ld (ix-7),a
 	ld (ix-8),a
 .main_loop:
+	ld a,(ix-7)
+	cp a,16*8
+	jr c,.main_draw
+	xor a,a
+	ld (ix-7),a
+.main_draw:
 	call _boot_ClearBuffer
 	call _boot_drawstatusbar
 	call _boot_homeup
 	ld bc,$FF
 	ld (textColors),bc
-	lea hl,ix-1 ;edit page pointer
+	ld hl,(ix-3)
+	push hl
+	ld c,(ix-7)
+	add hl,bc ;add cursor offset
+	ld (ix-3),hl
+	lea hl,ix-1
 	ld b,3
 .addrloop:
 	ld a,(hl)
@@ -25,6 +36,8 @@ hex_editor:
 	dec hl
 	dec hl
 	djnz .addrloop
+	pop hl
+	ld (ix-3),hl
 	ld a,3
 	ld (ti.curRow),a
 	xor a,a
@@ -91,42 +104,46 @@ hex_editor:
 	pop af
 	cp a,15 ;clear key
 	jr z,.exit
+	cp a,53 ;yequ key
+	jq z,.setaddress
+	cp a,10 ;"+" key
+	jr z,.forwardpage
+	cp a,11 ;"-" key
+	jr z,.backwardpage
 	ld bc,16
 	ld hl,.nibblekeys+15
 	cpdr
 	jr nz,.keys
+	push bc
+	call boot_wait_key_cycle
+	ld bc,16
+	ld hl,.nibblekeys+15
+	cpdr
+	pop de
+	jq nz,.keys
+	ld a,e
+	rla
+	rla
+	rla
+	rla
+	add a,c
 	ld hl,(ix-3)
-	ld a,(hl)
-	bit 0,(ix-8)
-	jr nz,.lowernibble
-	rlc c
-	rlc c
-	rlc c
-	rlc c
-	and a,$0F
-	or a,c
-	set 0,(ix-8)
-	jr .writenibble
-.lowernibble:
-	and a,$F0
-	or a,c
-	res 0,(ix-8)
-.writenibble:
 	ld c,(ix-7)
 	add hl,bc
+	inc c
+	ld (ix-7),c
 	ld bc,$D00000
 	or a,a
 	sbc hl,bc
 	add hl,bc
 	jr c,.flashwrite
 	ld (hl),a
-	jr .nextcursor
+	jp .main_loop
 .exit:
 	ld sp,ix
 	pop ix
 	ret
 .up:
-	res 0,(ix-8)
 	ld a,c
 	sub a,8
 	jr nc,.loadcursor
@@ -138,7 +155,6 @@ hex_editor:
 	ld (ix-3),hl
 	jr .dontloadcursor
 .down:
-	res 0,(ix-8)
 	ld a,c
 	add a,8
 	cp a,8*16
@@ -147,22 +163,14 @@ hex_editor:
 	ld bc,8
 	jr .advancepage
 .left:
-	res 0,(ix-8)
 	ld a,c
 	dec a
 	jr nc,.loadcursor
 	ld a,16*8-1
 	ld (ix-7),a
 	jr .forwardpage
-.nextcursor:
-	bit 0,(ix-8)
-	jr nz,.dontloadcursor
-	ld a,(ix-7)
-	jr .rightentry
 .right:
-	res 0,(ix-8)
 	ld a,c
-.rightentry:
 	inc a
 	cp a,16*8
 	jr c,.loadcursor
@@ -174,7 +182,7 @@ hex_editor:
 	ex de,hl
 	call _WriteFlashA
 	pop hl
-	jr .nextcursor
+	jp .main_loop
 .loadcursor:
 	ld (ix-7),a
 .dontloadcursor:
@@ -198,5 +206,50 @@ hex_editor:
 .putnibbleA:
 	add a,$41-10
 	jp _boot_PutC
+.setaddress:
+	call _boot_homeup ;c flag is always unset after this function
+	sbc hl,hl
+	ld (ix-6),hl
+	lea hl,ix-4 ;upper byte of address
+	call .getaddrbyte
+	lea hl,ix-5 ;high byte of address
+	call .getaddrbyte
+	lea hl,ix-6 ;lower byte of address
+	call .getaddrbyte
+	ld hl,(ix-6)
+	ld (ix-3),hl
+	jp .main_loop
+.getaddrbyte:
+	push hl
+	call boot_wait_key_cycle
+	ld bc,16
+	ld hl,.nibblekeys+15
+	cpdr
+	jr nz,.exitaddrloop
+	ld (ix-8),c
+	ld a,c
+	call .putnibble
+	call _boot_blit_buffer
+	call boot_wait_key_cycle
+	ld bc,16
+	ld hl,.nibblekeys+15
+	cpdr
+	jr nz,.exitaddrloop
+	ld a,c
+	ld l,a
+	call .putnibble
+	ld a,(ix-8)
+	rla
+	rla
+	rla
+	rla
+	add a,l
+	pop hl
+	ld (hl),a
+	jp _boot_blit_buffer
+.exitaddrloop:
+	pop hl
+	jp .main_loop
+
 .nibblekeys:
 	db 33,34,26,18,35,27,19,36,28,20,47,39,31,46,38,30

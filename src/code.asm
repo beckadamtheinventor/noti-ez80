@@ -29,6 +29,149 @@ _boot_GetBootVerBuild: ;$ = $000664
 	ld b,0
 	ret
 
+boot_setup_hardware:
+	ld a,$03
+	out0 ($00),a
+	ld bc,$500C
+	in a,(bc)
+	set 4,a
+	out (bc),a
+	ld c,4
+	in a,(bc)
+	set 4,a
+	out (bc),a
+	xor a,a      ;set priviledged memory region ($<0x100000)
+	out0 ($1D),a
+	out0 ($1E),a
+	ld a,$10
+	out0 ($1F),a
+	ld bc,$1005  ;set wait states
+	ld a,3
+	out (bc),a
+	ld c,$06
+	ld a,6
+	out (bc),a
+	ld a,$81     ;configure stack protector
+	out0 ($3A),a
+	ld a,$98
+	out0 ($3B),a
+	ld a,$D1
+	out0 ($3C),a
+	ld a,$7C     ;configure protected memory region
+	out0 ($20),a
+	out0 ($23),a
+	ld a,$88
+	out0 ($21),a
+	out0 ($24),a
+	ld a,$D1
+	out0 ($22),a
+	out0 ($25),a
+	in0 a,($06) ;set bit 0
+	set 0,a
+	out0 ($06),a
+	ld de,$4000
+	ld hl,LCD_Controller_init_data
+	ld bc,LCD_Controller_init_data.len
+	oti2r
+	in0 a,($07)
+	set 2,a
+	out0 ($07),a
+	in0 a,($09)
+	set 2,a
+	out0 ($09),a
+	call boot_Delay10ms
+	in0 a,($09)
+	res 2,a
+	out0 ($09),a
+	ld a,$05
+	call boot_Delay10timesAms
+	in0 a,($09)
+	set 2,a
+	out0 ($09),a
+	ld a,$0C
+	call boot_Delay10timesAms
+	ld bc,$D006
+	ld a,2
+	out (bc),a
+	ld c,$01
+	ld a,$18
+	out (bc),a
+	ld a,$0B
+	out (bc),a
+	ld c,$04
+	out (bc),a
+	inc c
+	out (bc),a
+	ld c,$08
+	ld a,$0C
+	out (bc),a
+	inc c
+	ld a,$01
+	out (bc),a
+	ld a,$11
+	call spi.WriteCmd
+	ld a,$0C
+	call boot_Delay10timesAms
+	ld hl,SpiDefaultCommands
+	ld b,SpiDefaultCommands.len
+.loop:
+	ld a,(hl)
+	inc hl
+	push hl
+	push bc
+	call spi.WriteCmd
+	pop bc
+	pop hl
+	djnz .loop
+	in0 a,($05)
+	set 4,a
+	res 6,a
+	out0 ($05),a
+	ld bc,$B020
+	ld a,$FF
+	out (bc),a
+	inc c
+	xor a,a
+	out (bc),a
+	inc c
+	out (bc),a
+	inc a
+	out (bc),a
+	in0 a,($05)
+	set 6,a
+	out0 ($05),a
+_boot_set_8bpp_xlibc_mode:
+	ld hl,$E30200				; palette mem
+	ld b,0
+.loop:
+	ld d,b
+	ld a,b
+	and a,$C0
+	srl d
+	rra
+	ld e,a
+	ld a,$1F
+	and a,b
+	or a,e
+	ld (hl),a
+	inc hl
+	ld (hl),d
+	inc hl
+	inc b
+	jr nz,.loop
+	ld a,$27
+	ld ($E30018),a
+	ret
+
+boot_check_os_signature:
+	ld hl,$020100
+	ld a,$5A
+	cp a,(hl)
+	ret nz
+	ld a,$A5
+	inc hl
+	cp a,(hl)
+	ret
 
 ;log data to emulator console
 _dbgout:
@@ -532,7 +675,7 @@ _boot_GetLFontPtr:
 _boot_TurnOffHardware:
 	call _boot_BacklightOff
 	ld a,$10
-	call spiCmd
+	call spi.WriteCmd
 	call boot_Delay10ms
 	ld bc,$4019
 	ld a,1
