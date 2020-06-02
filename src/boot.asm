@@ -88,8 +88,10 @@ include 'spi_code.asm'
 include 'usb_code.asm'
 include 'hexeditor.asm'
 
-LEN_OF_CODE strcalc $-START_OF_CODE
-display "Main code length: ",LEN_OF_CODE,$0A
+if defined calminstruction
+	LEN_OF_CODE strcalc $-START_OF_CODE
+	display "Main code length: ",LEN_OF_CODE,$0A
+end if
 
 START_OF_DATA:
 include 'font.asm'
@@ -147,8 +149,10 @@ string_are_you_sure:
 string_press_enter_confirm:
 	db "Press [enter] to confirm",0
 
-LEN_OF_DATA strcalc $-START_OF_DATA
-display "Data length: ",LEN_OF_DATA,$0A
+if defined calminstruction
+	LEN_OF_DATA strcalc $-START_OF_DATA
+	display "Data length: ",LEN_OF_DATA,$0A
+end if
 ScrapMem:=$D02AD7
 FlashByte:=$D00125
 BaseSP:=$D1A87E
