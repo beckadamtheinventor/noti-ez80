@@ -314,7 +314,9 @@ _EraseFlashSector:
 	ret c
 	or a,a
 	sbc hl,hl
-	ld l,a
+	ld (ScrapMem),hl
+	ld (ScrapMem+2),a
+	ld hl,(ScrapMem)
 	call flash_unlock
 	push ix
 	ld ix,eraseSectorRaw
@@ -337,6 +339,12 @@ eraseSectorRaw:
 	ld	($555),a
 	ex hl,de
 	ld	(hl),$30 ; Do not change this value. You could superbrick your calculator.
+	ld h,$FF
+	ld l,h
+.loop:
+	ld a,(hl)
+	cp a,$FF
+	jr nz,.loop
 	ret
 .len:=$-.code
 
