@@ -88,10 +88,10 @@ include 'spi_code.asm'
 include 'usb_code.asm'
 include 'hexeditor.asm'
 
-if defined calminstruction
-	LEN_OF_CODE strcalc $-START_OF_CODE
-	display "Main code length: ",LEN_OF_CODE,$0A
-end if
+;if defined calminstruction
+	;LEN_OF_CODE strcalc $-START_OF_CODE
+	;display "Main code length: ",LEN_OF_CODE,$0A
+;end if
 
 START_OF_DATA:
 include 'font.asm'
@@ -122,37 +122,13 @@ SpiDefaultCommands:
 .len:=$-.
 
 
-string_oh_no:
-	db "Oh no!",0
-string_something_went_wrong:
-	db "Something went wrong.",0
-	db "Abort and "
-string_restart:
-	db "Restart.",0
-string_error_message:
-	db "Error message:",0
+include 'strings.asm'
 
+;if defined calminstruction
+	;LEN_OF_DATA strcalc $-START_OF_DATA
+	;display "Data length: ",LEN_OF_DATA,$0A
+;end if
 
-string_to_go_back:
-	db "Press [clear] to go back",0
-
-string_no_os:
-	db "No OS installed; cannot boot.",0
-string_boot_version:
-	db "OpenCE bootcode",0,"version 0.01.0008",0
-
-string_erase_sector:
-	db "This will erase the currently selected flash sector.",0
-string_are_you_sure:
-	db "Are you sure?",0
-
-string_press_enter_confirm:
-	db "Press [enter] to confirm",0
-
-if defined calminstruction
-	LEN_OF_DATA strcalc $-START_OF_DATA
-	display "Data length: ",LEN_OF_DATA,$0A
-end if
 ScrapMem:=$D02AD7
 FlashByte:=$D00125
 BaseSP:=$D1A87E

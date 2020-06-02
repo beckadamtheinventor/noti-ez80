@@ -9,14 +9,14 @@ macro paduntil? addr
 	end if
 end macro
 
-if defined calminstruction
-	calminstruction (var) strcalc? val
-		compute val, val        ; compute expression
-		arrange val, val        ; convert result to a decimal token
-		stringify val           ; convert decimal token to string
-		publish var, val
-	end calminstruction
-end if
+;if defined calminstruction
+	;calminstruction (var) strcalc? val
+		;compute val, val        ; compute expression
+		;arrange val, val        ; convert result to a decimal token
+		;stringify val           ; convert decimal token to string
+		;publish var, val
+	;end calminstruction
+;end if
 
 macro unlock_flash?
 

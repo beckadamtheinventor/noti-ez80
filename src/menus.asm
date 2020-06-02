@@ -42,6 +42,7 @@ boot_abort_and_restart:
 	ld (textColors+1),a
 	call _boot_puts_and_new_line
 	call _boot_puts_and_new_line
+	call _boot_puts_and_new_line
 	call _boot_blit_buffer
 .keys:
 	call boot_wait_key_cycle
@@ -62,6 +63,12 @@ boot_menu_draw:
 	ld hl,string_no_os
 	call _boot_puts_and_new_line
 .dont_say_no_os:
+	ld a,16
+	ld (ti.curRow),a
+	ld hl,string_key_info
+	call _boot_puts_and_new_line
+	call _boot_puts_and_new_line
+	call _boot_puts_and_new_line
 	ld a,21
 	ld (ti.curRow),a
 	ld hl,string_boot_version
