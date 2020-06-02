@@ -16,6 +16,9 @@ hex_editor:
 	jr c,.main_draw
 	xor a,a
 	ld (ix-7),a
+	ld hl,(ix-3)
+	inc hl
+	ld (ix-3),hl
 .main_draw:
 	call .clearscreen
 	ld bc,$FF
@@ -87,6 +90,11 @@ hex_editor:
 .keys:
 	call boot_wait_key
 	ld c,(ix-7)
+	cp a,5
+	jr nc,.notarrowkey
+	push af
+	call boot_Delay10ms
+	pop af
 	cp a,4
 	jq z,.up
 	cp a,3
@@ -95,6 +103,7 @@ hex_editor:
 	jq z,.left
 	cp a,1
 	jq z,.down
+.notarrowkey:
 	push af
 .waitkeyunpress:
 	call boot_get_keycode
@@ -102,13 +111,15 @@ hex_editor:
 	jr nz,.waitkeyunpress
 	pop af
 	cp a,15 ;clear key
-	jr z,.exit
+	jq z,.exit
 	cp a,53 ;yequ key
 	jq z,.setaddress
 	cp a,10 ;"+" key
-	jr z,.forwardpage
+	jq z,.forwardfullpage
 	cp a,11 ;"-" key
-	jr z,.backwardpage
+	jq z,.backwardfullpage
+	cp a,12 ;"*"/"R" key
+	jq z,.maybeerasesector
 	ld bc,16
 	ld hl,.nibblekeys+15
 	cpdr
@@ -153,13 +164,19 @@ hex_editor:
 	add hl,bc
 	ld (ix-3),hl
 	jr .dontloadcursor
+.backwardfullpage:
+	ld bc,-8*16
+	jr .advancepage
+.forwardfullpage:
+	ld bc,8*16
+	jr .advancepage
 .down:
 	ld a,c
 	add a,8
 	cp a,8*16
 	jr c,.loadcursor
 .forwardpage:
-	ld bc,8
+	ld bc,8*16
 	jr .advancepage
 .left:
 	ld a,c
@@ -177,14 +194,8 @@ hex_editor:
 	ld (ix-7),a
 	jr .forwardpage
 .flashwrite:
-	inc hl
-	ld (ix-3),hl
-	dec hl
 	ex hl,de
-	lea hl,ix-8
-	ld (hl),e
-	ld bc,1
-	call _WriteFlash
+	call _WriteFlashA
 	jp .main_loop
 .loadcursor:
 	ld (ix-7),a
@@ -225,8 +236,7 @@ hex_editor:
 	lea hl,ix-5 ;high byte of address
 	call nc,.getaddrbyte
 	lea hl,ix-6 ;low byte of address
-	call nc,.getaddrbyte
-	ret
+	ret c
 .getaddrbyte:
 	push hl
 	call boot_wait_key_cycle
@@ -262,6 +272,26 @@ hex_editor:
 	call _boot_blit_buffer
 	scf
 	ret
+.maybeerasesector:
+	call .clearscreen
+	ld a,$FF
+	ld (textColors),a
+	ld hl,string_erase_sector
+	call _boot_puts_and_new_line
+	ld hl,string_are_you_sure
+	call _boot_puts_and_new_line
+	ld hl,string_press_enter_confirm
+	call _boot_blit_buffer
+	call boot_wait_key_cycle
+	cp a,9
+	call z,.erasesector
+	jp .main_loop
+.erasesector:
+	sbc hl,hl
+	ld bc,(ix-3)
+	ld l,(ix-7)
+	add hl,bc
+	jp _EraseFlash
 .clearscreen:
 	call _boot_ClearBuffer
 	call _boot_drawstatusbar

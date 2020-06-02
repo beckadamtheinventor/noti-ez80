@@ -139,6 +139,14 @@ string_no_os:
 string_boot_version:
 	db "OpenCE bootcode",0,"version 0.01.0008",0
 
+string_erase_sector:
+	db "This will erase the currently selected flash sector.",0
+string_are_you_sure:
+	db "Are you sure?",0
+
+string_press_enter_confirm:
+	db "Press [enter] to confirm",0
+
 LEN_OF_DATA strcalc $-START_OF_DATA
 display "Data length: ",LEN_OF_DATA,$0A
 ScrapMem:=$D02AD7

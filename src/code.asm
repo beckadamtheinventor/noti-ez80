@@ -251,84 +251,102 @@ _WriteFlashA:
 	ld hl,FlashByte
 	ld (hl),a
 	ld bc,1
+	push ix
 	ld ix,write_flash_bytes_raw
 	call _ExecuteInRAM
-	jp flash_lock
+	pop ix
+	jq flash_lock
 
 write_flash_bytes_raw:
 	dw .len
-	ld (ScrapMem),hl
+.code:
+	ld (ScrapMem),de
 	ld a,(ScrapMem+2)
 	cp a,$02
 	ret c
 	cp a,$D0
 	ccf
 	ret c
-.byte_loop:
 	ld a,($00007E)
 	bit 6,a
 	jr z,.skip_command
+	push hl
 	ld hl,$AAA
 	ld (hl),$AA
 	ld a,$55
-	ld ($000555),a
+	ld ($555),a
 	ld (hl),$A0
+	pop hl
 .skip_command:
-	ld a,(hl)
-	ld (de),a
 	push bc
+	ld a,(de)
+	and a,(hl)
+	ld (de),a
 	ld c,a
 .wait:
 	ld a,(de)
 	cp a,c
 	jr nz,.wait
 	pop bc
-	inc de
 	inc hl
+	inc de
 	xor a,a
 	dec bc
-	ret po
-	jr .byte_loop
-.len:=$-.
+	ld (ScrapMem),bc
+	ld a,(ScrapMem+2)
+	or a,b
+	or a,c
+	jr nz,.code
+	ret
+.len:=$-.code
 
 ; HL = sector address to erase
 _EraseFlash:
-	ld (ti.scrapMem),hl
-	ld a,(ti.scrapMem+2)
+	ld (ScrapMem),hl
+	ld a,(ScrapMem+2)
 	;just run into the next routine for optimization
 ;   a = sector to erase
-;   there's a bug in here where it pops one item too many from flash, I think
 _EraseFlashSector:
+	cp a,$02
+	ret c
+	cp a,$D0
+	ccf
+	ret c
 	or a,a
 	sbc hl,hl
 	ld l,a
 	call flash_unlock
+	push ix
 	ld ix,eraseSectorRaw
 	call _ExecuteInRAM
-	jp flash_lock
+	pop ix
+	jq flash_lock
+
 eraseSectorRaw:
 	dw .len
 ; Flash program sequence
+.code:
 	ex hl,de
 	ld hl,$AAA
-	ld	c, $AA
-	ld	(hl), c
-	ld	a, $55
-	ld	($555), a
-	ld	(hl), $80
-	ld	(hl), c
-	ld	a, $55
-	ld	($555), a
-	ld	a, $30 ; Do not change this value. You could superbrick your calculator.
-	ld	(de), a
+	ld	c,$AA
+	ld	(hl),c
+	ld	a,$55
+	ld	($555),a
+	ld	(hl),$80
+	ld	(hl),c
+	ld	($555),a
+	ex hl,de
+	ld	(hl),$30 ; Do not change this value. You could superbrick your calculator.
 	ret
-.len:=$-.
+.len:=$-.code
 
 ;   de = dest, hl = data, bc = size
 _WriteFlash:
 	call flash_unlock
+	push ix
 	ld ix,write_flash_bytes_raw
 	call _ExecuteInRAM
+	pop ix
 flash_lock:
 	xor a,a
 	out0 ($1D),a
