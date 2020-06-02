@@ -88,10 +88,8 @@ include 'spi_code.asm'
 include 'usb_code.asm'
 include 'hexeditor.asm'
 
-;if defined calminstruction
-	;LEN_OF_CODE strcalc $-START_OF_CODE
-	;display "Main code length: ",LEN_OF_CODE,$0A
-;end if
+	LEN_OF_CODE strcalc $-START_OF_CODE
+	display "Main code length: ",LEN_OF_CODE,$0A
 
 START_OF_DATA:
 include 'font.asm'
@@ -124,10 +122,8 @@ SpiDefaultCommands:
 
 include 'strings.asm'
 
-;if defined calminstruction
-	;LEN_OF_DATA strcalc $-START_OF_DATA
-	;display "Data length: ",LEN_OF_DATA,$0A
-;end if
+	LEN_OF_DATA strcalc $-START_OF_DATA
+	display "Data length: ",LEN_OF_DATA,$0A
 
 ScrapMem:=$D02AD7
 FlashByte:=$D00125

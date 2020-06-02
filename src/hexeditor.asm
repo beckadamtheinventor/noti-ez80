@@ -12,13 +12,11 @@ hex_editor:
 	ld (ix-8),a
 .main_loop:
 	ld a,(ix-7)
-	cp a,16*8
-	jr c,.main_draw
-	xor a,a
+	cp a,$FF
+	jr nz,.main_draw
+	and a,7
 	ld (ix-7),a
-	ld hl,(ix-3)
-	inc hl
-	ld (ix-3),hl
+	jq .backwardpage
 .main_draw:
 	call .clearscreen
 	ld bc,$FF
@@ -176,7 +174,7 @@ hex_editor:
 	cp a,8*16
 	jr c,.loadcursor
 .forwardpage:
-	ld bc,8*16
+	ld bc,8
 	jr .advancepage
 .left:
 	ld a,c
@@ -190,7 +188,7 @@ hex_editor:
 	inc a
 	cp a,16*8
 	jr c,.loadcursor
-	xor a,a
+	ld a,15*8
 	ld (ix-7),a
 	jr .forwardpage
 .flashwrite:
