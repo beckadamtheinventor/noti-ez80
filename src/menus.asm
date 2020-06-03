@@ -72,7 +72,9 @@ boot_menu:
 	jq nz,.no_os
 	ld hl,$0108
 	ld (ScrapMem),hl
-	ld a,(ix-1)
+	ld bc,$D00000
+	ld c,(ix-1)
+	ld a,(bc)
 	ld (ScrapMem+2),a
 	ld hl,(ScrapMem)
 	ld sp,ix
