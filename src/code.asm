@@ -260,7 +260,6 @@ boot_index_os_list:
 	jr c,.loop
 .exit:
 	ld a,(ScrapMem+2)
-	inc a
 	ld ($D00107),a ;first sector of user flash memory
 	ret
 
