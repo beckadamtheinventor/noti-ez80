@@ -69,7 +69,7 @@ boot_menu:
 	jq boot_menu
 .launch_os:
 	call boot_check_os_signature
-	jq z,.no_os
+	jq nz,.no_os
 	ld hl,$0108
 	ld (ScrapMem),hl
 	ld a,(ix-1)
