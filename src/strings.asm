@@ -33,7 +33,7 @@ string_press_enter_confirm:
 	db "Press [enter] to confirm",0
 
 string_boot_this_os:
-	db "Press enter to boot the selected OS",0
+	db "Press enter to boot this OS",0
 
 string_os_identifier:
 	db "OpenCE OS",0
