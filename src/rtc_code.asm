@@ -306,30 +306,50 @@ _boot_GetTimer2MatchValue2:
 
 
 _boot_RTCIntHandler:
-	ld hl,-1
-	call _frameset
-	ld sp,ix
-	pop ix
+;	ld hl,-1
+;	call _frameset
+;	ld sp,ix
+;	pop ix
 	ret
 
 
-_boot_RTCInitialize:
+_boot_RTCInitialize:=_boot_RTCEnable
 
 
 _boot_RTCGetInitStatus:
+	ret
 
 
 _boot_RTCEnable:
-
+	push bc
+	ld bc,$8020
+	in a,(bc)
+	set 0,a
+	out (bc),a
+	pop bc
+	ret
 
 _boot_RTCDisable:
-
+	push bc
+	ld bc,$8020
+	in a,(bc)
+	res 0,a
+	out (bc),a
+	pop bc
+	ret
 
 _boot_RTCSet24Hours:
-
+	
+	ret
 
 _boot_RTCAckAlarmInt:
-
+	push bc
+	ld bc,$8034
+	in a,(bc)
+	set 4,a
+	out (bc),a
+	pop bc
+	ret
 
 _boot_RTCWriteTime:
 

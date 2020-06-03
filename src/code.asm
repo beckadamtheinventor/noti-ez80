@@ -218,6 +218,47 @@ include 'routines/strtok.asm'
 include 'routines/FLTMAX.asm'
 
 
+boot_index_os_list:
+	ld hl,$020100
+	ld de,$D00000
+.loop:
+	ld a,(hl)
+	cp a,$5A
+	ret nz
+	inc hl
+	ld a,(hl)
+	cp a,$A5
+	ret nz
+	inc hl
+	inc hl
+	push de
+	push hl
+	dec h
+	ld l,$F0
+	push hl
+	ld bc,string_os_identifier
+	push bc
+	call _strcmp
+	pop bc
+	pop bc
+	pop hl
+	pop de
+	ret nz
+	ld (ScrapMem),hl
+	ld a,(ScrapMem+2)
+	ld (de),a
+	inc de
+	ld c,(hl)
+	add a,c
+	ld (ScrapMem+2),a
+	ld hl,(ScrapMem)
+	ld bc,$400000
+	xor a,a
+	sbc hl,bc
+	add hl,bc
+	jr c,.loop
+	ret
+
 ;   Doesn't seem to be used by TI-OS - breakpoint did nothing
 ;   Is only called directly in the bootcode by a function at 32F4h
 ;   TODO: investigate more
