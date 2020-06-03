@@ -15,8 +15,12 @@ boot_menu:
 	or a,a
 	jr z,.noos
 	push af
+	xor a,a
+	ld (ti.curCol),a
+	ld a,3
+	ld (ti.curRow),a
 	ld hl,string_boot_this_os
-	call _boot_PutS
+	call _boot_puts_and_new_line
 	pop af
 	ld hl,ScrapMem+2
 	ld (hl),a
@@ -25,9 +29,6 @@ boot_menu:
 	ld (hl),a
 	dec hl
 	ld (hl),$80
-	ld (ti.curCol),a
-	ld a,3
-	ld (ti.curRow),a
 	ld hl,(ScrapMem)
 	ld a,(hl)
 	cp a,$80
