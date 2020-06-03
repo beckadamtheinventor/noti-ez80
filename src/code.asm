@@ -221,6 +221,8 @@ include 'routines/FLTMAX.asm'
 boot_index_os_list:
 	ld hl,$020100
 	ld de,$D00000
+	ld a,$02
+	ld (ScrapMem+2),a
 .loop:
 	ld a,(hl)
 	cp a,$5A
@@ -257,7 +259,6 @@ boot_index_os_list:
 	add hl,bc
 	jr c,.loop
 .exit:
-	ld (ScrapMem),hl
 	ld a,(ScrapMem+2)
 	inc a
 	ld ($D00107),a ;first sector of user flash memory
