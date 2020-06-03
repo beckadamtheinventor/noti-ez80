@@ -224,11 +224,11 @@ boot_index_os_list:
 .loop:
 	ld a,(hl)
 	cp a,$5A
-	ret nz
+	jr nz,.exit
 	inc hl
 	ld a,(hl)
 	cp a,$A5
-	ret nz
+	jr nz,.exit
 	inc hl
 	inc hl
 	push de
@@ -243,7 +243,7 @@ boot_index_os_list:
 	pop bc
 	pop hl
 	pop de
-	ret nz
+	jr nz,.exit
 	ld (ScrapMem),hl
 	ld a,(ScrapMem+2)
 	ld (de),a
@@ -257,6 +257,10 @@ boot_index_os_list:
 	sbc hl,bc
 	add hl,bc
 	jr c,.loop
+.exit:
+	ld (ScrapMem),hl
+	ld a,(ScrapMem+2)
+	ld ($D00107),a ;first sector of user flash memory
 	ret
 
 ;   Doesn't seem to be used by TI-OS - breakpoint did nothing
