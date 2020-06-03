@@ -125,8 +125,8 @@ include 'strings.asm'
 	LEN_OF_DATA strcalc $-START_OF_DATA
 	display "Data length: ",LEN_OF_DATA,$0A
 
-ScrapMem:=$D02AD7
-FlashByte:=$D00125
+ScrapMem:=$D0017C
+FlashByte:=$D0017B
 BaseSP:=$D1A87E
 textColors:=$D1887C-3
 

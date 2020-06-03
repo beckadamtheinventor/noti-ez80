@@ -248,8 +248,7 @@ boot_index_os_list:
 	ld a,(ScrapMem+2)
 	ld (de),a
 	inc de
-	ld c,(hl)
-	add a,c
+	add a,(hl)
 	ld (ScrapMem+2),a
 	ld hl,(ScrapMem)
 	ld bc,$400000
@@ -260,6 +259,7 @@ boot_index_os_list:
 .exit:
 	ld (ScrapMem),hl
 	ld a,(ScrapMem+2)
+	inc a
 	ld ($D00107),a ;first sector of user flash memory
 	ret
 
