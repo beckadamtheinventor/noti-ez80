@@ -220,6 +220,7 @@ include 'routines/FLTMAX.asm'
 
 boot_index_os_list:
 	ld de,$D00000
+	push de
 	xor a,a
 	ld (de),a
 	push de
@@ -227,6 +228,7 @@ boot_index_os_list:
 	inc de
 	ld bc,255
 	ldir
+	pop de
 	ld hl,$020100
 	ld a,$02
 	ld (ScrapMem+2),a
