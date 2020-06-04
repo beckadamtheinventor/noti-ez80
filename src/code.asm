@@ -706,8 +706,19 @@ _boot_NewLine:
 	ld (ti.curCol),a
 	ld a,(ti.curRow)
 	inc a
+	cp a,20
+	jr nc,_boot_ScrollTextUp
 	ld (ti.curRow),a
 	ret
+
+_boot_ScrollTextUp:
+	ld de,vRamBuffer+320*18
+	ld hl,vRamBuffer+320*28
+	ld bc,320*(240-28)
+	ldir
+	ret
+
+
 
 _boot_blit_buffer:
 	ld hl,vRamBuffer
