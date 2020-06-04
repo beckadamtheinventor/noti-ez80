@@ -250,6 +250,8 @@ boot_index_os_list:
 	ld bc,string_os_identifier
 	push bc
 	call _strcmp
+	xor a,a
+	or a,l
 	pop bc
 	pop bc
 	pop hl
