@@ -219,8 +219,15 @@ include 'routines/FLTMAX.asm'
 
 
 boot_index_os_list:
-	ld hl,$020100
 	ld de,$D00000
+	xor a,a
+	ld (de),a
+	push de
+	pop hl
+	inc de
+	ld bc,255
+	ldir
+	ld hl,$020100
 	ld a,$02
 	ld (ScrapMem+2),a
 .loop:
@@ -712,10 +719,12 @@ _boot_NewLine:
 	ret
 
 _boot_ScrollTextUp:
+	push hl
 	ld de,vRamBuffer+320*18
 	ld hl,vRamBuffer+320*28
 	ld bc,320*(240-28)
 	ldir
+	pop hl
 	ret
 
 

@@ -57,13 +57,15 @@ boot_menu:
 	jr .setcursor
 .curup:
 	ld a,(ix-1)
-	dec a
-	jr nc,.setcursor
-	ld a,(ix-2)
-	dec a
+	or a,a
+	jr z,.cursorseekend
 .setcursor:
 	ld (ix-1),a
 	jq .draw
+.cursorseekend:
+	ld a,(ix-2)
+	dec a
+	jq .setcursor
 .launch_hex_editor:
 	call hex_editor
 	jq boot_menu
