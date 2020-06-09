@@ -46,25 +46,7 @@ paduntil $80
 
 ;follow with the jump table
 include 'table.asm'
-;pad until $700. Hopefully enough room for standard bootcode functions
-paduntil $700
-	jp boot_wait_key_cycle
-	jp _boot_SetVRAM
-	jp _boot_SetBuffer
-	jp boot_gfx_compute
-	jp boot_gfx_horizontal
-	jp boot_gfx_vertical
-	jp boot_gfx_rectangle
-	jp boot_gfx_filled_rectangle
-	jp boot_homeup
-	jp _boot_PutS
-	jp _boot_PutC
-	jp _boot_puts_and_new_line
-	jp _boot_drawstatusbar
-	jp _boot_blit_buffer
-;pad until $7F0, place OpenCE bootcode notice, so OSs can take advantage of more jumps
-paduntil $7F0
-	db "OpenCE bootcode",0
+include 'table2.asm'
 START_OF_CODE:
 
 boot_interrupt_handler:
@@ -86,13 +68,17 @@ include 'cstd.asm'
 include 'rtc_code.asm'
 include 'spi_code.asm'
 include 'usb_code.asm'
+include 'routines.asm'
+include 'math.asm'
 include 'hexeditor.asm'
 
 	LEN_OF_CODE strcalc $-START_OF_CODE
 	display "Main code length: ",LEN_OF_CODE,$0A
+	TOTAL_ROM_SIZE = TOTAL_ROM_SIZE+$-START_OF_CODE
 
 START_OF_DATA:
 include 'font.asm'
+include 'libraries.asm'
 LCD_Controller_init_data:
 	db $38,$03,$0A,$1F
 	db $3F,$09,$02,$04
@@ -124,9 +110,25 @@ include 'strings.asm'
 
 	LEN_OF_DATA strcalc $-START_OF_DATA
 	display "Data length: ",LEN_OF_DATA,$0A
+	TOTAL_ROM_SIZE = TOTAL_ROM_SIZE+$-START_OF_DATA
+
+paduntil $010080
+
+BARE_OS_START:
+include 'BareOS/main.asm'
+
+	LEN_OF_BARE_OS strcalc $-BARE_OS_START
+	display "BareOS Length:",LEN_OF_BARE_OS,$0A
+	TOTAL_ROM_SIZE = TOTAL_ROM_SIZE+$-BARE_OS_START
+
 
 ScrapMem:=$D0017C
 FlashByte:=$D0017B
 BaseSP:=$D1A87E
 textColors:=$D1887C-3
-
+curHeapPtr:=$D1887C-6
+asm_program_size:=$D1887C-9
+start_of_dynamic_lib_ptr:=$D1887C-12
+end_of_dynamic_lib:=$D3FFFF
+baseHeap:=$D1887C+1
+exec_memory:=$D1A881

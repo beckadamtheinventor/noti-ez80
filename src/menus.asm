@@ -1,5 +1,6 @@
 boot_boot_os:
 	call boot_setup_hardware
+
 boot_menu:
 	ld hl,-2
 	call _frameset
@@ -7,6 +8,7 @@ boot_menu:
 	ld (ix-1),a
 	call boot_index_os_list
 	ld (ix-2),e ;previous function returns de = end of OS list buffer
+
 .draw:
 	call boot_menu_draw
 	ld hl,$D00000
@@ -33,8 +35,10 @@ boot_menu:
 	ld a,(hl)
 	cp a,$80
 	call c,_boot_PutS
+
 .noos:
 	call _boot_blit_buffer
+
 .keys:
 	call boot_wait_key_cycle
 	cp a,1
@@ -42,12 +46,15 @@ boot_menu:
 	cp a,4
 	jq z,.curup
 	cp a,15 ;[clear] key
-	jr z,.turn_off
+	jq z,.turn_off
 	cp a,31 ;[prgm] key
-	jr z,.launch_hex_editor
+	jq z,.launch_hex_editor
 	cp a,9 ;[enter] key
-	jr z,.launch_os
+	jq z,.launch_os
+	;cp a,35 ;'T' key
+	;jq z,.launch_autotester
 	jr .keys
+
 .curdown:
 	ld a,(ix-1)
 	inc a
@@ -55,23 +62,27 @@ boot_menu:
 	jr nz,.setcursor
 	xor a,a
 	jr .setcursor
+
 .curup:
 	ld a,(ix-1)
 	or a,a
 	jr z,.cursorseekend
+	dec a
+
 .setcursor:
 	ld (ix-1),a
 	jq .draw
+
 .cursorseekend:
 	ld a,(ix-2)
 	dec a
 	jq .setcursor
+
 .launch_hex_editor:
 	call hex_editor
 	jq boot_menu
+
 .launch_os:
-	call boot_check_os_signature
-	jq nz,.no_os
 	ld hl,$0108
 	ld (ScrapMem),hl
 	ld bc,$D00000
@@ -82,9 +93,23 @@ boot_menu:
 	ld sp,ix
 	pop ix
 	jp (hl)
+
 .no_os:
-	ld iy,string_no_os
 	rst 8
+
+.launch_autotester:
+	call boot_menu_clear
+	ld c,0
+	push bc
+	ld bc,6282
+	push bc
+	ld bc,392
+	push bc
+	ld hl,_sin
+	call test_aubc_routine
+	pop bc,bc,bc
+	jq boot_menu
+
 .turn_off:
 	ld sp,ix
 	pop ix
@@ -95,6 +120,75 @@ turn_calc_off:
 	or a,a
 	jr z,.loop
 	rst 0
+
+
+test_aubc_routine:
+	ld a,$C3
+	ld ($D00000),a
+	ld ($D00001),hl
+	ld hl,-7
+	call _frameset
+	ld hl,string_testing_function
+	call _boot_PutS
+	xor a,a
+	sbc hl,hl
+	ld (ix-7),hl
+	ld (ix-4),a
+	ld hl,($D00001)
+	call _print24h
+	call _boot_NewLine
+	ld bc,(ti.curRow)
+	ld (ix-3),bc
+	jr .test_entry
+.test_loop:
+	ld bc,(ix-3)
+	ld hl,ti.curRow
+	ld (hl),c
+	inc hl
+	ld (hl),b
+.test_entry:
+	ld hl,(ix-7)
+	ld a,(ix-4)
+	push af
+	push hl
+	ld e,a
+	call _print32h
+	ld a,'='
+	call _boot_PutC
+	pop bc
+	pop af
+	call _ltof
+	call $D00000
+	ld bc,$10000
+	ld a,c
+	call _fmul
+	call _ftol
+	push bc
+	pop hl
+	ld e,a
+	call _print32h
+	call _boot_blit_buffer
+	xor a,a
+	ld bc,(ix+6)
+	ld hl,(ix-7)
+	ld e,(ix-4)
+	call _ladd
+	ld (ix-7),bc
+	ld (ix-4),a
+	ld hl,(ix+9)
+	ld e,(ix+12)
+	call _fcmp
+	jp m,.exit
+	call boot_scan_keypad
+	ld a,($F50014+6*2)
+	bit 6,a
+	jr z,.test_loop
+.exit:
+	call boot_wait_key_cycle
+	ld sp,ix
+	pop ix
+	ret
+
 
 boot_abort_and_restart:
 	call boot_menu_draw
@@ -119,13 +213,16 @@ boot_abort_and_restart:
 	call _boot_TurnOffHardware
 	rst 0
 
-boot_menu_draw:
+boot_menu_clear:
 	call _boot_ClearVRAM
 	call _boot_ClearBuffer
 	call _boot_homeup
-	call _boot_drawstatusbar
 	ld bc,$FF
 	ld (textColors),bc
+	jp _boot_drawstatusbar
+
+boot_menu_draw:
+	call boot_menu_clear
 	call boot_check_os_signature
 	jr z,.dont_say_no_os
 	ld hl,string_no_os

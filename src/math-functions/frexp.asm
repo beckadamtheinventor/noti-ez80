@@ -1,0 +1,3 @@
+
+_frexp:
+	ret

@@ -16,6 +16,9 @@ string_error_message:
 	db "Error message:",0
 
 
+string_testing_function:
+	db "testing routine: $",0
+
 string_to_go_back:
 	db "Press [clear] to go back",0
 
@@ -23,7 +26,7 @@ string_no_os:
 	db "No OS installed; cannot boot.",0
 string_boot_version:
 	db "OpenCE bootcode",0
-	db "version 0.01.0021",0
+	db "version 0.01.0024",0
 
 string_erase_sector:
 	db "This will erase the currently selected flash sector.",0

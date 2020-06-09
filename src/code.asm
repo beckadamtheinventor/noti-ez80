@@ -164,7 +164,7 @@ _boot_set_8bpp_xlibc_mode:
 	ret
 
 boot_check_os_signature:
-	ld hl,$020100
+	ld hl,$010100
 	ld a,$5A
 	cp a,(hl)
 	ret nz
@@ -212,12 +212,6 @@ boot_memset:
 
 
 
-include 'routines/strtok.asm'
-;include 'routines/printf.asm'
-;include 'routines/sprintf.asm'
-include 'routines/FLTMAX.asm'
-
-
 boot_index_os_list:
 	ld de,$D00000
 	push de
@@ -229,8 +223,8 @@ boot_index_os_list:
 	ld bc,255
 	ldir
 	pop de
-	ld hl,$020100
-	ld a,$02
+	ld hl,$010100
+	ld a,$01
 	ld (ScrapMem+2),a
 .loop:
 	ld a,(hl)
@@ -449,14 +443,16 @@ _CleanupCertificate:;=$00002EC
 
 ;   Empties out the OS heap
 ;   I think that only the bootcode directly accesses the heap, so you can implement it any way you want
-_ClrHeap:
+_ClrHeap:=_clearHeap
 
 ;   TODO: determine which registers are used
-_CpyToHeap:
+_CpyToHeap:=_heapAlloc
 
 
 ;   Probably returns the size of the heap in hl and the bottom of the heap in de?
 _ChkHeapTop:
+	ld hl,(curHeapPtr)
+	ret
 
 ; input ix routine to execute.
 ; routine must begin with two-byte length of routine
@@ -628,10 +624,10 @@ _FindSimpleGroupedField:
 ;   maybe part of OS verification?
 ;   only called directly by boot code @ 12CEEh
 _something_SHA_cert:
-	ret
 
 
 _FindAppHeaderTimestamp:
+	ret
 
 _boot_ZeroVRAM:
 	xor a,a
@@ -708,6 +704,85 @@ _PutSpinner:
 	ld (hl),a
 	add hl,de
 	djnz .loop
+	ret
+
+_unpackDynamicLibraries:
+	ld hl,data_libraries
+	push ix
+.loop:
+	ld a,(de)
+	cp a,$C0
+	jr nz,.exit
+	call .find
+	ret c
+	ex hl,de
+	xor a,a
+	ld bc,0
+	cpir
+	inc hl
+	ex hl,de
+	ld a,(de)
+	cp a,$C3
+	jr nz,.loop
+	push hl,de
+	ld hl,(ix)
+	xor a,a
+	ld bc,0
+	cpir
+	inc hl
+	ld bc,(hl)
+	ex hl,de
+	ld hl,(start_of_dynamic_lib_ptr)
+	or a,a
+	sbc hl,bc
+	ld (start_of_dynamic_lib_ptr),hl
+	push de,hl
+	call _zx7_Decompress
+	pop ix,hl
+
+; -- TODO --
+
+	pop de,hl
+	jr .loop
+.exit:
+	pop ix
+	xor a,a
+	ret
+.find:
+	push hl
+	ld hl,(hl)
+	push de
+	push hl
+	call _strcmp
+	xor a,a
+	or a,l
+	pop hl
+	pop de
+	pop hl
+	jr z,.found
+	inc hl
+	inc hl
+	inc hl
+	ld bc,data_libraries.end
+	or a,a
+	sbc hl,bc
+	add hl,bc
+	jr c,.loop
+	scf
+	ret
+.found:
+	xor a,a
+	push hl
+	pop ix
+	ret
+.extract:
+	xor a,a
+	ld bc,0
+	cpir
+	inc hl
+	push hl
+	call _zx7_Decompress
+	pop hl,bc
 	ret
 
 _boot_puts_and_new_line:

@@ -25,30 +25,20 @@ hex_editor:
 	push hl
 	ld c,(ix-7)
 	add hl,bc ;add cursor offset
-	ld (ix-3),hl
-	lea hl,ix-1
-	ld b,3
-.addrloop:
-	ld a,(hl)
-	push bc
-	call .putbyte
-	pop bc
-	dec hl
-	dec hl
-	djnz .addrloop
+	call _print24h
 	pop hl
-	ld (ix-3),hl
 	ld a,3
 	ld (ti.curRow),a
 	xor a,a
 	ld (ti.curCol),a
-	ld hl,(ix-3) ;edit page pointer
 	ld c,16
 .outer:
 	ld b,8
 .inner:
 	push bc
-	call .putbyte
+	ld a,(hl)
+	inc hl
+	call _print8h
 	pop bc
 	ld a,(ti.curCol)
 	inc a
@@ -83,7 +73,8 @@ hex_editor:
 	add hl,bc ;(hl) = byte to recolor
 	ld a,6
 	ld (textColors),a
-	call .putbyte
+	ld a,(hl)
+	call _print8h
 	call _boot_blit_buffer
 .keys:
 	call boot_wait_key
@@ -199,25 +190,6 @@ hex_editor:
 	ld (ix-7),a
 .dontloadcursor:
 	jp .main_loop
-.putbyte:
-	ld a,(hl)
-	rra
-	rra
-	rra
-	rra
-	and a,$F
-	call .putnibble
-	ld a,(hl)
-	inc hl
-	and a,$F
-.putnibble:
-	cp a,10
-	jr nc,.putnibbleA
-	add a,$30
-	jp _boot_PutC
-.putnibbleA:
-	add a,$41-10
-	jp _boot_PutC
 .setaddress:
 	call .getaddress
 	jp c,.main_loop
@@ -244,7 +216,7 @@ hex_editor:
 	jr nz,.exitaddrloop
 	ld (ix-8),c
 	ld a,c
-	call .putnibble
+	call _print4h
 	call _boot_blit_buffer
 	call boot_wait_key_cycle
 	ld bc,16
@@ -253,7 +225,7 @@ hex_editor:
 	jr nz,.exitaddrloop
 	ld a,c
 	ld l,a
-	call .putnibble
+	call _print4h
 	ld a,(ix-8)
 	rlca
 	rlca
