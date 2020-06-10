@@ -1,7 +1,7 @@
 #!/bin/bash
 #----------------------------------------
 #Put your program name in place of "DEMO"
-name='OPENCE.rom'
+name='NOTI.rom'
 #----------------------------------------
 
 mkdir -p bin

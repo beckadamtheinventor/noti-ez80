@@ -1,9 +1,9 @@
 
-define oce? oce
-namespace oce
+define noti? noti
+namespace noti
 
 ?identifier_location     := $7F0 ; the 16 bytes starting here must be the null-terminated string,
-                                 ;"OpenCE bootcode", otherwise you are not running this revision of the OpenCE bootcode.
+                                 ;"noti bootcode", otherwise you are not running this revision of the noti-ez80 bootcode.
 
 ; jump table
 

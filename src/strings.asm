@@ -25,8 +25,8 @@ string_to_go_back:
 string_no_os:
 	db "No OS installed; cannot boot.",0
 string_boot_version:
-	db "OpenCE bootcode",0
-	db "version 0.01.0024",0
+	db "noti bootcode",0
+	db "version 0.02.0001",0
 
 string_erase_sector:
 	db "This will erase the currently selected flash sector.",0
@@ -40,6 +40,6 @@ string_boot_this_os:
 	db "Press enter to boot this OS",0
 
 string_os_identifier:
-	db "OpenCE OS",0
+	db "noti OS",0
 
 

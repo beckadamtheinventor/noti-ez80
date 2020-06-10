@@ -1,7 +1,7 @@
 
 
-Operating systems compatible with Open-CE must have the following magic bytes, offset $F0 from their starting sector.
-"OpenCE OS",0,X,X,X,X,X,X,$5A,$A5,$FF,L. X can be any byte, L must be the number of sectors that this OS occupies.
+Operating systems compatible with noti-ez80 must have the following magic bytes, offset $F0 from their starting sector.
+"noti OS",0,X,X,X,X,X,X,X,X,$5A,$A5,$FF,L. X can be any byte, L must be the number of sectors that this OS occupies.
 
 The name of this OS must be placed at $80 offset from their starting sector
 
