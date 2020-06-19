@@ -71,6 +71,7 @@ include 'usb_code.asm'
 include 'routines.asm'
 include 'math.asm'
 include 'hexeditor.asm'
+include 'libraries.asm'
 
 	LEN_OF_CODE strcalc $-START_OF_CODE
 	display "Main code length: ",LEN_OF_CODE,$0A
@@ -78,7 +79,6 @@ include 'hexeditor.asm'
 
 START_OF_DATA:
 include 'font.asm'
-include 'libraries.asm'
 LCD_Controller_init_data:
 	db $38,$03,$0A,$1F
 	db $3F,$09,$02,$04
@@ -112,9 +112,9 @@ include 'strings.asm'
 	display "Data length: ",LEN_OF_DATA,$0A
 	TOTAL_ROM_SIZE = TOTAL_ROM_SIZE+$-START_OF_DATA
 
-paduntil $010080
+paduntil $010000
 
-BARE_OS_START:
+BARE_OS_START:=$+80
 include 'BareOS/main.asm'
 
 	LEN_OF_BARE_OS strcalc $-BARE_OS_START

@@ -213,6 +213,7 @@ fs_execute_file:
 
 
 fs_create_file:
+	call noti.waitKeyCycle
 	ld hl,3
 	add hl,sp
 	ld hl,(hl)

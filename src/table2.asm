@@ -15,7 +15,7 @@ paduntil $700
 	jp _boot_puts_and_new_line
 	jp _boot_drawstatusbar
 	jp _boot_blit_buffer
-	jp _unpackDynamicLibraries
+	jp _unpackDynamicLibrary
 	jp _boot_ClearVRAM
 	jp _boot_ClearBuffer
 	riemann
@@ -61,9 +61,9 @@ paduntil $700
 	riemann
 	riemann
 	riemann
-;place OpenCE bootcode notice, so programs/OSs can easily tell
+;place noti bootcode notice, so programs/OSs can easily tell
 assert $=$7F0
-	db "OpenCE bootcode",0
+	db "noti bootcode",0
 	jp END_OF_JUMPS
 	jp _pushOP1
 	jp _pushOP2

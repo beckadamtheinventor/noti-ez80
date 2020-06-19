@@ -24,24 +24,24 @@ get_user_input:
 	xor a,a
 	ld (ti.curCol),a
 	ld bc,$FF
-	ld (oce.textColors),bc
+	ld (noti.textColors),bc
 	ld hl,(ix+6)
-	call oce.putS
+	call noti.putS
 	ld a,7
-	ld (oce.textColors),a
+	ld (noti.textColors),a
 	ld bc,0
 	ld hl,_overtypes
 	ld c,(ix-4)
 	add hl,bc
 	ld a,(hl)
-	call oce.putC
+	call noti.putC
 	ld a,$FF
-	ld (oce.textColors),a
+	ld (noti.textColors),a
 	ld a,' '
-	call oce.putC
-	call oce.blitBuffer
+	call noti.putC
+	call noti.blitBuffer
 .keys:
-	call oce.waitKeyCycle
+	call noti.waitKeyCycle
 	cp a,56
 	jq z,.delete
 	cp a,15
@@ -139,7 +139,6 @@ process_command:
 	xor a,a
 	dec de
 	ld (de),a
-	inc de
 	inc de
 	ld a,(de)
 	or a,a

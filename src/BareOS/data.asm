@@ -15,12 +15,12 @@ _overtypes:
 	db "Aa1"
 string_welcome:
 	db "Welcome to BareOS!",0
-string_return_to_OpenCE:
+string_return_to_bootloader:
 	db "Return to bootloader?",0
 ;string_press_enter_confirm:
 ;	db "Press enter to confirm.",0
-string_OpenCE_bootcode:
-	db "OpenCE bootcode",0
+string_noti_bootcode:
+	db "noti bootcode",0
 string_invalid_executable:
 	db "Invalid executable format",0
 string_file_not_found:
@@ -64,12 +64,13 @@ sys_file_1:
 	ret
 .fail_no_args:
 	ld hl,.string_help
-	call oce.putSAndNewLine
+	call noti.putSAndNewLine
 	xor a,a
 	ret
 .string_help:
 	db "RM FILE [...]",0
 .len:=$-.data
+
 
 sys_file_2:
 	db fs_system_bit+fs_executable_bit+fs_exists_bit
@@ -108,7 +109,7 @@ sys_file_2:
 	ret
 .fail_no_args:
 	ld hl,.string_help
-	call oce.putSAndNewLine
+	call noti.putSAndNewLine
 	xor a,a
 	ret
 .string_help:
@@ -154,7 +155,7 @@ sys_file_3:
 	ret
 .fail_no_args:
 	ld hl,.string_help
-	call oce.putSAndNewLine
+	call noti.putSAndNewLine
 	xor a,a
 	ret
 .string_help:
@@ -200,7 +201,7 @@ sys_file_4:
 	ret
 .fail_no_args:
 	ld hl,.string_help
-	call oce.putSAndNewLine
+	call noti.putSAndNewLine
 	xor a,a
 	ret
 .string_help:

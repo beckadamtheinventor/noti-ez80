@@ -19,42 +19,43 @@ rst20Handler:
 rst28Handler:
 rst30Handler:
 bootOS:
-	call testIsOpenCE
-	jq z,bootOpenCEOS
+	call testIsNOTI
+	jq z,bootNOTIOS
 	jp ti.MarkOSInvalid
-testIsOpenCE:
-	ld bc,oce.identifier_location
+testIsNOTI:
+	ld bc,noti.identifier_location
 	push bc
-	ld bc,string_OpenCE_bootcode
+	ld bc,string_noti_bootcode
 	push bc
 	call ti._strcmp
 	xor a,a
 	or a,l
 	pop bc,bc
 	ret
-bootOpenCEOS:
+
+bootNOTIOS:
 	call fs_build_VAT
 	ld hl,fs_temp_name_start
 	ld (fs_temp_name_ptr),hl
 OSMain:
 	ld bc,$FF
-	ld (oce.textColors),bc
+	ld (noti.textColors),bc
 	call clearScreenHomeUpStatusBar
 	ld hl,string_welcome
-	call oce.putSAndNewLine
-	call oce.blitBuffer
+	call noti.putSAndNewLine
+	call noti.blitBuffer
 .keys:
-	call oce.waitKeyCycle
+	call noti.waitKeyCycle
 	cp a,9
 	jq z,.console
 	cp a,15
 	jr nz,.keys
 	call clearScreenHomeUpStatusBar
-	ld hl,string_return_to_OpenCE
-	call oce.putSAndNewLine
-	call oce.putSAndNewLine
-	call oce.blitBuffer
-	call oce.waitKeyCycle
+	ld hl,string_return_to_bootloader
+	call noti.putSAndNewLine
+	call noti.putSAndNewLine
+	call noti.blitBuffer
+	call noti.waitKeyCycle
 	cp a,9
 	jr nz,OSMain
 	call ti.boot.TurnOffHardware
@@ -97,14 +98,14 @@ scrollText:
 
 ErrorHandler:
 	ld bc,$80FF
-	ld (oce.textColors),bc
-	call oce.putSAndNewLine
-	jp oce.blitBuffer
+	ld (noti.textColors),bc
+	call noti.putSAndNewLine
+	jp noti.blitBuffer
 
 
 clearScreenHomeUpStatusBar:
 	ld a,$FF
-	call oce.setBuffer
-	call oce.homeUp
-	jp oce.drawStatusBar
+	call noti.setBuffer
+	call noti.homeUp
+	jp noti.drawStatusBar
 

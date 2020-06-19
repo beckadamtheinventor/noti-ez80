@@ -2,7 +2,7 @@
 define noti? noti
 namespace noti
 
-?identifier_location     := $7F0 ; the 16 bytes starting here must be the null-terminated string,
+?identifier_location     := $7F0 ; the 14 bytes starting here must be the null-terminated string,
                                  ;"noti bootcode", otherwise you are not running this revision of the noti-ez80 bootcode.
 
 ; jump table

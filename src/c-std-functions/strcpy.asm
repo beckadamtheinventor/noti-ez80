@@ -1,9 +1,13 @@
 
 ;   char * strcpy(void * d, void * s)
 _strcpy:
-	pop iy
+	pop hl
+	pop bc
+	push bc
+	push hl
+	push bc
 	call _strlen
-	push hl  ;ld bc,hl
+	ex (sp),hl
 	pop bc
 	pop hl   ;void *s
 	pop de   ;void *d
@@ -12,5 +16,4 @@ _strcpy:
 	push de
 	ldir
 	pop hl
-	push iy
 	ret
