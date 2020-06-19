@@ -144,9 +144,9 @@ process_command:
 	or a,a
 	jr z,.no_args
 	push bc
+	push de
 	ld hl,sys_exec_arguments
 	push hl
-	push de
 	call ti._strcpy
 	pop bc
 	pop bc
