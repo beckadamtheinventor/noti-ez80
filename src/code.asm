@@ -480,7 +480,7 @@ _ExecuteInRAM:
 	pop hl
 	pop af
 	jp (ix)
-	
+
 
 ;   Identical to _ExecuteInRAM
 _ExecuteInRAMDup:=_ExecuteInRAM

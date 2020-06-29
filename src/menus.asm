@@ -51,8 +51,8 @@ boot_menu:
 	jq z,.launch_hex_editor
 	cp a,9 ;[enter] key
 	jq z,.launch_os
-	;cp a,35 ;'T' key
-	;jq z,.launch_autotester
+	cp a,52 ;[window] key
+	jq z,.restore_bootcode
 	jr .keys
 
 .curdown:
@@ -94,21 +94,16 @@ boot_menu:
 	pop ix
 	jp (hl)
 
+.restore_bootcode:
+	call restore_bootcode
+;we won't get here if the installation succeeds
+	ld hl,string_failed_to_restore
+	call _boot_puts_and_new_line
+	call _boot_blit_buffer
+	jp boot_wait_key_cycle
+
 .no_os:
 	rst 8
-
-.launch_autotester:
-	call boot_menu_clear
-	ld c,0
-	push bc
-	ld bc,6282
-	push bc
-	ld bc,392
-	push bc
-	ld hl,_sin
-	call test_aubc_routine
-	pop bc,bc,bc
-	jq boot_menu
 
 .turn_off:
 	ld sp,ix

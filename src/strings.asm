@@ -14,6 +14,8 @@ string_press_enter_continue:
 	db "Press [enter] to continue",0
 string_error_message:
 	db "Error message:",0
+string_failed_to_restore:
+	db "Failed to restore bootcode.",0
 
 
 string_testing_function:

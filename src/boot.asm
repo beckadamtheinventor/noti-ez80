@@ -72,6 +72,7 @@ include 'routines.asm'
 include 'math.asm'
 include 'hexeditor.asm'
 include 'libraries.asm'
+include 'restore.asm'
 
 	LEN_OF_CODE strcalc $-START_OF_CODE
 	display "Main code length: ",LEN_OF_CODE,$0A
@@ -112,14 +113,6 @@ include 'strings.asm'
 	display "Data length: ",LEN_OF_DATA,$0A
 	TOTAL_ROM_SIZE = TOTAL_ROM_SIZE+$-START_OF_DATA
 
-paduntil $010000
-
-BARE_OS_START:=$+80
-include 'BareOS/main.asm'
-
-	LEN_OF_BARE_OS strcalc $-BARE_OS_START
-	display "BareOS Length:",LEN_OF_BARE_OS,$0A
-	TOTAL_ROM_SIZE = TOTAL_ROM_SIZE+$-BARE_OS_START
 
 
 ScrapMem:=$D0017C

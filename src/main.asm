@@ -21,14 +21,6 @@ calminstruction (var) strcalc? val
 	publish var, val
 end calminstruction
 
-macro unlock_flash?
-
-end macro
-
-macro lock_flash?
-
-end macro
-
 macro .def
 end macro
 
@@ -47,12 +39,19 @@ START_OF_ROM:
 __SECTOR_00h:		;Bootloader goes here
 	include 'boot.asm'
 
+LEN_OF_BOOT strcalc $-START_OF_ROM
 
-END_OF_ROM:
-	ROM_SIZE strcalc TOTAL_ROM_SIZE
-	display "Total code+data size: ",ROM_SIZE
+paduntil $010000
 
+BARE_OS_START:=$+80
+include 'BareOS/main.asm'
+
+	LEN_OF_BARE_OS strcalc $-BARE_OS_START
+	display "BareOS Length:",LEN_OF_BARE_OS,$0A
+	TOTAL_ROM_SIZE = TOTAL_ROM_SIZE+$-BARE_OS_START
+
+	LEN_OF_ALL_CODE strcalc TOTAL_ROM_SIZE
+	display "Total code size:",LEN_OF_ALL_CODE,$0A
 
 paduntil $020000
-__SECTOR_02h:		;OS goes here
 
