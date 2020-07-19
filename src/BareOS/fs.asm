@@ -5,9 +5,9 @@ fs_new_file_bit    := 1 shl 1 ;indicates file must be created upon writing
 
 ; file data flags. If the flag byte is equal to $FF, then assume there are no remaining files
 ;fs_exists_bit      := 1 shl 0 ;reset this to mark a file for deletion (same as VAT flag)
-fs_executable_bit  := 1 shl 1
-fs_system_bit      := 1 shl 2
-fs_read_only_bit   := 1 shl 3
+fs_executable_bit  := 1 shl 2 ;true if executable
+fs_system_bit      := 1 shl 3 ;true if system file
+fs_read_only_bit   := 1 shl 4 ;true if read-only
 
 fs_temp_name_ptr   := $D00101 ;store temp name pointer. temp names are file that have not yet been written to.
 fs_VAT_start       := $D01000 ;$2000 bytes = 2048x4 byte entries
@@ -15,6 +15,14 @@ fs_VAT_ptr         := $D00104 ;points to current end of VAT pointer
 fs_flash_ptr       := $D00107 ;first sector of user flash memory
 fs_end_flash_ptr   := $D00108 ;points to end of user flash memory
 fs_temp_name_start := $D00140 ;start of temporary file name stack
+
+
+;VAT data structure:
+;	flags -> 3b file data pointer
+;file data structure:
+;	flags -> 3b data length -> name -> 0x00 -> data
+
+
 
 fs_build_VAT:
 	push ix
@@ -34,7 +42,7 @@ fs_build_VAT:
 .loop:
 	ld a,(hl)
 	cp a,$FF
-	ret z    ;if flag byte = $FF, there are no more user files to account for
+	ret z    ;if flag byte = $FF, there are no more files to account for
 	bit fs_exists_bit,a
 	jr z,.dont_count
 	ld a,fs_exists_bit
@@ -43,30 +51,18 @@ fs_build_VAT:
 	lea ix,ix+4
 .dont_count:
 	inc hl ;bypass flags
-	ld de,(hl)
+	ld de,(hl) ;get file length
 	inc hl
 	inc hl
 	inc hl ;bypass length
 	ld bc,0
 	xor a,a
 	cpir   ;bypass name
+	inc hl
 	add hl,de ;bypass file
 	jr .loop
 
 
-fs_get_file_name:
-	push hl
-	bit fs_new_file_bit,(hl)
-	inc hl
-	ld bc,(hl)
-	jr nz,.new_file
-	inc bc
-	inc bc
-	inc bc
-	inc bc
-.new_file:
-	pop hl
-	ret
 
 fs_find_sym:
 	pop hl
@@ -78,8 +74,12 @@ fs_find_sym:
 .loop:
 	push hl
 	push de
-	call fs_get_file_name
-	push bc
+	bit fs_new_file_bit,(hl)
+	inc hl
+	jr nz,.check_name
+	ld hl,(hl)
+.check_name:
+	push hl
 	call ti._strcmp
 	xor a,a
 	or a,l
@@ -107,8 +107,7 @@ fs_find_sym:
 
 fs_execute_file:
 	pop bc
-	pop hl
-	push hl
+	ex (sp),hl
 	push bc
 	push hl
 	call fs_find_sym
@@ -213,9 +212,15 @@ fs_execute_file:
 
 
 fs_create_file:
-	ld hl,3
-	add hl,sp
-	ld hl,(hl)
+	pop bc
+	ex (sp),hl
+	push bc
+	push hl
+	call fs_find_sym
+	pop hl
+	ccf
+	sbc a,a
+	ret nz ;return if file exists
 	ld de,(fs_temp_name_ptr)
 	push hl
 	push de
@@ -235,43 +240,87 @@ fs_create_file:
 	xor a,a
 	ld bc,0
 	cpir
+	inc hl
 	ld (fs_temp_name_ptr),hl ;advance temp name pointer
+	xor a,a
 	ret
 
 
 fs_delete_file:
+	pop de
+	ex (sp),hl
+	push de
+	push ix
+	push hl
 	call fs_find_sym
-	ret c
+	pop bc
+	sbc a,a
+	ret nz ;return if file not found
 	res fs_exists_bit,(hl)
 	bit fs_new_file_bit,(hl)
-	call z,.mark_flash_data
-	xor a,a
-	ret
+	push hl
+	pop ix
+	jr nz,.remove_temp_name
 .mark_flash_data:
 	inc hl
 	ld hl,(hl)
 	ld a,(hl)
 	res fs_exists_bit,a
 	ex hl,de
-	jp ti.WriteFlashByte
-
+	call ti.WriteFlashByte
+	jr .remove_VAT_entry
+.remove_temp_name:
+	inc hl
+	ld hl,(hl) ;copy destination
+	push hl
+	call ti._strlen
+	inc hl
+	push hl
+	pop bc ;copy source - destination
+	pop hl
+	push hl
+	add hl,bc ;copy source
+	ex hl,de
+	ld hl,(fs_temp_name_ptr) ;copy source end
+	or a,a
+	sbc hl,de ;copy length
+	push hl
+	pop bc ;copy length
+	ex hl,de
+	pop de ;copy destination
+	ldir
+.remove_VAT_entry:
+	lea de,ix+3 ;VAT pointer of file to remove
+	ld hl,(fs_VAT_ptr) ;end of VAT
+	dec hl
+	ld bc,4
+	lddr
+	ld (fs_VAT_ptr),hl
+	pop ix
+	xor a,a
+	ret
 
 fs_write_file:
+	pop de
+	ex (sp),hl
+	push de
+	push hl
 	call fs_find_sym
-	ret c
+	pop bc
+	sbc a,a
+	ret nz
 	push ix
 	push hl
 	pop ix
 	push iy
-	ld iy,3
+	ld iy,9
 	add iy,sp
 	ld hl,(iy) ;file name
 	push hl
 	call ti._strlen
-	pop ix
+	pop bc
 	push hl
 	pop bc
-	bit fs_new_file_bit,(ix)
 	ld hl,(fs_end_flash_ptr)
 	push hl
 	inc bc
@@ -279,10 +328,11 @@ fs_write_file:
 	add hl,bc
 	ld bc,(iy+9) ;length of data to write
 	add hl,bc
-	ld bc,4 ;flag byte + file length
-	add hl,bc
+	inc hl ;flag byte + file length
+	inc hl
+	inc hl
+	inc hl
 	ld (fs_end_flash_ptr),hl
-	xor a,a
 	bit fs_new_file_bit,(ix)
 	jr z,.no_file_flags
 	ld hl,(ix+1) ;get the old file pointer

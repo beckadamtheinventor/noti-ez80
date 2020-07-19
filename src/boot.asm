@@ -71,7 +71,6 @@ include 'usb_code.asm'
 include 'routines.asm'
 include 'math.asm'
 include 'hexeditor.asm'
-include 'libraries.asm'
 include 'restore.asm'
 
 	LEN_OF_CODE strcalc $-START_OF_CODE
