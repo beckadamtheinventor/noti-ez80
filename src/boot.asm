@@ -64,6 +64,7 @@ boot_interrupt_handler:
 
 include 'menus.asm'
 include 'code.asm'
+include 'gfx.asm'
 include 'cstd.asm'
 include 'rtc_code.asm'
 include 'spi_code.asm'
