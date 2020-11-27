@@ -4,9 +4,9 @@ boot_boot_os:
 boot_menu:
 	ld hl,-2
 	call _frameset
-	xor a,a
+	ld a,1
 	ld (ix-1),a
-	ld a,2
+	inc a
 	ld (ix-2),a
 
 .draw:
