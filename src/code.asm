@@ -212,62 +212,6 @@ boot_memset:
 
 
 
-boot_index_os_list:
-	ld de,$D00000
-	push de
-	xor a,a
-	ld (de),a
-	push de
-	pop hl
-	inc de
-	ld bc,255
-	ldir
-	pop de
-	ld hl,$010100
-	ld a,$01
-	ld (ScrapMem+2),a
-.loop:
-	ld a,(hl)
-	cp a,$5A
-	jr nz,.exit
-	inc hl
-	ld a,(hl)
-	cp a,$A5
-	jr nz,.exit
-	inc hl
-	inc hl
-	push de
-	push hl
-	dec h
-	ld l,$F0
-	push hl
-	ld bc,string_os_identifier
-	push bc
-	call _strcmp
-	xor a,a
-	or a,l
-	pop bc
-	pop bc
-	pop hl
-	pop de
-	jr nz,.exit
-	ld (ScrapMem),hl
-	ld a,(ScrapMem+2)
-	ld (de),a
-	inc de
-	add a,(hl)
-	ld (ScrapMem+2),a
-	ld hl,(ScrapMem)
-	ld bc,$400000
-	xor a,a
-	sbc hl,bc
-	add hl,bc
-	jr c,.loop
-.exit:
-	ld a,(ScrapMem+2)
-	ld ($D00107),a ;first sector of user flash memory
-	ret
-
 ;   Doesn't seem to be used by TI-OS - breakpoint did nothing
 ;   Is only called directly in the bootcode by a function at 32F4h
 ;   TODO: investigate more

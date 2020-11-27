@@ -6,35 +6,24 @@ boot_menu:
 	call _frameset
 	xor a,a
 	ld (ix-1),a
-	call boot_index_os_list
-	ld (ix-2),e ;previous function returns de = end of OS list buffer
+	ld a,2
+	ld (ix-2),a
 
 .draw:
 	call boot_menu_draw
-	ld hl,$D00000
-	ld l,(ix-1)
-	ld a,(hl)
-	or a,a
-	jr z,.noos
-	push af
 	xor a,a
 	ld (ti.curCol),a
 	ld a,3
 	ld (ti.curRow),a
 	ld hl,string_boot_this_os
 	call _boot_puts_and_new_line
-	pop af
-	ld hl,ScrapMem+2
-	ld (hl),a
-	dec hl
-	xor a,a
-	ld (hl),a
-	dec hl
-	ld (hl),$80
-	ld hl,(ScrapMem)
-	ld a,(hl)
-	cp a,$80
-	call c,_boot_PutS
+	ld a,(ix-1)
+	ld hl,string_RecoveryMode
+	or a,a
+	jq z,.print
+	ld hl,string_OS
+.print:
+	call _boot_PutS
 
 .noos:
 	call _boot_blit_buffer
@@ -59,7 +48,7 @@ boot_menu:
 	ld a,(ix-1)
 	inc a
 	cp a,(ix-2)
-	jr nz,.setcursor
+	jr c,.setcursor
 	xor a,a
 	jr .setcursor
 
@@ -83,16 +72,10 @@ boot_menu:
 	jq boot_menu
 
 .launch_os:
-	ld hl,$0108
-	ld (ScrapMem),hl
-	ld bc,$D00000
-	ld c,(ix-1)
-	ld a,(bc)
-	ld (ScrapMem+2),a
-	ld hl,(ScrapMem)
-	ld sp,ix
-	pop ix
-	jp (hl)
+	ld a,(ix-1)
+	or a,a
+	jp z,$010108
+	jp $020108
 
 .restore_bootcode:
 	call restore_bootcode

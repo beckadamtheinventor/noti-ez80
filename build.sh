@@ -1,12 +1,8 @@
 #!/bin/bash
-#----------------------------------------
-#Put your program name in place of "DEMO"
-name='NOTI.rom'
-#----------------------------------------
 
 mkdir -p bin
+mkdir -p obj
 
-echo "compiling to $name"
-~/CEdev/bin/fasmg src/main.asm bin/$name
+fasmg src/main.asm bin/NOTI.rom
 
-read -p "Finished. Press any key to exit"
+read -p "Finished. Press enter to continue."

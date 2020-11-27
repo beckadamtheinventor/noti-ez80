@@ -15,7 +15,7 @@ paduntil $700
 	jp _boot_puts_and_new_line
 	jp _boot_drawstatusbar
 	jp _boot_blit_buffer
-	jp _unpackDynamicLibrary
+	riemann
 	jp _boot_ClearVRAM
 	jp _boot_ClearBuffer
 	riemann
