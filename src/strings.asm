@@ -34,6 +34,8 @@ string_erase_sector:
 	db "This will erase the currently selected flash sector.",0
 string_are_you_sure:
 	db "Are you sure?",0
+string_overwrite_sector:
+	db "Overwrite flash sector with RAM?",0
 
 string_press_enter_confirm:
 	db "Press [enter] to confirm",0

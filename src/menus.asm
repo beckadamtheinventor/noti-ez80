@@ -75,6 +75,9 @@ boot_menu:
 	ld a,(ix-1)
 	or a,a
 	jp z,$010108
+	call _boot_ZeroVRAM
+	ld a,ti.lcdBpp16
+	ld (ti.mpLcdCtrl),a
 	jp $020108
 
 .restore_bootcode:

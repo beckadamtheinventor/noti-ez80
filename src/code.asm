@@ -804,3 +804,57 @@ end repeat
 	pop bc
 	ret
 
+
+
+; I honestly don't know. Included for compatibility with USBDRVCE.
+_UsbUnpowerVbus:
+	push ix,iy
+	call $3C4
+	ld iy, $000001
+	push iy
+	call $0003BC
+	pop iy,iy,ix
+	ret 
+
+
+; I honestly don't know. Included this routine for compatibility with USBDDRVCE.
+_UsbPowerVbus:
+	push ix,iy
+	call $3C0
+	call $3C8
+	pop iy,ix
+	ret
+
+
+;Jumps to libload. Enough said
+_JumpToLibload := lib_libload
+
+
+; get a library given the name in OP1
+; only USBDRVCE, FATDRVCE, and SRLDRVCE are supported at this time
+; returns hl = library var size, de = library data pointer
+; returns Cf on fail
+_LoadLibraryOP1:
+	ld a,(ti.OP1+1)
+	cp a,'U'
+	jq z,.usbdrvce
+	cp a,'S'
+	jq z,.srldrvce
+	cp a,'F'
+	jq z,.fatdrvce
+	scf
+	ret
+.usbdrvce:
+	ld de,lib_usbdrvce
+	ld hl,lib_usbdrvce.len
+	ret
+.srldrvce:
+	ld de,lib_srldrvce
+	ld hl,lib_srldrvce.len
+	ret
+.fatdrvce:
+	ld de,lib_fatdrvce
+	ld hl,lib_fatdrvce.len
+	ret
+
+

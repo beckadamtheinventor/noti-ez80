@@ -48,10 +48,22 @@ include 'BareOS/main.asm'
 
 	LEN_OF_BARE_OS strcalc $-BARE_OS_START
 	display "BareOS Length:",LEN_OF_BARE_OS,$0A
+
 	TOTAL_ROM_SIZE = TOTAL_ROM_SIZE+$-BARE_OS_START
+
+paduntil $018000
+
+LIBRARY_DATA_START:
+include 'libraries.asm'
+
+	TOTAL_ROM_SIZE = TOTAL_ROM_SIZE+$-LIBRARY_DATA_START
+	LEN_OF_LIBLOAD_LIBS = $-LIBRARY_DATA_START
+	_LEN_OF_LIBLOAD_LIBS strcalc LEN_OF_LIBLOAD_LIBS
+	display "Libload libraries code size:",_LEN_OF_LIBLOAD_LIBS,$0A
+
+paduntil $020000
 
 	LEN_OF_ALL_CODE strcalc TOTAL_ROM_SIZE
 	display "Total code size:",LEN_OF_ALL_CODE,$0A
 
-paduntil $020000
 

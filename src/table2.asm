@@ -15,12 +15,12 @@ paduntil $700
 	jp _boot_puts_and_new_line
 	jp _boot_drawstatusbar
 	jp _boot_blit_buffer
-	riemann
+	jp _JumpToLibload
 	jp _boot_ClearVRAM
 	jp _boot_ClearBuffer
-	riemann
-	riemann
-	riemann
+	jp _UsbPowerVbus
+	jp _UsbUnpowerVbus
+	jp _LoadLibraryOP1
 	riemann
 	riemann
 	riemann
@@ -86,6 +86,7 @@ assert $=$7F0
 	jp _mov11b
 	jp _mov9b
 	jp _mov8b
+	jp _cphlde
 END_OF_JUMPS:
 
 paduntil $1000

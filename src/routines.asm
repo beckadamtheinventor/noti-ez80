@@ -16,3 +16,5 @@ include 'routines/mov11b.asm'
 include 'routines/mov9ToOP.asm'
 include 'routines/mov9b.asm'
 include 'routines/mov8b.asm'
+include 'routines/cphlde.asm'
+

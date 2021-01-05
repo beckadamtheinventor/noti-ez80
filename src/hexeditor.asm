@@ -1,13 +1,14 @@
 
 
 hex_editor:
-	ld hl,-8
+	ld hl,-11
 	call _frameset
 	ld hl,$D00000
 	ld (ix-3),hl
 	xor a,a
 	sbc hl,hl
 	ld (ix-6),hl
+	ld (ix-11),hl
 	ld (ix-7),a
 	ld (ix-8),a
 .main_loop:
@@ -103,12 +104,16 @@ hex_editor:
 	jq z,.exit
 	cp a,53 ;yequ key
 	jq z,.setaddress
+	cp a,9 ;enter key
+	jq z,.write_sector
 	cp a,10 ;"+" key
 	jq z,.forwardfullpage
 	cp a,11 ;"-" key
 	jq z,.backwardfullpage
 	cp a,12 ;"*"/"R" key
 	jq z,.maybeerasesector
+	cp a,13 ;"/" key
+	jq z,.edit_sector
 	ld bc,16
 	ld hl,.nibblekeys+15
 	cpdr
@@ -243,29 +248,70 @@ hex_editor:
 	scf
 	ret
 .maybeerasesector:
-	call .clearscreen
-	ld a,$FF
-	ld (textColors),a
 	ld hl,string_erase_sector
-	call _boot_puts_and_new_line
-	ld hl,string_are_you_sure
-	call _boot_puts_and_new_line
-	ld hl,string_press_enter_confirm
-	call _boot_blit_buffer
-	call boot_wait_key_cycle
+	call .confirm
 	cp a,9
 	call z,.erasesector
-	jp .main_loop
+	jq .main_loop
 .erasesector:
 	sbc hl,hl
 	ld bc,(ix-3)
 	ld l,(ix-7)
 	add hl,bc
-	jp _EraseFlash
+	jq _EraseFlash
 .clearscreen:
 	call _boot_ClearBuffer
 	call _boot_drawstatusbar
-	jp _boot_homeup
+	jq _boot_homeup
+.edit_sector:
+	or a,a
+	sbc hl,hl
+	ld bc,(ix-3)
+	ld l,(ix-7)
+	add hl,bc
+	ld de,$D30000
+	ld (ix-3),de
+	ld bc,$010000
+	ld l,c
+	ld h,b
+	ld (ix-11),hl
+	ldir
+	jq .main_loop
+.write_sector:
+	ld a,(ix-11)
+	or a,(ix-10)
+	or a,(ix-9)
+	jq z,.main_loop
+	call .clearscreen
+	ld a,$FF
+	ld (textColors),a
+	ld hl,string_overwrite_sector
+	call .confirm
+	cp a,9
+	call z,.overwrite_sector
+	jq .main_loop
+.overwrite_sector:
+	ld hl,(ix-11)
+	call _EraseFlash
+	ld hl,$D30000
+	ld de,(ix-11)
+	ld bc,0
+	ld (ix-11),bc
+	ld bc,$010000
+	jq _WriteFlash
+.confirm:
+	push hl
+	call .clearscreen
+	ld a,$FF
+	ld (textColors),a
+	pop hl
+	call _boot_puts_and_new_line
+	ld hl,string_are_you_sure
+	call _boot_puts_and_new_line
+	ld hl,string_press_enter_confirm
+	call _boot_blit_buffer
+	jq boot_wait_key_cycle
 
 .nibblekeys:
 	db 33,34,26,18,35,27,19,36,28,20,47,39,31,46,38,30
+
