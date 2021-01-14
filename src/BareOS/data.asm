@@ -13,9 +13,8 @@ _keymap_1:
 	db "+-*/^  ;369)$@ .258(&~ 0147,][  ",$1A,"<=>}{"
 _overtypes:
 	db "Aa1"
-nothing_here_yet:
-	db "Nothing here yet.",0
-
+install_from_usb:
+	db "Install OS from FAT32 USB drive. Place file OS.ROM into root of FAT32 formatted USB flash drive. Plug drive into calculator and press enter. Press clear to cancel.",0
 
 
 

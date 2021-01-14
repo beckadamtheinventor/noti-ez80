@@ -51,9 +51,12 @@ namespace noti
 ?_Mov9ToOP6              := $848
 ?_Mov11b                 := $84C
 ?_Mov9b                  := $850
-?_Mov8b                  := $858
-?_CpHLDE                 := $85C
-
+?_Mov8b                  := $854
+?_CpHLDE                 := $858
+?_EnoughMem              := $85C
+?_InsertMem              := $860
+?_LoadDEInd_s            := $864
+?_SetHLUTo0              := $868
 
 ; RAM equates
 

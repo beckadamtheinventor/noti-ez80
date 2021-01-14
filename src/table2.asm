@@ -63,7 +63,7 @@ paduntil $700
 	riemann
 ;place noti bootcode notice, so programs/OSs can easily tell
 assert $=$7F0
-	db "noti bootcode",0
+	db "noti bootcode",0,0,0
 	jp END_OF_JUMPS
 	jp _pushOP1
 	jp _pushOP2
@@ -87,6 +87,11 @@ assert $=$7F0
 	jp _mov9b
 	jp _mov8b
 	jp _cphlde
+	jp _enoughMem
+	jp _insertMem
+	jp _loadDEInd_s
+	jp _setHLUTo0
+
 END_OF_JUMPS:
 
 paduntil $1000

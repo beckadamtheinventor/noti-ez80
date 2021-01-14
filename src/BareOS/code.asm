@@ -4,14 +4,27 @@ OSMain:
 	ld bc,$FF
 	ld (noti.textColors),bc
 	call clearScreenHomeUpStatusBar
-	ld hl,nothing_here_yet
+	ld hl,install_from_usb
 	call noti.putSAndNewLine
 	call noti.blitBuffer
 .keys:
 	call noti.waitKeyCycle
+	cp a,9
+	jq z,.install_os
 	cp a,15
 	jr nz,.keys
 	rst 0
+
+.install_os:
+	or a,a
+	sbc hl,hl
+	push hl
+	ld hl,usbrun_data
+	ld de,ti.userMem
+	ld bc,usbrun_data.len
+	push de
+	ldir
+	ret
 
 
 nextLine:
@@ -41,4 +54,8 @@ clearScreenHomeUpStatusBar:
 	call noti.setBuffer
 	call noti.homeUp
 	jp noti.drawStatusBar
+
+usbrun_data:
+	file "usbrun.bin"
+.len:=$-.
 

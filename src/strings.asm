@@ -28,7 +28,7 @@ string_no_os:
 	db "No OS installed; cannot boot.",0
 string_boot_version:
 	db "noti bootcode",0
-	db "version 0.04.0001",0
+	db "version 0.05.0004",0
 
 string_erase_sector:
 	db "This will erase the currently selected flash sector.",0

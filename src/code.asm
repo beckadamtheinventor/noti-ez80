@@ -161,16 +161,24 @@ _boot_set_8bpp_xlibc_mode:
 	jr nz,.loop
 	ld a,$27
 	ld ($E30018),a
+    im 1
 	ret
 
 boot_check_os_signature:
-	ld hl,$010100
+	ld hl,$020100
 	ld a,$5A
 	cp a,(hl)
-	ret nz
+	jq nz,.fail
 	ld a,$A5
 	inc hl
 	cp a,(hl)
+	ret z
+.fail:
+	ld de,$020000
+	ld a,e
+	call $2E8 ;_WriteFlashA
+	xor a,a
+	inc a
 	ret
 
 ;log data to emulator console
@@ -827,7 +835,9 @@ _UsbPowerVbus:
 
 
 ;Jumps to libload. Enough said
-_JumpToLibload := lib_libload
+_JumpToLibload:
+	ld hl,lib_libload
+	jp (hl)
 
 
 ; get a library given the name in OP1
@@ -845,16 +855,48 @@ _LoadLibraryOP1:
 	scf
 	ret
 .usbdrvce:
+	xor a,a
 	ld de,lib_usbdrvce
 	ld hl,lib_usbdrvce.len
 	ret
 .srldrvce:
+	xor a,a
 	ld de,lib_srldrvce
 	ld hl,lib_srldrvce.len
 	ret
 .fatdrvce:
+	xor a,a
 	ld de,lib_fatdrvce
 	ld hl,lib_fatdrvce.len
 	ret
 
+_enoughMem:
+	ex hl,de
+	ld hl,$D2E000 - $D1A881
+	ld bc,(ti.asm_prgm_size)
+	or a,a
+	sbc hl,bc
+	sbc hl,de
+	ex hl,de
+	ret
+
+_insertMem:
+	ld de,(ti.asm_prgm_size)
+	add hl,de
+	ld (ti.asm_prgm_size),hl
+	ret
+
+_loadDEInd_s:
+	push hl
+	ld hl,(hl)
+	ex.s hl,de
+	pop hl
+	ret
+
+_setHLUTo0:
+	push de
+	ex hl,de
+	ex.s hl,de
+	pop de
+	ret
 

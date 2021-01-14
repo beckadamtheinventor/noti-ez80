@@ -79,6 +79,7 @@ end macro
 ; harmless when executed. With these magic bytes, the header is decoded as:
 ;	cp	a,a
 ;	cp	a,VERSION_MAJOR*10+VERSION_MINOR
+
 library 'LibLoad', VERSION_MAJOR*10+VERSION_MINOR, <libmagic1alt,libmagic2alt>
 
 ; We *are* the relocator, so we can't use relocations here. Set origin to 0
@@ -130,7 +131,7 @@ _startrelocating:
 _extractlib:				; hl->NULL terminated libray name string -> $C0,"LIBNAME",0
 	ld	(hl),AppVarObj		; change $C0 byte to mark as extracted
 	push	hl
-	call	_Mov9ToOP1		; move name of library to op1
+	call	noti._Mov9ToOP1		; move name of library to op1
 	pop	hl
 	inc	hl
 	res	prevextracted,(iy+asmflag)
@@ -288,12 +289,12 @@ _needtoextractlib:
 	push	hl
 	push	de
 	push	bc
-	call	_EnoughMem		; hl=size of library
+	call	noti._EnoughMem		; hl=size of library
 	pop	bc
 	pop	de
 	pop	hl
-	jp	c,_ErrMemory		; throw a memory error -- need more ram!
-	call	_InsertMem		; insert memory for the relocated library (de)
+	jp	c,_throwerror		; throw a memory error -- need more ram!
+	call	noti._InsertMem		; insert memory for the relocated library (de)
 
 	ld	hl,(extractedsize)	; extracted size = dependency jumps + library code
 	ld	de,(asm_prgm_size)
@@ -320,7 +321,7 @@ _resloveentrypointsloop:
 	add	hl,hl			; (offset/3) * 2
 	ld	de,(vectortblptr)	; hl->start of vector table
 	add	hl,de			; hl->correct vector entry
-	call	_LoadDEInd_s		; de=offest in lib for function
+	call	noti._LoadDEInd_s		; de=offest in lib for function
 	ld	hl,(ramlocation)
 	add	hl,de			; hl->function in ram
 	ex	de,hl			; de->function in ram
@@ -350,7 +351,7 @@ _relocateabsolutesloop:
 	inc	hl
 	ld	h,(hl)
 	ld	l,a			; hl->offset in ram library to relocate
-	call	_SetHLUTo0
+	call	noti._SetHLUTo0
 	ld	de,(ramlocation)
 	add	hl,de			; hl->location in library to relocate
 	push	hl
