@@ -310,7 +310,6 @@ fat_ReadSectors:
 	ret
 
 open_file:
-	call noti.waitKeyCycle
 	ld hl,os_rom_file
 	ld c,1 shl 0
 	ld de,fat_device
