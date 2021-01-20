@@ -27,6 +27,8 @@ _sprintf:
 	pop hl
 	jq .loop
 .end:
+	xor a,a
+	ld (de),a
 	pop iy
 	ld sp,ix
 	pop ix
