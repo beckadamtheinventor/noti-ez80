@@ -21,7 +21,6 @@ _sprintf:
 	jq z,.format_spec
 	ld (de),a
 	inc de
-	dec hl
 	jq .loop
 .next_arg:
 	lea iy,iy+3
