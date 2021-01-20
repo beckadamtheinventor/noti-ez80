@@ -129,7 +129,7 @@ _sprintf:
 .format_i_non_neg:
 	push de
 	call .itos
-	ex hl,de
+	lea hl,ix-9
 	ld a,'0'
 .format_i_skip_0_loop:
 	cp a,(hl)
