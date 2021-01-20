@@ -136,13 +136,13 @@ _sprintf:
 	inc hl
 	jq z,.format_i_skip_0_loop
 	dec hl
-	dec hl
 	pop de
-	ld (de),a
-	xor a,a
 .format_i_copy_num_loop:
-	cp a,(hl)
+	ld (de),a
+	inc de
+	ld a,(hl)
 	inc hl
+	or a,a
 	jq nz,.format_i_copy_num_loop
 	jq .next_arg
 .format_u:
