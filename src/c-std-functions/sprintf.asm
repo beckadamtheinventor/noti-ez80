@@ -136,6 +136,7 @@ _sprintf:
 	inc hl
 	jq z,.format_i_skip_0_loop
 	dec hl
+	dec hl
 	pop de
 	ld (de),a
 	xor a,a
