@@ -25,6 +25,7 @@ _sprintf:
 .next_arg:
 	lea iy,iy+3
 	pop hl
+	inc hl
 	jq .loop
 .end:
 	xor a,a
