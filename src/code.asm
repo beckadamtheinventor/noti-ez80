@@ -141,6 +141,9 @@ boot_setup_hardware:
 	set 6,a
 	out0 ($05),a
 _boot_set_8bpp_xlibc_mode:
+	call _boot_ClearVRAM
+	ld a,$27
+	ld ($E30018),a
 	ld hl,$E30200				; palette mem
 	ld b,0
 .loop:
@@ -159,9 +162,11 @@ _boot_set_8bpp_xlibc_mode:
 	inc hl
 	inc b
 	jr nz,.loop
-	ld a,$27
-	ld ($E30018),a
     im 1
+	ld hl,$000f00		; 0/Wait 15*256 APB cycles before scanning each row/Mode 0/
+	ld (ti.DI_Mode),hl
+	ld hl,$08080f		; (nb of columns,nb of row) to scan/Wait 15 APB cycles before each scan
+	ld (ti.DI_Mode+3),hl
 	ret
 
 boot_check_os_signature:
