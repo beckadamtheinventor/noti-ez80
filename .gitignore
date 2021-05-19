@@ -2,3 +2,7 @@
 /bin/
 /cap/
 /rom-appender/
+/src/BareOS/
+/src/lib/
+/src/noti-BASIC/
+/src/libraries.asm
