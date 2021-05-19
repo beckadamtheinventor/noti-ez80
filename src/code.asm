@@ -840,56 +840,56 @@ _UsbPowerVbus:
 
 
 ;Jumps to libload. Enough said
-_JumpToLibload:
-	ld hl,lib_libload
-	jp (hl)
+; _JumpToLibload:
+	; ld hl,lib_libload
+	; jp (hl)
 
 
 ; get a library given the name in OP1
 ; only USBDRVCE, FATDRVCE, and SRLDRVCE are supported at this time
 ; returns hl = library var size, de = library data pointer
 ; returns Cf on fail
-_LoadLibraryOP1:
-	ld a,(ti.OP1+1)
-	cp a,'U'
-	jq z,.usbdrvce
-	cp a,'S'
-	jq z,.srldrvce
-	cp a,'F'
-	jq z,.fatdrvce
-	scf
-	ret
-.usbdrvce:
-	xor a,a
-	ld de,lib_usbdrvce
-	ld hl,lib_usbdrvce.len
-	ret
-.srldrvce:
-	xor a,a
-	ld de,lib_srldrvce
-	ld hl,lib_srldrvce.len
-	ret
-.fatdrvce:
-	xor a,a
-	ld de,lib_fatdrvce
-	ld hl,lib_fatdrvce.len
-	ret
+; _LoadLibraryOP1:
+	; ld a,(ti.OP1+1)
+	; cp a,'U'
+	; jq z,.usbdrvce
+	; cp a,'S'
+	; jq z,.srldrvce
+	; cp a,'F'
+	; jq z,.fatdrvce
+	; scf
+	; ret
+; .usbdrvce:
+	; xor a,a
+	; ld de,lib_usbdrvce
+	; ld hl,lib_usbdrvce.len
+	; ret
+; .srldrvce:
+	; xor a,a
+	; ld de,lib_srldrvce
+	; ld hl,lib_srldrvce.len
+	; ret
+; .fatdrvce:
+	; xor a,a
+	; ld de,lib_fatdrvce
+	; ld hl,lib_fatdrvce.len
+	; ret
 
-_enoughMem:
-	ex hl,de
-	ld hl,$D2E000 - $D1A881
-	ld bc,(ti.asm_prgm_size)
-	or a,a
-	sbc hl,bc
-	sbc hl,de
-	ex hl,de
-	ret
+; _enoughMem:
+	; ex hl,de
+	; ld hl,$D2E000 - $D1A881
+	; ld bc,(ti.asm_prgm_size)
+	; or a,a
+	; sbc hl,bc
+	; sbc hl,de
+	; ex hl,de
+	; ret
 
-_insertMem:
-	ld de,(ti.asm_prgm_size)
-	add hl,de
-	ld (ti.asm_prgm_size),hl
-	ret
+; _insertMem:
+	; ld de,(ti.asm_prgm_size)
+	; add hl,de
+	; ld (ti.asm_prgm_size),hl
+	; ret
 
 _loadDEInd_s:
 	push hl

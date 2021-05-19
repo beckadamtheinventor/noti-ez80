@@ -15,12 +15,11 @@ paduntil $700
 	jp _boot_puts_and_new_line
 	jp _boot_drawstatusbar
 	jp _boot_blit_buffer
-	jp _JumpToLibload
 	jp _boot_ClearVRAM
 	jp _boot_ClearBuffer
-	jp _UsbPowerVbus
-	jp _UsbUnpowerVbus
-	jp _LoadLibraryOP1
+	jp _cphlde
+	jp _loadDEInd_s
+	jp _setHLUTo0
 	riemann
 	riemann
 	riemann
@@ -61,36 +60,11 @@ paduntil $700
 	riemann
 	riemann
 	riemann
-;place noti bootcode notice, so programs/OSs can easily tell
+	riemann
+;place noti bootcode identifier, so programs/OSs can easily tell
 assert $=$7F0
 	db "noti bootcode",0,0,0
 	jp END_OF_JUMPS
-	jp _pushOP1
-	jp _pushOP2
-	jp _pushOP3
-	jp _pushOP4
-	jp _pushOP5
-	jp _pushOP6
-	jp _popOP1
-	jp _popOP2
-	jp _popOP3
-	jp _popOP4
-	jp _popOP5
-	jp _popOP6
-	jp _mov9ToOP1
-	jp _mov9ToOP2
-	jp _mov9ToOP3
-	jp _mov9ToOP4
-	jp _mov9ToOP5
-	jp _mov9ToOP6
-	jp _mov11b
-	jp _mov9b
-	jp _mov8b
-	jp _cphlde
-	jp _enoughMem
-	jp _insertMem
-	jp _loadDEInd_s
-	jp _setHLUTo0
 
 END_OF_JUMPS:
 

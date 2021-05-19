@@ -197,7 +197,6 @@ include 'restore.asm'
 
 	LEN_OF_CODE strcalc $-START_OF_CODE
 	display "Main code length: ",LEN_OF_CODE,$0A
-	TOTAL_ROM_SIZE = TOTAL_ROM_SIZE+$-START_OF_CODE
 
 START_OF_DATA:
 include 'font.asm'
@@ -232,7 +231,6 @@ include 'strings.asm'
 
 	LEN_OF_DATA strcalc $-START_OF_DATA
 	display "Data length: ",LEN_OF_DATA,$0A
-	TOTAL_ROM_SIZE = TOTAL_ROM_SIZE+$-START_OF_DATA
 
 
 
