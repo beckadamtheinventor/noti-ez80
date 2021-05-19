@@ -1,2 +1,3 @@
-# open-ce
-An open-source boot rom for the ez80 microprocessor.
+# noti-ez80
+An open-source boot rom for use with CEmu.
+https://ce-programming.github.io/CEmu/

@@ -27,36 +27,13 @@ namespace noti
 ?_UsbPowerVbus           := $744
 ?_UsbUnpowerVbus         := $748
 ?_LoadLibraryOP1         := $74C
+?_CpHLDE                 := $750
+?_LoadDEInd_s            := $754
+?_SetHLUTo0              := $758
 
 ; second half of jump table
 
 ?num_of_extra_jumps      := $800
-?_PushOP1                := $804
-?_PushOP2                := $808
-?_PushOP3                := $80C
-?_PushOP4                := $810
-?_PushOP5                := $814
-?_PushOP6                := $818
-?_PopOP1                 := $81C
-?_PopOP2                 := $820
-?_PopOP3                 := $824
-?_PopOP4                 := $828
-?_PopOP5                 := $82C
-?_PopOP6                 := $830
-?_Mov9ToOP1              := $834
-?_Mov9ToOP2              := $838
-?_Mov9ToOP3              := $83C
-?_Mov9ToOP4              := $840
-?_Mov9ToOP5              := $844
-?_Mov9ToOP6              := $848
-?_Mov11b                 := $84C
-?_Mov9b                  := $850
-?_Mov8b                  := $854
-?_CpHLDE                 := $858
-?_EnoughMem              := $85C
-?_InsertMem              := $860
-?_LoadDEInd_s            := $864
-?_SetHLUTo0              := $868
 
 ; RAM equates
 
