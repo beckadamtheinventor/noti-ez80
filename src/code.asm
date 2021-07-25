@@ -30,45 +30,203 @@ _boot_GetBootVerBuild: ;$ = $000664
 	ret
 
 boot_setup_hardware:
-	ld a,$03
-	out0 ($00),a
-	ld bc,$500C
-	in a,(bc)
-	set 4,a
+	xor a,a
+	out0 ($01),a
+	ld bc,$1005
+	ld a,$02
 	out (bc),a
-	ld c,4
-	in a,(bc)
-	set 4,a
+	ld sp,ti.stackBot
+	out0 ($07),a
+	out0 ($09),a
+	in0 a,($03)
+	bit 4,a
+	jq z,.skip1
+	in0 a,($06)
+	set 2,a
+	out0 ($06),a
+	ld a,$04
+	di
+	jr $+2
+	di
+	rsmix
+	im 1
+	out0 ($28),a
+	in0 a, ($28)
+	bit 2,a
+	ld hl,$E00830
+	ld de,$0EB404
+	ld (hl),de
+	ld l,$33
+	ld (hl),$1F
+	ld l,$21
+	ld (hl),$33
+	ld l,$10
+	ld (hl),$00
+	ld l,$2D
+	ld de,$FFC000
+	ld (hl),de
+	ld l,$14
+	ld (hl),a
+	in0 a,($06)
+	res 2,a
+	out0 ($06),a
+	xor a,a
+	di
+	jr $+2
+	di
+	rsmix
+	im 1
+	out0 ($28),a
+	in0 a,($28)
+	bit 2,a
+	ld a,$FF
+	out0 ($07),a
+	ld a,$FD
+	out0 ($0A),a
+	in0 a,($0C)
+.skip1:
+	ld bc,$1002
+	ld a,$06
 	out (bc),a
-	xor a,a      ;set priviledged memory region ($<0x100000)
-	out0 ($1D),a
-	out0 ($1E),a
-	ld a,$10
-	out0 ($1F),a
-	ld bc,$1005  ;set wait states
-	ld a,3
-	out (bc),a
-	ld c,$06
-	ld a,6
-	out (bc),a
-	ld a,$81     ;configure stack protector
+	ld hl,.otimr_data
+	ld bc,.otimr_data_len
+	otimr
+	ld a,$81
 	out0 ($3A),a
 	ld a,$98
 	out0 ($3B),a
 	ld a,$D1
 	out0 ($3C),a
-	ld a,$7C     ;configure protected memory region
-	out0 ($20),a
-	out0 ($23),a
-	ld a,$88
-	out0 ($21),a
-	out0 ($24),a
-	ld a,$D1
-	out0 ($22),a
-	out0 ($25),a
-	in0 a,($06) ;set bit 0
-	set 0,a
+	ld hl,$D18C7C
+	ld ($D1887C),hl
+	xor a,a
+	ld ($D177B7),a
+	ld ($D177BB),a
+	ld a,$0F
+.wait1:
+	out0 ($0D),a
+	inc a
+	jr nz,.wait1
+	ld a,$36
+	out0 ($05),a
+	ld b,50
+	djnz $
+	ld bc,$B020
+	ld a,$FF
+	out (bc),a
+	ld c,$24
+	out (bc),a
+	ld a,$76
+	out0 ($05),a
+	ld b,$FF
+	djnz $
+	in0 a,($03)
+	bit 4,a
+	jr z,.skip2
+	djnz $
+	djnz $
+	djnz $
+	ld b,64
+	djnz $
+.skip2:
+	ld a,$26
+	out0 ($05),a
+	ld a,$03
 	out0 ($06),a
+	ld bc,$A000
+	xor a,a
+	out (bc),a
+	inc bc
+	ld a,$0F
+	out (bc),a
+	inc bc
+	xor a,a
+	out (bc),a
+	inc bc
+	ld a,$0F
+	out (bc),a
+	inc bc
+	ld a,$08
+	out (bc),a
+	inc bc
+	out (bc),a
+	call .function1
+	ld a,$D0
+	ld mb, a
+	im 1
+	ld iy,$D00080
+	res 6, (iy+$1B)
+
+.function2:
+	ld a,$7F
+	ld ($D177BA),a
+	ld iy,$D00080
+	res 3,(iy+$05)
+	in0 a,($09)
+	set 6,a
+	out0 ($09),a
+	in0 a,($03)
+	bit 4,a
+	jr nz,.function2skip1
+	in0 a,($09)
+	set 4,a
+	out0 ($09),a
+	jr .function2skip2
+.function2skip1:
+	in0 a,($07)
+	set 4,a
+	out0 ($07),a
+	in0 a,($03)
+	bit 0,a
+	jr z,.function2skip3
+	ld a,$08
+	ld ($F80000),a
+	in0 a,($09)
+	res 4,a
+	out0 ($09),a
+	ld a,($F9000C)
+	set 6,a
+	ld ($F9000C),a
+	jr .function2skip2
+.function2skip3:
+	in0 a,($09)
+	set 4,a
+	out0 ($09),a
+.function2skip2:
+	ld hl,$D00000
+	ld de,$D00001
+	ld bc,$013FD7
+	ld (hl),l
+	ldir
+	ld hl,$D1787C
+	ld de,$D1787D
+	ld bc,$002001
+	ld (hl),0
+	ldir
+	ld hl,$D3FEFF
+	ld de,$D3FF00
+	ld bc,$0000FF
+	ld (hl),e
+	ldir
+	xor a,a
+	ld ($D177B7),a
+	ld a,$95
+	ld ($D0058F),a
+;	call .function3
+;	call .function4
+	in0 a,($03)
+	cpl
+	and a,$11
+	jr nz,.function2skip4
+	in0 a,($0C)
+	set 2,a
+	out0 ($0C),a
+	ld a,$08
+	ld ($F80000),a
+	ld a,($F9000C)
+	set 6,a
+	ld ($F9000C),a
+.function2skip4:
 	ld de,$4000
 	ld hl,LCD_Controller_init_data
 	ld bc,LCD_Controller_init_data.len
@@ -140,6 +298,28 @@ boot_setup_hardware:
 	in0 a,($05)
 	set 6,a
 	out0 ($05),a
+	call _boot_set_8bpp_xlibc_mode
+	jq boot_menu
+
+.otimr_data:
+	file 'otimr_data.bin'
+.otimr_data_len := $ - .otimr_data
+
+.function1:
+	di
+	push bc
+	in0 a,($03)
+	bit 4,a
+	jr nz,.function1skip1
+	ld bc,$1005
+	ld a,$04
+	out (bc),a
+.function1skip1:
+	ld a,$03
+	out0 ($01),a
+	pop bc
+	ret
+
 _boot_set_8bpp_xlibc_mode:
 	call _boot_ClearVRAM
 	ld a,$27
@@ -168,6 +348,47 @@ _boot_set_8bpp_xlibc_mode:
 	ld hl,$08080f		; (nb of columns,nb of row) to scan/Wait 15 APB cycles before each scan
 	ld (ti.DI_Mode+3),hl
 	ret
+
+; .old:
+	; ld a,$03
+	; out0 ($00),a
+	; ld bc,$500C
+	; in a,(bc)
+	; set 4,a
+	; out (bc),a
+	; ld c,4
+	; in a,(bc)
+	; set 4,a
+	; out (bc),a
+	; xor a,a      ;set priviledged memory region ($<0x100000)
+	; out0 ($1D),a
+	; out0 ($1E),a
+	; ld a,$10
+	; out0 ($1F),a
+	; ld bc,$1005  ;set wait states
+	; ld a,3
+	; out (bc),a
+	; ld c,$06
+	; ld a,6
+	; out (bc),a
+	; ld a,$81     ;configure stack protector
+	; out0 ($3A),a
+	; ld a,$98
+	; out0 ($3B),a
+	; ld a,$D1
+	; out0 ($3C),a
+	; ld a,$7C     ;configure protected memory region
+	; out0 ($20),a
+	; out0 ($23),a
+	; ld a,$88
+	; out0 ($21),a
+	; out0 ($24),a
+	; ld a,$D1
+	; out0 ($22),a
+	; out0 ($25),a
+	; in0 a,($06) ;set bit 0
+	; set 0,a
+	; out0 ($06),a
 
 boot_check_os_signature:
 	ld hl,$020100

@@ -1,5 +1,4 @@
-boot_boot_os:
-	call boot_setup_hardware
+boot_boot_os := boot_setup_hardware
 
 boot_menu:
 	ld hl,-2
