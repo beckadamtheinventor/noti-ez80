@@ -883,18 +883,16 @@ _DrawSectorProtectionTable:
 
 
 _boot_Set6MHzMode:
-	ret
-
-_boot_Set48MHzMode:
-	ret
-
 _boot_Set6MHzModeI:
-	xor a,a
+	in a,($01)
+	and a,3
 	out ($01),a
 	ret
 
+_boot_Set48MHzMode:
 _boot_Set48MHzModeI:
-	ld a,3
+	in a,($01)
+	or a,3
 	out ($01),a
 	ret
 
@@ -902,7 +900,7 @@ _CheckHardware:
 
 
 _GetBatteryStatus:
-
+	ret
 
 
 
