@@ -894,12 +894,126 @@ _boot_Set48MHzModeI:
 	in a,($01)
 	or a,3
 	out ($01),a
+_CheckHardware:
 	ret
 
-_CheckHardware:
-
-
 _GetBatteryStatus:
+; routine is supposed to reinit/recheck something but I'm not gonna implement that right now
+	; in a,($0F)
+	; push af
+	; call ._0
+	; pop bc
+	; push af
+	; in a,($0F)
+	; xor a,b
+	; bit 7,a
+	; jr nz,._recheck ; rechecks/reinits something
+	; pop af
+	; ret
+._0:
+	ld c,$B0
+	ld a,($7E)
+	inc a
+	jr z,.emuflag_ff
+	in a,($06)
+	or a,a
+	ld a,4
+	ret z
+.emuflag_ff:
+	in a,($0A)
+	set 0,a
+	out ($0A),a
+	in0 b,($0C)
+	ld a,$83
+	out ($00),a
+	call usb.IsBusPowered
+	jr z,._3
+	in a,($09)
+	set 7,a
+	and a,$CF
+	out ($09),a
+	in a,($07)
+	or a,$B0
+	out ($07),a
+	call boot_Delay10ms
+	in a,($02)
+	rra
+	jq c,._2
+	ld a,3
+	out ($00),a
+	in a,($09)
+	res 7,a
+	or a,$30
+	out ($09),a
+	call boot_Delay10ms
+	in a,($02)
+	rra
+	ld a,0
+	adc a,a
+	jq ._3
+._2:
+	in a,($09)
+	or a,c ; $B0
+	out ($09),a
+	in a,($0C)
+	set 0,a
+	out ($0C),a
+	ld a,$09
+	call boot_Delay10timesAms
+._3:
+	in a,($09)
+	or a,c ; $B0
+	out ($09),a
+	in a,($07)
+	or a,c ; $B0
+	out ($07),a
+	call boot_Delay10ms
+	in a,($02)
+	rra
+	ld a,$80
+	jr nc,._4
+	in a,($09)
+	and a,$CF
+	set 7,a
+	out ($09),a
+	ld a,$83
+	out ($00),a
+	call boot_Delay10ms
+	in a,($02)
+	rra
+	ld a,1
+	jr nc,._4
+	ld a,$83
+	out ($00),a
+	in a,($09)
+	and a,$4F
+	out ($09),a
+	call boot_Delay10ms
+	in a,($02)
+	rra
+	ld a,2
+	jr nc,._4
+	inc a
+	out ($00),a
+	call boot_Delay10ms
+	in a,($02)
+	rra
+	ld a,0
+	adc a,3
+._4:
+	out0 ($0C),b
+	ld c,a
+	in a,($09)
+	or a,$30
+	res 7,a
+	out ($09),a
+	ld a,3
+	out ($00),a
+	ld a,9
+	call boot_Delay10timesAms
+	ld a,c
+	add a,$80
+	res 7,a
 	ret
 
 
