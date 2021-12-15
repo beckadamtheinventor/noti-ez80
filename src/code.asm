@@ -35,7 +35,7 @@ boot_setup_hardware:
 	ld bc,$1005
 	ld a,$02
 	out (bc),a
-	ld sp,ti.stackBot
+	; ld sp,ti.stackBot
 	out0 ($07),a
 	out0 ($09),a
 	in0 a,($03)
@@ -88,8 +88,8 @@ boot_setup_hardware:
 	ld bc,$1002
 	ld a,$06
 	out (bc),a
-	ld hl,.otimr_data
-	ld bc,.otimr_data_len
+	ld hl,_boot_otimr_data
+	ld bc,_boot_otimr_data_len
 	otimr
 	ld a,$81
 	out0 ($3A),a
@@ -193,21 +193,6 @@ boot_setup_hardware:
 	set 4,a
 	out0 ($09),a
 .function2skip2:
-	ld hl,$D00000
-	ld de,$D00001
-	ld bc,$013FD7
-	ld (hl),l
-	ldir
-	ld hl,$D1787C
-	ld de,$D1787D
-	ld bc,$002001
-	ld (hl),0
-	ldir
-	ld hl,$D3FEFF
-	ld de,$D3FF00
-	ld bc,$0000FF
-	ld (hl),e
-	ldir
 	xor a,a
 	ld ($D177B7),a
 	ld a,$95
@@ -298,27 +283,11 @@ boot_setup_hardware:
 	in0 a,($05)
 	set 6,a
 	out0 ($05),a
-	call _boot_set_8bpp_xlibc_mode
-	jq boot_menu
-
-.otimr_data:
-	file 'otimr_data.bin'
-.otimr_data_len := $ - .otimr_data
-
-.function1:
-	di
-	push bc
-	in0 a,($03)
-	bit 4,a
-	jr nz,.function1skip1
-	ld bc,$1005
-	ld a,$04
-	out (bc),a
-.function1skip1:
-	ld a,$03
-	out0 ($01),a
-	pop bc
-	ret
+	im 1
+	ld hl,$000f00		; 0/Wait 15*256 APB cycles before scanning each row/Mode 0/
+	ld (ti.DI_Mode),hl
+	ld hl,$08080f		; (nb of columns,nb of row) to scan/Wait 15 APB cycles before each scan
+	ld (ti.DI_Mode+3),hl
 
 _boot_set_8bpp_xlibc_mode:
 	call _boot_ClearVRAM
@@ -342,12 +311,27 @@ _boot_set_8bpp_xlibc_mode:
 	inc hl
 	inc b
 	jr nz,.loop
-    im 1
-	ld hl,$000f00		; 0/Wait 15*256 APB cycles before scanning each row/Mode 0/
-	ld (ti.DI_Mode),hl
-	ld hl,$08080f		; (nb of columns,nb of row) to scan/Wait 15 APB cycles before each scan
-	ld (ti.DI_Mode+3),hl
 	ret
+
+boot_setup_hardware.function1:
+	di
+	push bc
+	in0 a,($03)
+	bit 4,a
+	jr nz,.function1skip1
+	ld bc,$1005
+	ld a,$04
+	out (bc),a
+.function1skip1:
+	ld a,$03
+	out0 ($01),a
+	pop bc
+	ret
+
+_boot_otimr_data:
+	file 'otimr_data.bin'
+_boot_otimr_data_len := $ - .
+
 
 ; .old:
 	; ld a,$03

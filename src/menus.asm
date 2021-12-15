@@ -1,4 +1,21 @@
-boot_boot_os := boot_setup_hardware
+boot_boot_os:
+	ld hl,$D00000
+	ld de,$D00001
+	ld bc,$013FD7
+	ld (hl),l
+	ldir
+	ld hl,$D1787C
+	ld (hl),c
+	ld de,$D1787D
+	ld bc,$002001
+	ldir
+	ld hl,$D3FEFF
+	ld de,$D3FF00
+	ld bc,$0000FF
+	ld (hl),e
+	ldir
+	call _boot_ClearVRAM
+	call boot_setup_hardware
 
 boot_menu:
 	ld hl,-2
