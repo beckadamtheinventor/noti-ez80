@@ -439,8 +439,7 @@ _ResetPorts:
 
 ;   Checks if OS is valid and ready to receive an interrupt
 ;   Returns nz if not ready or z if ready
-_ChkIfOSInterruptAvailable:
-	ret
+_ChkIfOSInterruptAvailable := boot_check_os_signature
 
 ; https://www.winbond.com/resource-files/w29gl032c_revh%20v3.0.pdf
 ; these normally contain some safety measures
@@ -652,45 +651,232 @@ _ExecuteInRAMDup2:=_ExecuteInRAM
 
 
 _ChkCertSpace:
-
-
-_GetFieldSizeFromType:
+	call _frameset0
+	push bc,de,hl
+	ld (ix-3),bc
+	call _GetCertificateEnd
+	jr c,._done
+	ex hl,de
+	ld hl,$3C0000
+	sbc hl,de
+	ld de,(ix-3)
+	sbc hl,de
+._done:
+	pop hl,de
+	ld sp,ix
+	pop ix
+	ret
 
 
 _FindFirstCertField:
-
-
-_FindField:
-
+	ld hl,$3B0001
+	call _FindField
+	ret nz
+	push bc,hl
+	ld bc,$3C0000
+	or a,a
+	sbc hl,bc
+	pop hl,bc
+	ccf
+	sbc a,a
+	ret
 
 _FindNextField:
+	inc hl
+	call _NextFieldFromSize
+	ret c
+
+_FindField:
+	ld a,(hl)
+	inc a
+	jr z,.B1
+	dec a
+	inc hl
+	cp a,d
+	jr nz,.B2
+	ld a,(hl)
+	and a,$F0
+	cp a,e
+	jr nz,.B2
+	dec hl
+	ret
+.B2:
+	call _NextFieldFromSize
+	jr nc,_FindField
+.B1:
+	scf
+	sbc a,a
+	bit 7,a
+	ret
 
 
 _GetCertificateEnd:
-
-
-_GetFieldFromSize:
-
-
-_NextFieldFromSize:
+	push bc
+	ld hl,$3B0001
+	ld de,$00FFF0
+	call _FindFirstCertField
+	pop bc
+	ret
 
 
 _NextFieldFromType:
+	inc hl
+_NextFieldFromSize:
+	call _GetFieldFromSize
+	ret c
+	add hl,bc
+	ret
 
 
 _GetOffsetToNextField:
-
+	push hl
+	call _NextFieldFromType
+	pop bc
+	or a,a
+	sbc hl,bc
+	push bc,hl
+	pop bc,hl
+	ret
 
 _WriteFlashUnsafe:
-
-
-_boot_GetCertCalcString:
-
-
-_boot_GetCertCalcID:
-
+	push ix
+	ld ix,.flash_write_code
+	push af
+	ld a,4
+	di
+	jr $+2
+	di
+	rsmix
+	im 1
+	out0 ($28),a
+	in0 a,($28)
+	bit 2,a
+	pop af
+	call _ExecuteInRAM
+	pop ix
+	ret
+.jumps_here: ; $000D3A
+	push af
+	ld a,($D00128)
+	bit 2,a
+	jr z,.dont_reenable_interrupts
+	ei
+.dont_reenable_interrupts:
+	pop af
+	ret
+.flash_write_code:
+	dw .flash_write_code_len
+.L1:
+	ld a,($00007E)
+	bit 6,a
+	jr z,.B1
+	push hl
+	ld hl,$AAA
+	ld (hl),l
+	ld a,$55
+	ld ($000555),a
+	ld (hl),$A0
+	pop hl
+.B1:
+	ld a,(hl)
+	ld (de),a
+	push bc
+	ld b,a
+.L2:
+	ld a,(de)
+	cp a,b
+	jr nz,.L2
+	pop bc
+	inc de
+	inc hl
+	dec bc
+	ld a,b
+	or a,c
+	jr nz,.L1
+	jp .jumps_here
+.flash_write_code_len := $-.L1
 
 _GetSerial:
+	call _boot_GetCertCalcID
+	jr z,.B1
+	push bc
+	ld de,ti.OP4
+	ldir
+	pop bc
+	ld b,c
+	db $3E ; ld a,...
+.B1:
+	db $F6 ; or a,...
+	xor a,a
+	ret
+
+_boot_GetCertCalcString:
+	call _boot_GetCertCalcID.S1
+	ret z
+	ld de,$0420
+	jr _boot_GetCertCalcID.E1
+
+_boot_GetCertCalcID:
+	call .S1
+	ret z
+	ld de,$0400
+.E1:
+	call _FindField
+	jr nz,.B1
+	jr _GetFieldSizeFromType
+.B1:
+	or a,a
+	sbc hl,hl
+	ret
+.S1:
+	ld de,$0330
+	call _FindFirstCertField
+	jr nz,.B1
+
+_GetFieldSizeFromType:
+_GetFieldSizeFromType_:
+	inc hl
+_GetFieldFromSize:
+	ld bc,$F
+	ld a,(hl)
+	inc hl
+	and a,$F
+	sub a,$D ; cp a,$D
+	jr nz,.B1
+	ld c,(hl)
+	inc hl
+	jr .B4
+.B1:
+	dec a    ; cp a,$E
+	jr nz,.B2
+	ld b,(hl)
+	inc hl
+	ld c,(hl)
+	inc hl
+	jr .B4
+.B2:
+	dec a    ; cp a,$F
+	jr nz,.B3
+	ld a,(hl)
+	or a,a
+	scf
+	ret nz
+	dec hl
+	ld bc,(hl)
+	inc hl
+	inc hl
+	inc hl
+	ld b,(hl)
+	inc hl
+	ld c,(hl)
+	inc hl
+	db $3E ; dummify the following opcode
+.B3:
+	add a,c
+	ld c,a
+.B4:
+	or a,a
+	; ret
 
 ;   called from within bootcode at 1057h
 ;   called at 40D55h
@@ -766,11 +952,27 @@ _Div16By16: ; DE / HL --> HL rem DE (?)
 	jr _Div16By8.div_entry
 
 
-_Div32By16:
-
-
 _CmpStr:
+	ld a,(de)
+	cp a,(hl)
+	ret nz
+	inc de
+	inc hl
+	ld a,(de)
+	cp a,(hl)
+	ret nz
+	ld b,a
+.L1:
+	inc hl
+	inc de
+	ld a,(de)
+	cp a,(hl)
+	ret nz
+	djnz .L1
+
+_Div32By16:
 	ret
+
 
 
 _boot_Sha256Init:
