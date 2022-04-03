@@ -17,6 +17,10 @@ boot_boot_os:
 	call _boot_ClearVRAM
 	call boot_setup_hardware
 
+if defined AUTOSTART
+	jq boot_menu.jump_launch_os
+end if
+
 boot_menu:
 	ld hl,-2
 	call _frameset
@@ -56,8 +60,8 @@ boot_menu:
 	jq z,.launch_hex_editor
 	cp a,9 ;[enter] key
 	jq z,.launch_os
-	cp a,52 ;[window] key
-	jq z,.restore_bootcode
+	; cp a,52 ;[window] key
+	; jq z,.restore_bootcode
 	jr .keys
 
 .curdown:
@@ -91,6 +95,7 @@ boot_menu:
 	ld a,(ix-1)
 	or a,a
 	jp z,$010108
+.jump_launch_os:
 	call boot_check_os_signature
 	jq nz,.no_os
 	call _boot_ZeroVRAM
@@ -98,13 +103,13 @@ boot_menu:
 	ld (ti.mpLcdCtrl),a
 	jp $020108
 
-.restore_bootcode:
-	call restore_bootcode
+; .restore_bootcode:
+	; call restore_bootcode
 ;we won't get here if the installation succeeds
-	ld hl,string_failed_to_restore
-	call _boot_puts_and_new_line
-	call _boot_blit_buffer
-	jp boot_wait_key_cycle
+	; ld hl,string_failed_to_restore
+	; call _boot_puts_and_new_line
+	; call _boot_blit_buffer
+	; jp boot_wait_key_cycle
 
 .no_os:
 	rst 8
@@ -121,72 +126,72 @@ turn_calc_off:
 	rst 0
 
 
-test_aubc_routine:
-	ld a,$C3
-	ld ($D00000),a
-	ld ($D00001),hl
-	ld hl,-7
-	call _frameset
-	ld hl,string_testing_function
-	call _boot_PutS
-	xor a,a
-	sbc hl,hl
-	ld (ix-7),hl
-	ld (ix-4),a
-	ld hl,($D00001)
-	call _print24h
-	call _boot_NewLine
-	ld bc,(ti.curRow)
-	ld (ix-3),bc
-	jr .test_entry
-.test_loop:
-	ld bc,(ix-3)
-	ld hl,ti.curRow
-	ld (hl),c
-	inc hl
-	ld (hl),b
-.test_entry:
-	ld hl,(ix-7)
-	ld a,(ix-4)
-	push af
-	push hl
-	ld e,a
-	call _print32h
-	ld a,'='
-	call _boot_PutC
-	pop bc
-	pop af
-	call _ltof
-	call $D00000
-	ld bc,$10000
-	ld a,c
-	call _fmul
-	call _ftol
-	push bc
-	pop hl
-	ld e,a
-	call _print32h
-	call _boot_blit_buffer
-	xor a,a
-	ld bc,(ix+6)
-	ld hl,(ix-7)
-	ld e,(ix-4)
-	call _ladd
-	ld (ix-7),bc
-	ld (ix-4),a
-	ld hl,(ix+9)
-	ld e,(ix+12)
-	call _fcmp
-	jp m,.exit
-	call boot_scan_keypad
-	ld a,($F50014+6*2)
-	bit 6,a
-	jr z,.test_loop
-.exit:
-	call boot_wait_key_cycle
-	ld sp,ix
-	pop ix
-	ret
+; test_aubc_routine:
+	; ld a,$C3
+	; ld ($D00000),a
+	; ld ($D00001),hl
+	; ld hl,-7
+	; call _frameset
+	; ld hl,string_testing_function
+	; call _boot_PutS
+	; xor a,a
+	; sbc hl,hl
+	; ld (ix-7),hl
+	; ld (ix-4),a
+	; ld hl,($D00001)
+	; call _print24h
+	; call _boot_NewLine
+	; ld bc,(ti.curRow)
+	; ld (ix-3),bc
+	; jr .test_entry
+; .test_loop:
+	; ld bc,(ix-3)
+	; ld hl,ti.curRow
+	; ld (hl),c
+	; inc hl
+	; ld (hl),b
+; .test_entry:
+	; ld hl,(ix-7)
+	; ld a,(ix-4)
+	; push af
+	; push hl
+	; ld e,a
+	; call _print32h
+	; ld a,'='
+	; call _boot_PutC
+	; pop bc
+	; pop af
+	; call _ltof
+	; call $D00000
+	; ld bc,$10000
+	; ld a,c
+	; call _fmul
+	; call _ftol
+	; push bc
+	; pop hl
+	; ld e,a
+	; call _print32h
+	; call _boot_blit_buffer
+	; xor a,a
+	; ld bc,(ix+6)
+	; ld hl,(ix-7)
+	; ld e,(ix-4)
+	; call _ladd
+	; ld (ix-7),bc
+	; ld (ix-4),a
+	; ld hl,(ix+9)
+	; ld e,(ix+12)
+	; call _fcmp
+	; jp m,.exit
+	; call boot_scan_keypad
+	; ld a,($F50014+6*2)
+	; bit 6,a
+	; jr z,.test_loop
+; .exit:
+	; call boot_wait_key_cycle
+	; ld sp,ix
+	; pop ix
+	; ret
 
 
 boot_abort_and_restart:

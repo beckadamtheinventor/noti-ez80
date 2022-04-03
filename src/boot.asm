@@ -193,7 +193,7 @@ include 'usb_code.asm'
 include 'routines.asm'
 include 'math.asm'
 include 'hexeditor.asm'
-include 'restore.asm'
+; include 'restore.asm'
 
 	LEN_OF_CODE strcalc $-START_OF_CODE
 	display "Main code length: ",LEN_OF_CODE,$0A

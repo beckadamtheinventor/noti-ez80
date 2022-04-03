@@ -36,12 +36,17 @@ APPEND     = @echo $(call QUOTE_ARG,$1) >>$@
 endif
 
 #build rules
-all: rom
+all: rom autostart
 
 # Rule to build ROM image
 rom:
 	$(call MKDIR,bin)
 	fasmg $(call NATIVEPATH,src/main.asm) $(call NATIVEPATH,bin/NOTI.rom)
+
+# Rule to build ROM image that boots automatically
+autostart:
+	$(call MKDIR,bin)
+	fasmg $(call NATIVEPATH,src/main.asm) $(call NATIVEPATH,bin/NOTI-autoboot.rom) -i $(call QUOTE_ARG,define AUTOSTART)
 
 #make clean
 clean:

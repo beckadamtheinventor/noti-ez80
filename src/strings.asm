@@ -14,12 +14,12 @@ string_press_enter_continue:
 	db "Press [enter] to continue",0
 string_error_message:
 	db "Error message:",0
-string_failed_to_restore:
-	db "Failed to restore bootcode.",0
+; string_failed_to_restore:
+	; db "Failed to restore bootcode.",0
 
 
-string_testing_function:
-	db "testing routine: $",0
+; string_testing_function:
+	; db "testing routine: $",0
 
 string_to_go_back:
 	db "Press [clear] to go back",0
@@ -28,7 +28,7 @@ string_no_os:
 	db "No OS installed; cannot boot.",0
 string_boot_version:
 	db "noti bootcode",0
-	db "version 0.07.0000",0
+	db "version 0.08.0000",0
 
 string_erase_sector:
 	db "This will erase the currently selected flash sector.",0
@@ -41,7 +41,7 @@ string_press_enter_confirm:
 	db "Press [enter] to confirm",0
 
 string_boot_this_os:
-	db "Press enter to boot this OS",0
+	db "Press enter to boot",0
 
 string_RecoveryMode:
 	db "Recovery Mode",0
