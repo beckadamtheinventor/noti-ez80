@@ -1046,14 +1046,14 @@ _boot_TurnOffHardware:
 	ld a,$09
 	out (bc),a
 	ret
+
 _boot_BacklightOff:
-	ld bc, $B024
+	ld bc, ti.pBlLevel
 	ld a, $FF
 	out (bc),a
 	call boot_Delay10ms
 	in0 a, ($05)
-	res 6, a
-	res 4, a
+	and a, not ((1 shl 6) or (1 shl 4))
 	out0 ($05), a
 	ret
 
