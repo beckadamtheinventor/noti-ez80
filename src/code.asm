@@ -239,6 +239,7 @@ boot_setup_hardware:
 	ld c,$01
 	ld a,$18
 	out (bc),a
+	dec c ; thanks Calc84Maniac for pointing out this was missing x.x
 	ld a,$0B
 	out (bc),a
 	ld c,$04
