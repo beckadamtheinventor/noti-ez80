@@ -1,0 +1,67 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	weak	_fputc
+_fputc:
+	ld	hl, -6
+	call	__frameset
+	ld	bc, (ix + 6)
+	ld	iy, (ix + 9)
+	ld	de, 2
+	lea	hl, iy
+	or	a, a
+	sbc	hl, de
+	jr	c, .BB0_5
+	lea	hl, iy
+	or	a, a
+	sbc	hl, de
+	ld	(ix - 3), bc
+	ld	(ix - 6), iy
+	jr	nz, .BB0_3
+	push	bc
+	call	_putchar
+	push	hl
+	pop	de
+	jr	.BB0_4
+.BB0_3:
+	ld	l, (iy)
+	push	hl
+	push	bc
+	call	_ti_PutC
+	push	hl
+	pop	de
+	pop	hl
+.BB0_4:
+	pop	hl
+	ld	bc, -1
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	ld	bc, (ix - 3)
+	ld	iy, (ix - 6)
+	jr	nz, .BB0_6
+.BB0_5:
+	ld	(iy + 1), 1
+	ld	de, -1
+.BB0_6:
+	ex	de, hl
+	or	a, a
+	sbc	hl, bc
+	jr	z, .BB0_8
+	ld	(iy + 2), 1
+.BB0_8:
+	ld	a, (iy)
+	ld	(ix + 6), c
+	ld	(ix + 9), a
+	ld	sp, ix
+	pop	ix
+	jp	_ti_PutC
+	section	.text,"ax",@progbits
+
+	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__frameset
+	extern	_ti_PutC
+	extern	_putchar

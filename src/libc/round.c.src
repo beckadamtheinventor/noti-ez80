@@ -1,0 +1,50 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_roundf
+_roundf:
+	call	__frameset0
+	ld	de, (ix + 6)
+	ld	l, (ix + 9)
+	push	hl
+	push	de
+	call	_fabs
+	push	hl
+	pop	bc
+	ld	a, e
+	pop	hl
+	pop	hl
+	or	a, a
+	sbc	hl, hl
+	ld	e, 63
+	call	__fadd
+	ld	l, a
+	push	hl
+	push	bc
+	call	_truncf
+	pop	bc
+	pop	bc
+	ld	c, (ix + 9)
+	push	bc
+	ld	bc, (ix + 6)
+	push	bc
+	push	de
+	push	hl
+	call	_copysignf
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_round
+	label	_round at _roundf
+
+	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__fadd
+	extern	_copysignf
+	extern	_fabs
+	extern	__frameset0
+	extern	_truncf

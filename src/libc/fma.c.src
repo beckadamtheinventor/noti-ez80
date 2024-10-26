@@ -1,0 +1,33 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_fmaf
+_fmaf:
+	call	__frameset0
+	ld	bc, (ix + 6)
+	ld	hl, (ix + 12)
+	ld	iy, (ix + 18)
+	ld	d, (ix + 21)
+	ld	a, (ix + 9)
+	ld	e, (ix + 15)
+	call	__fmul
+	lea	hl, iy
+	ld	e, d
+	call	__fadd
+	push	bc
+	pop	hl
+	ld	e, a
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_fma
+	label	_fma at _fmaf
+
+	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__fadd
+	extern	__frameset0
+	extern	__fmul

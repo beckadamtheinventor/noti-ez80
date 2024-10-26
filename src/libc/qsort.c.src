@@ -1,0 +1,434 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_qsort
+_qsort:
+	ld	hl, -147
+	call	__frameset
+	ld	hl, (ix + 9)
+	ld	bc, (ix + 12)
+	lea	de, ix - 102
+	ld	(ix - 3), bc
+	ld	bc, -147
+	lea	iy, ix
+	add	iy, bc
+	ld	(iy), de
+	dec	hl
+	ld	bc, (ix - 3)
+	call	__imulu
+	push	hl
+	pop	de
+	ld	iy, (ix + 6)
+	add	iy, de
+	push	bc
+	pop	hl
+	call	__ineg
+	push	ix
+	ld	de, -144
+	add	ix, de
+	ld	(ix), hl
+	pop	ix
+	lea	bc, iy
+	ld	de, (ix + 6)
+	ld	(ix - 3), bc
+	ld	bc, -147
+	lea	iy, ix
+	add	iy, bc
+	ld	hl, (iy)
+	push	ix
+	ld	bc, -141
+	add	ix, bc
+	ld	(ix), hl
+	pop	ix
+.BB0_1:
+	ld	bc, (ix - 3)
+.BB0_2:
+	ld	(ix - 126), bc
+	push	de
+	pop	iy
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	ld	de, (ix + 12)
+	push	de
+	pop	bc
+	call	__idivu
+	ld	c, 1
+	call	__ishru
+	push	de
+	pop	bc
+	call	__imulu
+	push	hl
+	pop	de
+	lea	hl, iy
+	add	hl, de
+	ex	de, hl
+	ld	(ix - 3), bc
+	ld	bc, -129
+	lea	hl, ix
+	add	hl, bc
+	ld	(hl), iy
+	lea	hl, iy
+	ld	iy, (ix - 126)
+	ld	(ix - 123), de
+	ld	bc, (ix - 3)
+.BB0_3:
+	ld	de, (ix - 123)
+	ld	(ix - 117), iy
+	push	hl
+	pop	bc
+	or	a, a
+	sbc	hl, hl
+	ld	(ix - 114), bc
+	ld	(ix - 105), de
+.BB0_4:
+	ld	(ix - 108), hl
+	push	hl
+	pop	iy
+	push	bc
+	pop	hl
+	lea	bc, iy
+	add	hl, bc
+	push	de
+	push	hl
+	ld	hl, (ix + 15)
+	call	__indcallhl
+	pop	de
+	pop	de
+	ld	de, 0
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, .BB0_6
+	ld	de, (ix + 12)
+	ld	hl, (ix - 108)
+	add	hl, de
+	ld	bc, (ix - 114)
+	ld	de, (ix - 105)
+	jr	.BB0_4
+.BB0_6:
+	ld	de, (ix - 108)
+	ld	hl, (ix - 114)
+	add	hl, de
+	ld	(ix - 120), hl
+	or	a, a
+	sbc	hl, hl
+.BB0_7:
+	push	hl
+	pop	de
+	ld	hl, (ix - 117)
+	ld	(ix - 111), de
+	add	hl, de
+	ld	(ix - 123), hl
+	push	hl
+	ld	hl, (ix - 105)
+	push	hl
+	ld	hl, (ix + 15)
+	call	__indcallhl
+	pop	de
+	pop	de
+	ld	de, 0
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, .BB0_10
+	ld	hl, (ix - 111)
+	ld	de, (ix + 12)
+	or	a, a
+	sbc	hl, de
+	jr	.BB0_7
+.BB0_10:
+	ld	bc, (ix - 123)
+	ld	de, (ix - 120)
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	jp	nc, .BB0_18
+	ld	hl, (ix + 12)
+	ld	(ix - 3), de
+	ld	de, -135
+	lea	iy, ix
+	add	iy, de
+	ld	(iy), bc
+	ld	(ix - 123), bc
+	ld	de, (ix - 3)
+	push	de
+	pop	iy
+	ld	de, (ix - 105)
+.BB0_12:
+	push	hl
+	pop	bc
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, .BB0_14
+	ld	a, (iy)
+	ld	de, -132
+	lea	hl, ix
+	add	hl, de
+	ld	(hl), iy
+	ld	hl, (ix - 123)
+	ld	e, (hl)
+	ld	(ix - 3), bc
+	ld	bc, -132
+	lea	iy, ix
+	add	iy, bc
+	ld	iy, (iy)
+	ld	(iy), e
+	ld	de, (ix - 105)
+	ld	(hl), a
+	inc	hl
+	ld	(ix - 123), hl
+	lea	hl, ix
+	add	hl, bc
+	ld	iy, (hl)
+	inc	iy
+	ld	bc, (ix - 3)
+	push	bc
+	pop	hl
+	dec	hl
+	jr	.BB0_12
+.BB0_14:
+	push	de
+	pop	bc
+	ld	de, (ix - 120)
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	ld	(ix - 3), de
+	ld	de, -135
+	lea	hl, ix
+	push	af
+	add	hl, de
+	pop	af
+	ld	bc, (hl)
+	push	bc
+	pop	hl
+	ld	iy, 0
+	ld	de, (ix - 3)
+	jr	z, .BB0_19
+	push	bc
+	pop	hl
+	ld	de, (ix - 105)
+	or	a, a
+	sbc	hl, de
+	ld	hl, (ix - 120)
+	jr	z, .BB0_17
+	ld	hl, (ix - 105)
+.BB0_17:
+	ld	de, (ix - 120)
+	jr	.BB0_19
+.BB0_18:
+	ld	hl, (ix - 105)
+	ld	iy, 0
+.BB0_19:
+	ld	(ix - 123), hl
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	sbc	a, a
+	bit	0, a
+	lea	de, iy
+	jr	nz, .BB0_21
+	ld	hl, (ix + 12)
+	ex	de, hl
+.BB0_21:
+	ld	hl, (ix - 114)
+	push	ix
+	ld	bc, -132
+	add	ix, bc
+	ld	(ix), de
+	pop	ix
+	add	hl, de
+	ld	de, (ix - 108)
+	ld	(ix - 105), hl
+	add	hl, de
+	ld	(ix - 120), hl
+	bit	0, a
+	lea	bc, iy
+	jr	nz, .BB0_23
+	ld	de, -144
+	lea	hl, ix
+	add	hl, de
+	ld	bc, (hl)
+.BB0_23:
+	ld	de, (ix - 117)
+	push	de
+	pop	iy
+	ld	(ix - 3), de
+	ld	de, -138
+	lea	hl, ix
+	add	hl, de
+	ld	(hl), bc
+	add	iy, bc
+	push	ix
+	ld	de, -135
+	add	ix, de
+	ld	(ix), iy
+	pop	ix
+	ld	bc, (ix - 111)
+	add	iy, bc
+	lea	hl, iy
+	ld	bc, (ix - 120)
+	or	a, a
+	sbc	hl, bc
+	push	bc
+	pop	hl
+	ld	de, (ix - 3)
+	jp	nc, .BB0_3
+	ld	(ix - 3), de
+	ld	de, -129
+	lea	hl, ix
+	add	hl, de
+	ld	bc, (hl)
+	ld	de, (ix - 3)
+	ex	de, hl
+	or	a, a
+	sbc	hl, bc
+	push	hl
+	pop	iy
+	push	ix
+	ld	bc, -138
+	add	ix, bc
+	ld	de, (ix)
+	pop	ix
+	add	iy, de
+	ld	bc, (ix - 111)
+	add	iy, bc
+	ld	hl, (ix - 126)
+	ld	de, (ix - 114)
+	or	a, a
+	sbc	hl, de
+	ld	(ix - 3), bc
+	push	ix
+	ld	bc, -132
+	add	ix, bc
+	ld	de, (ix)
+	pop	ix
+	or	a, a
+	sbc	hl, de
+	ld	de, (ix - 108)
+	or	a, a
+	sbc	hl, de
+	ld	(ix - 108), hl
+	ld	hl, (ix - 105)
+	add	hl, de
+	ld	(ix - 105), hl
+	ld	de, -135
+	lea	hl, ix
+	add	hl, de
+	ld	hl, (hl)
+	ld	bc, (ix - 3)
+	add	hl, bc
+	ex	de, hl
+	lea	hl, iy
+	ld	bc, (ix - 108)
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, .BB0_26
+	ld	iy, (ix - 105)
+	lea	hl, iy
+	ld	bc, (ix - 126)
+	or	a, a
+	sbc	hl, bc
+	ld	(ix - 108), iy
+	ld	(ix - 3), bc
+	ld	bc, -129
+	lea	hl, ix
+	push	af
+	add	hl, bc
+	pop	af
+	ld	hl, (hl)
+	ld	bc, (ix - 3)
+	jr	c, .BB0_27
+	jr	.BB0_28
+.BB0_26:
+	ld	(ix - 3), de
+	ld	de, -129
+	lea	hl, ix
+	add	hl, de
+	ld	bc, (hl)
+	push	bc
+	pop	hl
+	ld	de, (ix - 3)
+	or	a, a
+	sbc	hl, de
+	ld	(ix - 108), bc
+	push	de
+	pop	bc
+	ld	iy, (ix - 105)
+	lea	hl, iy
+	ld	de, (ix - 126)
+	jr	nc, .BB0_29
+.BB0_27:
+	ld	(ix - 105), bc
+	ld	bc, -141
+	lea	iy, ix
+	add	iy, bc
+	ld	iy, (iy)
+	ld	bc, (ix - 108)
+	ld	(iy), bc
+	ld	bc, (ix - 105)
+	ld	(iy + 3), bc
+	lea	iy, iy + 6
+	push	ix
+	ld	bc, -141
+	add	ix, bc
+	ld	(ix), iy
+	pop	ix
+.BB0_28:
+	push	de
+	pop	bc
+	ex	de, hl
+	jr	.BB0_30
+.BB0_29:
+	lea	de, iy
+	ld	bc, (ix - 126)
+.BB0_30:
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	jp	c, .BB0_2
+	ld	bc, -147
+	lea	hl, ix
+	add	hl, bc
+	ld	hl, (hl)
+	ld	bc, -141
+	lea	iy, ix
+	add	iy, bc
+	ld	iy, (iy)
+	lea	de, iy
+	or	a, a
+	sbc	hl, de
+	jr	nc, .BB0_33
+	lea	hl, iy - 6
+	ld	de, (iy - 6)
+	ld	bc, (iy - 3)
+	ld	(ix - 3), bc
+	ld	bc, -141
+	lea	iy, ix
+	add	iy, bc
+	ld	(iy), hl
+	jp	.BB0_1
+.BB0_33:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
+	extern	__idivu
+	extern	__setflag
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__frameset
+	extern	__indcallhl
+	extern	__imulu
+	extern	__ineg
+	extern	__ishru

@@ -1,0 +1,31 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_fdimf
+_fdimf:
+	call	__frameset0
+	ld	bc, (ix + 6)
+	ld	hl, (ix + 12)
+	ld	a, (ix + 9)
+	ld	e, (ix + 15)
+	call	__fsub
+	ld	(ix + 6), bc
+	ld	(ix + 9), a
+	or	a, a
+	sbc	hl, hl
+	ld	(ix + 12), hl
+	ld	(ix + 15), h
+	pop	ix
+	jp	_fmaxf
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_fdim
+	label	_fdim at _fdimf
+
+	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__frameset0
+	extern	__fsub
+	extern	_fmaxf

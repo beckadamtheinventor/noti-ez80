@@ -1,0 +1,43 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_hypotf
+_hypotf:
+	ld	hl, -4
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	d, (ix + 9)
+	ld	bc, (ix + 12)
+	ld	a, (ix + 15)
+	push	bc
+	pop	hl
+	ld	e, a
+	call	__fmul
+	ld	(ix - 3), bc
+	ld	(ix - 4), a
+	lea	bc, iy
+	ld	a, d
+	lea	hl, iy
+	ld	e, d
+	call	__fmul
+	ld	hl, (ix - 3)
+	ld	e, (ix - 4)
+	call	__fadd
+	ld	(ix + 6), bc
+	ld	(ix + 9), a
+	ld	sp, ix
+	pop	ix
+	jp	_sqrtf
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_hypot
+	label	_hypot at _hypotf
+
+	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__frameset
+	extern	__fadd
+	extern	_sqrtf
+	extern	__fmul

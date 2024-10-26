@@ -1,0 +1,206 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_strtoul
+_strtoul:
+	ld	hl, -9
+	call	__frameset
+	ld	de, (ix + 6)
+	ld	a, 16
+	ld	(ix - 8), a
+.BB0_1:
+	ld	(ix - 6), de
+	ex	de, hl
+	ld	(ix - 3), hl
+	ld	a, (hl)
+	ld	l, a
+	rlc	l
+	sbc	hl, hl
+	ld	l, a
+	push	hl
+	call	_isspace
+	pop	de
+	ld	de, (ix - 6)
+	inc	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, .BB0_1
+	ld	iy, (ix - 3)
+	ld	a, (iy)
+	cp	a, 43
+	jr	nz, .BB0_4
+	push	de
+	pop	iy
+	ld	a, 1
+	ld	bc, (ix + 12)
+	jr	.BB0_6
+.BB0_4:
+	cp	a, 45
+	ld	a, 1
+	ld	bc, (ix + 12)
+	jr	nz, .BB0_6
+	xor	a, a
+	push	de
+	pop	iy
+.BB0_6:
+	push	bc
+	pop	hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	ld	(ix - 9), a
+	jr	nz, .BB0_10
+	ld	a, (iy)
+	cp	a, 48
+	jr	nz, .BB0_15
+	ld	a, (iy + 1)
+	add	a, -88
+	and	a, -33
+	or	a, a
+	jr	z, .BB0_18
+	ld	a, 8
+	jr	.BB0_16
+.BB0_10:
+	ld	de, 16
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	jr	nz, .BB0_17
+	ld	a, (iy)
+	cp	a, 48
+	jr	nz, .BB0_18
+	ld	a, (iy + 1)
+	cp	a, 88
+	jr	z, .BB0_14
+	cp	a, 120
+	jr	nz, .BB0_18
+.BB0_14:
+	lea	iy, iy + 2
+	jr	.BB0_18
+.BB0_15:
+	ld	a, 10
+.BB0_16:
+	ld	(ix - 8), a
+	jr	.BB0_18
+.BB0_17:
+	ld	(ix - 8), c
+.BB0_18:
+	or	a, a
+	sbc	hl, hl
+	ld	e, h
+.BB0_19:
+	ld	(ix - 7), e
+	ld	(ix - 6), hl
+	ld	(ix - 3), iy
+	ld	a, (iy)
+	ld	l, a
+	rlc	l
+	sbc	hl, hl
+	ld	l, a
+	push	hl
+	call	_toupper
+	pop	de
+	ld	a, l
+	cp	a, 65
+	ld	a, -55
+	jr	nc, .BB0_21
+	ld	a, -48
+.BB0_21:
+	add	a, l
+	ld	d, a
+	ld	l, (ix - 8)
+	cp	a, l
+	jr	nc, .BB0_24
+	ld	iy, (ix - 3)
+	inc	iy
+	ld	bc, 0
+	ld	c, l
+	xor	a, a
+	ld	hl, (ix - 6)
+	ld	e, (ix - 7)
+	call	__lmulu
+	ld	bc, 0
+	ld	c, d
+	call	__ladd
+	ld	bc, (ix - 6)
+	ld	a, (ix - 7)
+	call	__lcmpu
+	jr	nc, .BB0_19
+	ld	hl, 5
+	ld	(_errno), hl
+	scf
+	sbc	hl, hl
+	ld	e, h
+	jr	.BB0_19
+.BB0_24:
+	ld	iy, (ix + 9)
+	lea	hl, iy
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	ld	bc, (ix - 6)
+	ld	d, (ix - 7)
+	ld	a, (ix - 9)
+	jr	z, .BB0_34
+	ld	hl, (ix + 12)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, .BB0_33
+	ld	e, a
+	ld	hl, (ix - 3)
+.BB0_27:
+	ld	(ix - 3), hl
+	ld	a, (hl)
+	cp	a, 76
+	jr	z, .BB0_31
+	cp	a, 104
+	jr	z, .BB0_31
+	cp	a, 108
+	jr	z, .BB0_31
+	cp	a, 117
+	jr	nz, .BB0_32
+.BB0_31:
+	ld	hl, (ix - 3)
+	inc	hl
+	jr	.BB0_27
+.BB0_32:
+	ld	a, e
+.BB0_33:
+	ld	hl, (ix - 3)
+	ld	(iy), hl
+.BB0_34:
+	push	bc
+	pop	hl
+	ld	e, d
+	call	__lneg
+	bit	0, a
+	jr	nz, .BB0_36
+	push	hl
+	pop	bc
+.BB0_36:
+	bit	0, a
+	jr	nz, .BB0_38
+	ld	d, e
+.BB0_38:
+	push	bc
+	pop	hl
+	ld	e, d
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	_toupper
+	extern	__frameset
+	extern	_isspace
+	extern	__lmulu
+	extern	__lcmpu
+	extern	_errno
+	extern	__lneg
+	extern	__ladd

@@ -1,0 +1,62 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_truncf
+_truncf:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	d, (ix + 9)
+	ld	l, 23
+	lea	bc, iy
+	ld	a, d
+	call	__lshru
+	push	bc
+	pop	hl
+	ld	bc, 255
+	call	__iand
+	push	hl
+	pop	bc
+	ld	a, c
+	cp	a, 127
+	jr	nc, .BB0_2
+	ld	hl, 31
+	jr	.BB0_4
+.BB0_2:
+	ld	a, c
+	cp	a, -106
+	jr	nc, .BB0_5
+	ld	hl, 150
+	or	a, a
+	sbc	hl, bc
+.BB0_4:
+	ld	a, -1
+	ld	bc, -1
+	call	__lshl
+	push	bc
+	pop	hl
+	ld	e, a
+	lea	bc, iy
+	ld	a, d
+	call	__land
+	push	hl
+	pop	iy
+	ld	d, e
+.BB0_5:
+	lea	hl, iy
+	ld	e, d
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_trunc
+	label	_trunc at _truncf
+
+	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__lshl
+	extern	__iand
+	extern	__land
+	extern	__frameset0
+	extern	__lshru

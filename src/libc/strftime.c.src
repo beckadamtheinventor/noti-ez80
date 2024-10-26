@@ -1,0 +1,962 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_strftime
+_strftime:
+	ld	hl, -15
+	call	__frameset
+	ld	bc, (ix + 6)
+	ld	de, (ix + 9)
+	ld	hl, (ix + 12)
+	ld	(ix - 6), hl
+	push	bc
+	pop	hl
+	add	hl, de
+	ld	(ix - 3), bc
+	push	hl
+	pop	bc
+.BB0_1:
+	ld	de, (ix - 3)
+	inc	de
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	jp	nc, .BB0_60
+	ld	hl, (ix - 6)
+	ld	l, (hl)
+	ld	a, l
+	or	a, a
+	jp	z, .BB0_60
+	ld	(ix - 9), bc
+	ld	a, l
+	cp	a, 37
+	jr	nz, .BB0_6
+	ld	(ix - 12), de
+	ld	hl, (ix - 6)
+	push	hl
+	pop	iy
+	lea	bc, iy + 2
+	ld	a, (iy + 1)
+	ld	l, a
+	rlc	l
+	sbc	hl, hl
+	ld	l, a
+	ld	(ix - 6), hl
+	ld	de, 37
+	or	a, a
+	sbc	hl, de
+	jr	nz, .BB0_7
+	ld	hl, (ix - 3)
+	ld	(hl), 37
+	ld	(ix - 6), bc
+	ld	hl, (ix - 12)
+	ld	(ix - 3), hl
+	ld	bc, (ix - 9)
+	jr	.BB0_1
+.BB0_6:
+	ld	a, l
+	ld	hl, (ix - 6)
+	inc	hl
+	ld	(ix - 6), hl
+	ld	hl, (ix - 3)
+	ld	(hl), a
+	ld	(ix - 3), de
+	ld	bc, (ix - 9)
+	jr	.BB0_1
+.BB0_7:
+	ld	de, -65
+	ld	hl, (ix - 6)
+	add	hl, de
+	push	hl
+	pop	de
+	ld	(ix - 15), bc
+	ld	bc, 57
+	or	a, a
+	sbc	hl, bc
+	ld	hl, (ix - 15)
+	ld	(ix - 6), hl
+	ld	bc, (ix - 9)
+	ld	iy, (ix - 12)
+	jp	nc, .BB0_1
+	ld	hl, JTI0_0
+	add	hl, de
+	add	hl, de
+	add	hl, de
+	ld	hl, (hl)
+	ld	de, (ix - 15)
+	ld	(ix - 6), de
+	jp	(hl)
+.BB0_9:
+	ld	iy, (ix + 15)
+	ld	hl, (iy + 18)
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	de
+	ld	hl, _wday
+	jp	.BB0_30
+.BB0_10:
+	ld	iy, (ix + 15)
+	ld	hl, (iy + 12)
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	de
+	ld	hl, _mon
+	jp	.BB0_30
+.BB0_11:
+	ld	iy, (ix + 15)
+	ld	hl, (iy + 15)
+	ld	de, 1900
+	add	hl, de
+	ld	bc, 100
+	call	__idivs
+	jp	.BB0_53
+.BB0_12:
+	ld	iy, (ix - 3)
+	lea	de, iy
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	ld	de, (ix + 15)
+	push	de
+	ld	de, _.str.1
+	jp	.BB0_50
+.BB0_13:
+	ld	iy, (ix - 3)
+	lea	de, iy
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	ld	de, (ix + 15)
+	push	de
+	ld	de, _.str.2
+	jp	.BB0_50
+.BB0_14:
+	ld	iy, (ix + 15)
+	ld	de, (iy + 6)
+	jp	.BB0_35
+.BB0_15:
+	ld	iy, (ix + 15)
+	ld	hl, (iy + 6)
+	push	hl
+	pop	iy
+	ld	de, -12
+	add	iy, de
+	ld	de, 13
+	push	hl
+	pop	bc
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, .BB0_17
+	push	bc
+	pop	iy
+.BB0_17:
+	lea	hl, iy
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	ld	de, 12
+	jr	z, .BB0_19
+	lea	de, iy
+.BB0_19:
+	push	de
+	pop	hl
+	push	de
+	pop	iy
+	add	iy, iy
+	sbc	hl, hl
+	ld	bc, 1
+	jp	.BB0_45
+.BB0_20:
+	ld	iy, (ix + 15)
+	ld	de, (iy + 3)
+	jp	.BB0_35
+.BB0_21:
+	ld	iy, (ix + 15)
+	ld	hl, (iy + 6)
+	ld	de, 12
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	hl, _.str.5
+	jp	p, .BB0_39
+	ld	hl, _.str.6
+	jp	.BB0_39
+.BB0_23:
+	ld	iy, (ix - 3)
+	lea	de, iy
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	ld	de, (ix + 15)
+	push	de
+	ld	de, _.str.8
+	jp	.BB0_50
+.BB0_24:
+	ld	hl, (ix + 15)
+	ld	de, (hl)
+	jp	.BB0_35
+.BB0_25:
+	ld	iy, (ix - 3)
+	lea	de, iy
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	ld	de, (ix + 15)
+	push	de
+	ld	de, _.str.9
+	jp	.BB0_50
+.BB0_26:
+	ld	iy, (ix - 3)
+	lea	de, iy
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	ld	de, (ix + 15)
+	push	de
+	ld	de, _.str.11
+	jp	.BB0_50
+.BB0_27:
+	ld	iy, (ix + 15)
+	ld	hl, (iy + 15)
+	ld	de, 1900
+	add	hl, de
+	push	hl
+	pop	bc
+	push	bc
+	pop	iy
+	add	iy, iy
+	sbc	hl, hl
+	ld	de, 1
+	push	de
+	ld	de, 4
+	push	de
+	push	hl
+	push	bc
+	jp	.BB0_57
+.BB0_28:
+	ld	iy, (ix + 15)
+	ld	hl, (iy + 18)
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	de
+	ld	hl, _wday_ab
+	jr	.BB0_30
+.BB0_29:
+	ld	iy, (ix + 15)
+	ld	hl, (iy + 12)
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	de
+	ld	hl, _mon_ab
+.BB0_30:
+	add	hl, de
+	ld	hl, (hl)
+	push	hl
+	ld	hl, (ix - 3)
+	push	hl
+	call	_putstr
+	ld	bc, (ix - 9)
+	ld	(ix - 3), hl
+	jp	.BB0_58
+.BB0_31:
+	ld	iy, (ix - 3)
+	lea	de, iy
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	ld	de, (ix + 15)
+	push	de
+	ld	de, _.str
+	jp	.BB0_50
+.BB0_32:
+	ld	iy, (ix + 15)
+	ld	de, (iy + 9)
+	jr	.BB0_35
+.BB0_33:
+	ld	iy, (ix + 15)
+	ld	de, (iy + 9)
+	push	de
+	pop	hl
+	push	de
+	pop	iy
+	add	iy, iy
+	sbc	hl, hl
+	ld	bc, 0
+	jp	.BB0_55
+.BB0_34:
+	ld	iy, (ix + 15)
+	ld	de, (iy + 12)
+	inc	de
+.BB0_35:
+	push	de
+	pop	hl
+	jp	.BB0_54
+.BB0_36:
+	ld	hl, (ix - 3)
+	ld	(hl), 10
+	jr	.BB0_41
+.BB0_37:
+	ld	iy, (ix + 15)
+	ld	hl, (iy + 6)
+	ld	de, 12
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	hl, _.str.3
+	jp	p, .BB0_39
+	ld	hl, _.str.4
+.BB0_39:
+	push	hl
+	ld	hl, (ix - 3)
+	push	hl
+	call	_putstr
+	ld	(ix - 3), hl
+	jr	.BB0_46
+.BB0_40:
+	ld	hl, (ix - 3)
+	ld	(hl), 9
+.BB0_41:
+	ld	hl, (ix - 15)
+	ld	(ix - 6), hl
+	ld	(ix - 3), iy
+	jp	.BB0_1
+.BB0_42:
+	ld	iy, (ix + 15)
+	ld	hl, (iy + 18)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	ld	de, 7
+	jr	z, .BB0_44
+	ex	de, hl
+.BB0_44:
+	push	de
+	pop	hl
+	push	de
+	pop	iy
+	add	iy, iy
+	sbc	hl, hl
+	ld	bc, 0
+.BB0_45:
+	push	bc
+	inc	bc
+	push	bc
+	push	hl
+	push	de
+	ld	hl, (ix - 3)
+	push	hl
+	call	_puti
+	ld	(ix - 3), hl
+	pop	hl
+	pop	hl
+	pop	hl
+.BB0_46:
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 15)
+	ld	(ix - 6), hl
+	ld	bc, (ix - 9)
+	jp	.BB0_1
+.BB0_47:
+	ld	iy, (ix - 3)
+	lea	de, iy
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	ld	de, (ix + 15)
+	push	de
+	ld	de, _.str.10
+	jr	.BB0_50
+.BB0_48:
+	ld	iy, (ix + 15)
+	ld	de, (iy + 21)
+	inc	de
+	push	de
+	pop	hl
+	push	de
+	pop	iy
+	add	iy, iy
+	sbc	hl, hl
+	ld	bc, 1
+	push	bc
+	ld	bc, 3
+	jr	.BB0_56
+.BB0_49:
+	ld	iy, (ix - 3)
+	lea	de, iy
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	ld	de, (ix + 15)
+	push	de
+	ld	de, _.str.7
+.BB0_50:
+	push	de
+	push	hl
+	push	iy
+	call	_strftime
+	ld	bc, (ix - 9)
+	push	hl
+	pop	de
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 3)
+	add	hl, de
+	ld	(ix - 3), hl
+	jr	.BB0_59
+.BB0_51:
+	ld	iy, (ix + 15)
+	ld	de, (iy + 18)
+	push	de
+	pop	hl
+	push	de
+	pop	iy
+	add	iy, iy
+	sbc	hl, hl
+	ld	bc, 0
+	push	bc
+	inc	bc
+	jr	.BB0_56
+.BB0_52:
+	ld	iy, (ix + 15)
+	ld	hl, (iy + 15)
+	ld	bc, 100
+	call	__irems
+.BB0_53:
+	push	hl
+	pop	de
+.BB0_54:
+	push	de
+	pop	iy
+	add	iy, iy
+	sbc	hl, hl
+	ld	bc, 1
+.BB0_55:
+	push	bc
+	ld	bc, 2
+.BB0_56:
+	push	bc
+	push	hl
+	push	de
+.BB0_57:
+	ld	hl, (ix - 3)
+	push	hl
+	call	_puti
+	ld	bc, (ix - 9)
+	ld	(ix - 3), hl
+	pop	hl
+	pop	hl
+	pop	hl
+.BB0_58:
+	pop	hl
+	pop	hl
+.BB0_59:
+	ld	hl, (ix - 15)
+	ld	(ix - 6), hl
+	jp	.BB0_1
+.BB0_60:
+	ld	hl, (ix - 3)
+	ld	(hl), 0
+	ld	de, (ix + 6)
+	or	a, a
+	sbc	hl, de
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+	section	.rodata,"a",@progbits
+	private	JTI0_0
+JTI0_0:
+	dl	.BB0_9
+	dl	.BB0_10
+	dl	.BB0_11
+	dl	.BB0_12
+	dl	.BB0_1
+	dl	.BB0_13
+	dl	.BB0_1
+	dl	.BB0_14
+	dl	.BB0_15
+	dl	.BB0_1
+	dl	.BB0_1
+	dl	.BB0_1
+	dl	.BB0_20
+	dl	.BB0_1
+	dl	.BB0_1
+	dl	.BB0_21
+	dl	.BB0_1
+	dl	.BB0_23
+	dl	.BB0_24
+	dl	.BB0_25
+	dl	.BB0_1
+	dl	.BB0_1
+	dl	.BB0_1
+	dl	.BB0_26
+	dl	.BB0_27
+	dl	.BB0_1
+	dl	.BB0_1
+	dl	.BB0_1
+	dl	.BB0_1
+	dl	.BB0_1
+	dl	.BB0_1
+	dl	.BB0_1
+	dl	.BB0_28
+	dl	.BB0_29
+	dl	.BB0_31
+	dl	.BB0_32
+	dl	.BB0_33
+	dl	.BB0_1
+	dl	.BB0_1
+	dl	.BB0_29
+	dl	.BB0_1
+	dl	.BB0_48
+	dl	.BB0_14
+	dl	.BB0_1
+	dl	.BB0_34
+	dl	.BB0_36
+	dl	.BB0_1
+	dl	.BB0_37
+	dl	.BB0_1
+	dl	.BB0_49
+	dl	.BB0_1
+	dl	.BB0_40
+	dl	.BB0_42
+	dl	.BB0_1
+	dl	.BB0_51
+	dl	.BB0_47
+	dl	.BB0_52
+
+	section	.text,"ax",@progbits
+	private	_putstr
+_putstr:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	iy, (ix + 9)
+.BB1_1:
+	ld	e, (iy)
+	ld	a, e
+	or	a, a
+	jr	z, .BB1_3
+	inc	iy
+	ld	(hl), e
+	inc	hl
+	jr	.BB1_1
+.BB1_3:
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	private	_puti
+_puti:
+	ld	hl, -13
+	call	__frameset
+	ld	hl, (ix + 9)
+	ld	(ix - 4), hl
+	ld	a, (ix + 12)
+	ld	(ix - 1), a
+	ld	de, (ix + 15)
+	xor	a, a
+	dec	de
+	ld	bc, 0
+	ld	iyl, 10
+	ld	(ix - 7), iy
+	ld	(ix - 13), de
+.BB2_1:
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, .BB2_10
+	ld	(ix - 10), de
+	ld	iy, (ix - 4)
+	lea	hl, iy
+	ld	e, (ix - 1)
+	call	__lcmpzero
+	jr	nz, .BB2_6
+	ld	hl, (ix + 18)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	ld	bc, (ix - 10)
+	jr	nz, .BB2_7
+	push	bc
+	pop	hl
+	ld	de, (ix - 13)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, .BB2_7
+	ld	hl, (ix + 6)
+	add	hl, bc
+	ld	(hl), 32
+	jr	.BB2_8
+.BB2_6:
+	lea	hl, iy
+	ld	bc, 10
+	xor	a, a
+	call	__ldivu
+	ld	(ix - 1), e
+	ld	de, (ix - 7)
+	ld	d, l
+	ld	(ix - 7), de
+	mlt	de
+	ld	a, iyl
+	sub	a, e
+	or	a, 48
+	ld	iy, (ix + 6)
+	ld	bc, (ix - 10)
+	add	iy, bc
+	ld	(iy), a
+	xor	a, a
+	ld	(ix - 4), hl
+	jr	.BB2_9
+.BB2_7:
+	ld	hl, (ix + 6)
+	add	hl, bc
+	ld	(hl), 48
+.BB2_8:
+	ld	iy, 0
+	ld	(ix - 4), iy
+	ld	(ix - 1), a
+.BB2_9:
+	dec	bc
+	push	bc
+	pop	de
+	ld	bc, 0
+	jp	.BB2_1
+.BB2_10:
+	ld	hl, (ix + 6)
+	ld	de, (ix + 15)
+	add	hl, de
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.rodata,"a",@progbits
+	private	_wday_ab
+_wday_ab:
+	dl	_.str.12
+	dl	_.str.13
+	dl	_.str.14
+	dl	_.str.15
+	dl	_.str.16
+	dl	_.str.17
+	dl	_.str.18
+
+	section	.rodata,"a",@progbits
+	private	_wday
+_wday:
+	dl	_.str.19
+	dl	_.str.20
+	dl	_.str.21
+	dl	_.str.22
+	dl	_.str.23
+	dl	_.str.24
+	dl	_.str.25
+
+	section	.rodata,"a",@progbits
+	private	_mon_ab
+_mon_ab:
+	dl	_.str.26
+	dl	_.str.27
+	dl	_.str.28
+	dl	_.str.29
+	dl	_.str.30
+	dl	_.str.31
+	dl	_.str.32
+	dl	_.str.33
+	dl	_.str.34
+	dl	_.str.35
+	dl	_.str.36
+	dl	_.str.37
+
+	section	.rodata,"a",@progbits
+	private	_mon
+_mon:
+	dl	_.str.38
+	dl	_.str.39
+	dl	_.str.40
+	dl	_.str.41
+	dl	_.str.30
+	dl	_.str.42
+	dl	_.str.43
+	dl	_.str.44
+	dl	_.str.45
+	dl	_.str.46
+	dl	_.str.47
+	dl	_.str.48
+
+	section	.rodata,"a",@progbits
+	private	_.str
+_.str:
+	db	"%b %a %d %k:%M:%S %Z %Y", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.1
+_.str.1:
+	db	"%m/%d/%y", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.2
+_.str.2:
+	db	"%Y/%m/%d", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.3
+_.str.3:
+	db	"PM", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.4
+_.str.4:
+	db	"AM", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.5
+_.str.5:
+	db	"pm", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.6
+_.str.6:
+	db	"am", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.7
+_.str.7:
+	db	"%I:%M:%S %p", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.8
+_.str.8:
+	db	"%H:%M", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.9
+_.str.9:
+	db	"%H:%M:%S", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.10
+_.str.10:
+	db	"%b %a %d", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.11
+_.str.11:
+	db	"%k:%M:%S", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.12
+_.str.12:
+	db	"Sun", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.13
+_.str.13:
+	db	"Mon", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.14
+_.str.14:
+	db	"Tue", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.15
+_.str.15:
+	db	"Wed", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.16
+_.str.16:
+	db	"Thu", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.17
+_.str.17:
+	db	"Fri", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.18
+_.str.18:
+	db	"Sat", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.19
+_.str.19:
+	db	"Sunday", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.20
+_.str.20:
+	db	"Monday", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.21
+_.str.21:
+	db	"Tuesday", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.22
+_.str.22:
+	db	"Wednesday", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.23
+_.str.23:
+	db	"Thursday", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.24
+_.str.24:
+	db	"Friday", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.25
+_.str.25:
+	db	"Saturday", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.26
+_.str.26:
+	db	"Jan", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.27
+_.str.27:
+	db	"Feb", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.28
+_.str.28:
+	db	"Mar", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.29
+_.str.29:
+	db	"Apr", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.30
+_.str.30:
+	db	"May", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.31
+_.str.31:
+	db	"Jun", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.32
+_.str.32:
+	db	"Jul", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.33
+_.str.33:
+	db	"Aug", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.34
+_.str.34:
+	db	"Sep", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.35
+_.str.35:
+	db	"Oct", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.36
+_.str.36:
+	db	"Nov", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.37
+_.str.37:
+	db	"Dec", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.38
+_.str.38:
+	db	"January", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.39
+_.str.39:
+	db	"February", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.40
+_.str.40:
+	db	"March", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.41
+_.str.41:
+	db	"April", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.42
+_.str.42:
+	db	"June", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.43
+_.str.43:
+	db	"July", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.44
+_.str.44:
+	db	"August", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.45
+_.str.45:
+	db	"September", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.46
+_.str.46:
+	db	"October", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.47
+_.str.47:
+	db	"November", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.48
+_.str.48:
+	db	"December", 0
+
+	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
+	extern	__ldivu
+	extern	__Unwind_SjLj_Register
+	extern	__frameset
+	extern	__lcmpzero
+	extern	__idivs
+	extern	__setflag
+	extern	__irems
+	extern	__imulu
+	extern	__Unwind_SjLj_Unregister
+	extern	__frameset0

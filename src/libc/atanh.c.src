@@ -1,0 +1,127 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_atanhf
+_atanhf:
+	call	__frameset0
+	ld	bc, (ix + 6)
+	ld	hl, -8388608
+	ld	e, 63
+	ld	a, (ix + 9)
+	call	__fadd
+	push	bc
+	pop	iy
+	ld	d, a
+	push	hl
+	pop	bc
+	ld	a, e
+	ld	hl, (ix + 6)
+	ld	e, (ix + 9)
+	call	__fsub
+	push	bc
+	pop	hl
+	ld	e, a
+	lea	bc, iy
+	ld	a, d
+	call	__fdiv
+	ld	l, a
+	push	hl
+	push	bc
+	call	_logf
+	push	hl
+	pop	bc
+	ld	a, e
+	pop	hl
+	pop	hl
+	or	a, a
+	sbc	hl, hl
+	ld	e, 63
+	call	__fmul
+	push	bc
+	pop	hl
+	ld	e, a
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_atanhl
+_atanhl:
+	ld	hl, -9
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	de, (ix + 9)
+	ld	iy, 0
+	ld	bc, 16368
+	push	bc
+	push	iy
+	push	iy
+	ld	bc, (ix + 12)
+	call	__dadd
+	ld	(ix - 3), hl
+	ld	(ix - 6), de
+	ld	(ix - 9), bc
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (ix + 12)
+	push	hl
+	ld	hl, (ix + 9)
+	push	hl
+	ld	hl, (ix + 6)
+	push	hl
+	lea	de, iy
+	push	de
+	pop	hl
+	ld.sis	bc, 16368
+	call	__dsub
+	pop	iy
+	pop	iy
+	pop	iy
+	push	bc
+	push	de
+	push	hl
+	ld	hl, (ix - 3)
+	ld	de, (ix - 6)
+	ld	bc, (ix - 9)
+	call	__ddiv
+	pop	iy
+	pop	iy
+	pop	iy
+	push	bc
+	push	de
+	push	hl
+	call	_logl
+	pop	iy
+	pop	iy
+	pop	iy
+	ld	iy, 16352
+	push	iy
+	ld	iy, 0
+	push	iy
+	push	iy
+	call	__dmul
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_atanh
+	label	_atanh at _atanhf
+
+	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__frameset
+	extern	__fdiv
+	extern	_logf
+	extern	__dsub
+	extern	__fadd
+	extern	_logl
+	extern	__dmul
+	extern	__frameset0
+	extern	__ddiv
+	extern	__dadd
+	extern	__fsub
+	extern	__fmul

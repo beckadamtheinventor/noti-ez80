@@ -1,0 +1,186 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	__logf_c
+__logf_c:
+	ld	hl, -16
+	call	__frameset
+	ld	bc, (ix + 6)
+	ld	a, (ix + 9)
+	or	a, a
+	sbc	hl, hl
+	ld	e, h
+	ld	iy, -8388608
+	call	__fcmp
+	jp	p, .BB0_3
+	pea	ix - 3
+	ld	l, a
+	push	hl
+	push	bc
+	call	_frexpf
+	push	hl
+	pop	iy
+	pop	hl
+	pop	hl
+	pop	hl
+	lea	hl, iy
+	ld	bc, 3474675
+	ld	a, 63
+	call	__fcmp
+	ld	hl, 0
+	jp	m, .BB0_4
+	ld	d, 0
+	jr	.BB0_5
+.BB0_3:
+	ld	hl, 4
+	ld	e, -1
+	ld	(_errno), hl
+	jp	.BB0_10
+.BB0_4:
+	ld	d, 1
+.BB0_5:
+	lea	bc, iy
+	ld	(ix - 12), e
+	ld	a, e
+	ld	e, 64
+	call	__fmul
+	ld	(ix - 6), bc
+	ld	e, a
+	ld	(ix - 15), iy
+	ld	iy, (ix - 3)
+	ld	a, d
+	rrc	a
+	sbc	hl, hl
+	push	hl
+	pop	bc
+	add	iy, bc
+	ld	(ix - 9), iy
+	bit	0, d
+	jr	nz, .BB0_7
+	ld	hl, (ix - 15)
+	ld	(ix - 6), hl
+.BB0_7:
+	bit	0, d
+	ld	hl, -8388608
+	ld	d, e
+	jr	nz, .BB0_9
+	ld	d, (ix - 12)
+.BB0_9:
+	ld	iy, (ix - 6)
+	lea	bc, iy
+	ld	a, d
+	ld	e, -65
+	call	__fadd
+	ld	(ix - 12), bc
+	ld	(ix - 15), a
+	lea	bc, iy
+	ld	a, d
+	ld	e, 63
+	call	__fadd
+	push	bc
+	pop	hl
+	ld	e, a
+	ld	bc, (ix - 12)
+	ld	a, (ix - 15)
+	call	__fdiv
+	ld	(ix - 6), bc
+	ld	(ix - 12), a
+	push	bc
+	pop	hl
+	ld	e, a
+	call	__fmul
+	push	bc
+	pop	iy
+	ld	d, a
+	ld	hl, -2647868
+	ld	e, 62
+	call	__fmul
+	ld	hl, 1717243
+	ld	e, -63
+	call	__fadd
+	lea	hl, iy
+	ld	e, d
+	call	__fmul
+	ld	hl, -546679
+	ld	e, 65
+	call	__fadd
+	lea	hl, iy
+	ld	e, d
+	call	__fmul
+	ld	hl, -4187007
+	ld	e, -63
+	call	__fadd
+	ld	(ix - 15), bc
+	ld	(ix - 16), a
+	lea	bc, iy
+	ld	a, d
+	ld	hl, 955367
+	call	__fadd
+	lea	hl, iy
+	ld	e, d
+	call	__fmul
+	ld	hl, -6563579
+	ld	e, 65
+	call	__fadd
+	lea	hl, iy
+	ld	e, d
+	call	__fmul
+	ld	hl, 4201601
+	ld	e, -63
+	call	__fadd
+	push	bc
+	pop	hl
+	ld	e, a
+	ld	bc, (ix - 15)
+	ld	a, (ix - 16)
+	call	__fdiv
+	ld	(ix - 15), bc
+	ld	(ix - 16), a
+	ld	bc, (ix - 9)
+	push	bc
+	pop	hl
+	push	bc
+	pop	iy
+	add	iy, iy
+	sbc	hl, hl
+	ld	a, l
+	call	__ltof
+	ld	hl, 3240472
+	ld	e, 63
+	call	__fmul
+	push	bc
+	pop	iy
+	ld	d, a
+	ld	bc, (ix - 15)
+	ld	a, (ix - 16)
+	ld	hl, (ix - 6)
+	ld	e, (ix - 12)
+	call	__fmul
+	lea	hl, iy
+	ld	e, d
+	call	__fadd
+	push	bc
+	pop	iy
+	ld	e, a
+.BB0_10:
+	lea	hl, iy
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__log_c
+	label	__log_c at __logf_c
+
+	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__frameset
+	extern	__fdiv
+	extern	__fadd
+	extern	_frexpf
+	extern	__ltof
+	extern	__fcmp
+	extern	_errno
+	extern	__fmul

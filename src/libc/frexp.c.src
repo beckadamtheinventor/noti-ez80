@@ -1,0 +1,67 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	__frexpf_c
+__frexpf_c:
+	ld	hl, -3
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	d, (ix + 9)
+	ld	iy, 0
+	xor	a, a
+	ld	e, d
+	lea	bc, iy
+	call	__fcmp
+	jr	z, .BB0_2
+	ld	bc, -8388608
+	ld	a, 127
+	ld	hl, (ix + 6)
+	ld	e, d
+	call	__land
+	lea	bc, iy
+	ld	a, -63
+	call	__ladd
+	push	hl
+	pop	bc
+	ld	a, e
+	ld	hl, (ix + 6)
+	ld	e, d
+	call	__lsub
+	ld	(ix - 3), hl
+	ld	d, e
+	ld	l, 23
+	call	__lshrs
+	push	bc
+	pop	iy
+	jr	.BB0_3
+.BB0_2:
+	ld	hl, (ix + 6)
+	ld	(ix - 3), hl
+.BB0_3:
+	ld	hl, (ix + 12)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, .BB0_5
+	ld	(hl), iy
+.BB0_5:
+	ld	hl, (ix - 3)
+	ld	e, d
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__frexp_c
+	label	__frexp_c at __frexpf_c
+
+	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__frameset
+	extern	__lsub
+	extern	__land
+	extern	__fcmp
+	extern	__lshrs
+	extern	__ladd

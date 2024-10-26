@@ -1,0 +1,18 @@
+	assume	adl=1
+
+	section	.text
+	public	__sbitrev
+__sbitrev:
+	push	af
+	ld	a, l				; a=L
+	push	hl
+	dec	sp
+	pop	hl
+	inc	sp				; uhl=HL?
+	call	__internal_bitrev_two_bytes	; a=H', uhl=L?L'
+	ld	h, l
+	ld	l, a				; hl=L'H'
+	pop	af
+	ret
+
+	extern	__internal_bitrev_two_bytes

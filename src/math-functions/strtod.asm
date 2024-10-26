@@ -1,3 +1,0 @@
-
-_strtod:
-	ret

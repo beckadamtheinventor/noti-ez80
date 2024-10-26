@@ -1,0 +1,152 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	__sqrtf_c
+__sqrtf_c:
+	ld	hl, -14
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	e, (ix + 9)
+	ld	iy, 0
+	ld	d, iyh
+	lea	bc, iy
+	ld	a, d
+	call	__fcmp
+	jr	nz, .BB0_2
+	push	hl
+	pop	iy
+	ld	d, e
+	jp	.BB0_9
+.BB0_2:
+	ld	bc, -8388608
+	ld	a, 63
+	call	__fcmp
+	jr	nz, .BB0_4
+	push	bc
+	pop	iy
+	ld	d, a
+	jp	.BB0_9
+.BB0_4:
+	lea	bc, iy
+	ld	a, d
+	call	__fcmp
+	jp	p, .BB0_6
+	ld	hl, 4
+	ld	(_errno), hl
+	jp	.BB0_9
+.BB0_6:
+	pea	ix - 3
+	push	de
+	push	hl
+	call	_frexpf
+	push	hl
+	pop	bc
+	ld	(ix - 6), bc
+	ld	a, e
+	ld	(ix - 7), a
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 1512634
+	ld	e, 63
+	call	__fmul
+	ld	hl, -2774616
+	dec	e
+	call	__fadd
+	push	bc
+	pop	hl
+	ld	e, a
+	ld	bc, (ix - 6)
+	ld	a, (ix - 7)
+	call	__fdiv
+	push	bc
+	pop	iy
+	ld	d, a
+	push	hl
+	pop	bc
+	ld	a, e
+	lea	hl, iy
+	ld	e, d
+	call	__fadd
+	ld	(ix - 14), bc
+	ld	e, a
+	ld	(ix - 10), de
+	ld	hl, -2
+	push	hl
+	push	de
+	push	bc
+	call	_ldexpf
+	push	hl
+	pop	iy
+	ld	(ix - 11), e
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	bc, (ix - 6)
+	ld	a, (ix - 7)
+	ld	hl, (ix - 14)
+	ld	de, (ix - 10)
+	call	__fdiv
+	push	bc
+	pop	hl
+	ld	e, a
+	lea	bc, iy
+	ld	a, (ix - 11)
+	call	__fadd
+	ld	(ix - 6), bc
+	ld	e, a
+	ld	iy, (ix - 3)
+	lea	hl, iy
+	ld	bc, 1
+	call	__iand
+	bit	0, l
+	jr	z, .BB0_8
+	ld	hl, 3474675
+	ld	bc, (ix - 6)
+	ld	a, e
+	ld	e, 63
+	call	__fmul
+	ld	(ix - 6), bc
+	ld	e, a
+	inc	iy
+	ld	(ix - 3), iy
+.BB0_8:
+	lea	hl, iy
+	ld	bc, 2
+	call	__idivs
+	push	hl
+	push	de
+	ld	hl, (ix - 6)
+	push	hl
+	call	_ldexpf
+	push	hl
+	pop	iy
+	ld	d, e
+	pop	hl
+	pop	hl
+	pop	hl
+.BB0_9:
+	lea	hl, iy
+	ld	e, d
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__sqrt_c
+	label	__sqrt_c at __sqrtf_c
+
+	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
+	extern	_ldexpf
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__frameset
+	extern	__iand
+	extern	__fdiv
+	extern	__fadd
+	extern	_frexpf
+	extern	__fcmp
+	extern	_errno
+	extern	__fmul
+	extern	__idivs

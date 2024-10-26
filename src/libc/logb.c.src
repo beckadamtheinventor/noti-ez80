@@ -1,0 +1,29 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_logbf
+_logbf:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	e, (ix + 9)
+	push	de
+	push	hl
+	call	_log2f
+	pop	bc
+	pop	bc
+	ld	(ix + 6), hl
+	ld	(ix + 9), e
+	pop	ix
+	jp	_floorf
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_logb
+	label	_logb at _logbf
+
+	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
+	extern	_floorf
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	_log2f
+	extern	__frameset0

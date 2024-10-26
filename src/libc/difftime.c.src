@@ -1,0 +1,28 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_difftime
+_difftime:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	bc, (ix + 12)
+	ld	e, (ix + 9)
+	ld	a, (ix + 15)
+	call	__lsub
+	push	hl
+	pop	bc
+	ld	a, e
+	call	__ultof
+	push	bc
+	pop	hl
+	ld	e, a
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__lsub
+	extern	__frameset0
+	extern	__ultof

@@ -1,0 +1,10 @@
+	assume	adl=1
+
+	section	.text
+	public	__bmulu
+__bmulu:
+	push	bc
+	mlt	bc
+	ld	a,c
+	pop	bc
+	ret

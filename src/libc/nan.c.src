@@ -1,0 +1,37 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_nanf
+_nanf:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	de, 0
+	ld	bc, 0
+	push	bc
+	push	de
+	push	hl
+	call	_strtol
+	pop	bc
+	pop	bc
+	pop	bc
+	ld	bc, 4194303
+	xor	a, a
+	call	__land
+	ld	bc, -4194304
+	ld	a, 127
+	call	__ladd
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_nan
+	label	_nan at _nanf
+
+	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__land
+	extern	_strtol
+	extern	__frameset0
+	extern	__ladd

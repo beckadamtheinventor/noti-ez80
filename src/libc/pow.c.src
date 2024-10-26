@@ -1,0 +1,143 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	__powf_c
+__powf_c:
+	ld	hl, -4
+	call	__frameset
+	ld	bc, (ix + 6)
+	ld	a, (ix + 9)
+	ld	iy, 0
+	ld	d, iyh
+	lea	hl, iy
+	ld	e, d
+	call	__fcmp
+	jp	p, .BB0_2
+	ld	l, a
+	push	hl
+	push	bc
+	call	_log
+	push	hl
+	pop	bc
+	ld	a, e
+	pop	hl
+	pop	hl
+	ld	hl, (ix + 12)
+	ld	e, (ix + 15)
+	call	__fmul
+	ld	l, a
+	push	hl
+	push	bc
+	call	_expf
+	push	hl
+	pop	iy
+	ld	d, e
+	pop	hl
+	pop	hl
+	jp	.BB0_11
+.BB0_2:
+	push	bc
+	pop	hl
+	ld	e, a
+	lea	bc, iy
+	ld	a, d
+	call	__fcmp
+	jp	p, .BB0_9
+	ld	hl, (ix + 12)
+	push	hl
+	pop	bc
+	ld	d, (ix + 15)
+	ld	a, d
+	call	__ftol
+	ld	(ix - 3), bc
+	ld	(ix - 4), a
+	call	__ltof
+	push	bc
+	pop	hl
+	ld	e, a
+	ld	bc, (ix + 12)
+	ld	a, d
+	call	__fcmp
+	jr	nz, .BB0_8
+	ld	bc, (ix + 6)
+	ld	a, (ix + 9)
+	call	__fneg
+	ld	l, a
+	push	hl
+	push	bc
+	call	_log
+	push	hl
+	pop	bc
+	ld	a, e
+	pop	hl
+	pop	hl
+	ld	hl, (ix + 12)
+	ld	e, (ix + 15)
+	call	__fmul
+	ld	l, a
+	push	hl
+	push	bc
+	call	_expf
+	push	hl
+	pop	iy
+	ld	d, e
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 3)
+	ld	e, (ix - 4)
+	ld	bc, 1
+	xor	a, a
+	call	__land
+	ld	a, l
+	xor	a, c
+	ld	l, a
+	lea	bc, iy
+	ld	a, d
+	call	__fneg
+	bit	0, l
+	jr	nz, .BB0_6
+	push	bc
+	pop	iy
+.BB0_6:
+	bit	0, l
+	jr	nz, .BB0_11
+	ld	d, a
+	jr	.BB0_11
+.BB0_8:
+	ld	hl, 4
+	ld	(_errno), hl
+	ld	d, h
+.BB0_9:
+	lea	hl, iy
+	ld	e, d
+	ld	bc, (ix + 12)
+	ld	a, (ix + 15)
+	call	__fcmp
+	jp	m, .BB0_11
+	ld	hl, 4
+	ld	(_errno), hl
+.BB0_11:
+	lea	hl, iy
+	ld	e, d
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__pow_c
+	label	__pow_c at __powf_c
+
+	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__frameset
+	extern	__fneg
+	extern	_log
+	extern	__land
+	extern	__ltof
+	extern	__fcmp
+	extern	_errno
+	extern	__fmul
+	extern	_expf
+	extern	__ftol

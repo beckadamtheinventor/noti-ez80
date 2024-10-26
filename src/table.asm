@@ -54,86 +54,86 @@ assert $ = $80
 	jp _case24D
 	jp _case8
 	jp _case8D
-	jp _frameset
-	jp _frameset0
-	jp _iand
-	jp _icmpzero
-	jp _idivs
-	jp _idivu
-	jp _idvrmu
+	jp __frameset
+	jp __frameset0
+	jp __iand
+	jp __icmpzero
+	jp __idivs
+	jp __idivu
+	jp __idvrmu
 	jp _ildix
 	jp _ildiy
 	jp _imul_b
-	jp _imulu
-	jp _imuls
+	jp __imulu
+	jp __imuls
 	jp _indcall
-	jp _ineg
-	jp _inot
-	jp _ior
-	jp _irems
-	jp _iremu
-	jp _ishl
+	jp __ineg
+	jp __inot
+	jp __ior
+	jp __irems
+	jp __iremu
+	jp __ishl
 	jp _ishl_b
-	jp _ishrs
+	jp __ishrs
 	jp _ishrs_b
-	jp _ishru
+	jp __ishru
 	jp _ishru_b
 	jp _istix
 	jp _istiy
 	jp _itol
-	jp _ixor
-	jp _ladd
+	jp __ixor
+	jp __ladd
 	jp _ladd_b
-	jp _land
-	jp _lcmps
-	jp _lcmpu
-	jp _lcmpzero
-	jp _ldivs
-	jp _ldivu
-	jp _ldvrmu
+	jp __land
+	jp __lcmps
+	jp __lcmpu
+	jp __lcmpzero
+	jp __ldivs
+	jp __ldivu
+	jp __ldvrmu
 	jp _lldix
 	jp _lldiy
-	jp _lmuls
-	jp _lmulu
-	jp _lneg
-	jp _lnot
-	jp _lor
-	jp _lrems
-	jp _lremu
-	jp _lshl
-	jp _lshrs
-	jp _lshru
+	jp __lmuls
+	jp __lmulu
+	jp __lneg
+	jp __lnot
+	jp __lor
+	jp __lrems
+	jp __lremu
+	jp __lshl
+	jp __lshrs
+	jp __lshru
 	jp _lstix
 	jp _lstiy
-	jp _lsub
-	jp _lxor
-	jp _sand
-	jp _scmpzero
-	jp _sdivs
-	jp _sdivu
+	jp __lsub
+	jp __lxor
+	jp __sand
+	jp __scmpzero
+	jp __sdivs
+	jp __sdivu
 	jp _seqcase
 	jp _seqcaseD
 	jp _setflag
 	jp _sldix
 	jp _sldiy
-	jp _smuls
-	jp _smulu
-	jp _sneg
-	jp _snot
-	jp _sor
-	jp _srems
-	jp _sremu
-	jp _sshl
+	jp __smuls
+	jp __smulu
+	jp __sneg
+	jp __snot
+	jp __sor
+	jp __srems
+	jp __sremu
+	jp __sshl
 	jp _sshl_b
-	jp _sshrs
+	jp __sshrs
 	jp _sshrs_b
-	jp _sshru
+	jp __sshru
 	jp _sshru_b
 	jp _sstix
 	jp _sstiy
 	jp _stoi
 	jp _stoiu
-	jp _sxor
+	jp __sxor
 	jp _fppack
 	jp _fadd
 	jp _fcmp

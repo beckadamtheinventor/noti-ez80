@@ -1,0 +1,46 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	weak	_fopen
+_fopen:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	de, (ix + 9)
+	push	de
+	push	hl
+	call	_ti_Open
+	ld	e, a
+	pop	hl
+	pop	hl
+	or	a, a
+	jr	nz, .BB0_2
+	ld	iy, 0
+	jr	.BB0_3
+.BB0_2:
+	ld	iy, __file_streams
+	ld	a, e
+	dec	a
+	or	a, a
+	sbc	hl, hl
+	ld	l, a
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	bc
+	add	iy, bc
+	ld	(iy), e
+	ld	(iy + 1), 0
+	ld	(iy + 2), 0
+.BB0_3:
+	lea	hl, iy
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	_ti_Open
+	extern	__imulu
+	extern	__file_streams
+	extern	__frameset0

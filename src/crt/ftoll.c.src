@@ -1,0 +1,126 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	__ftoll_c
+__ftoll_c:
+	ld	hl, -12
+	call	__frameset
+	ld	de, (ix + 6)
+	ld	l, 23
+	push	de
+	pop	bc
+	ld	a, (ix + 9)
+	call	__lshru
+	push	bc
+	pop	iy
+	ex	de, hl
+	ld	bc, -8388608
+	call	__ior
+	push	hl
+	pop	de
+	lea	hl, iy
+	ld	bc, 255
+	call	__iand
+	ld	a, l
+	cp	a, 127
+	jr	nc, BB0_2
+	ld.sis	bc, 0
+	ld	iy, 0
+	lea	de, iy
+	jp	BB0_21
+BB0_2:
+	push	de
+	pop	iy
+	ld	a, l
+	cp	a, -105
+	jr	nc, BB0_5
+	ld	de, 150
+	ld	a, e
+	sub	a, l
+	lea	hl, iy
+	ld	c, a
+	call	__ishru
+	ld	de, 0
+	ld.sis	bc, 0
+	ld	(ix - 6), hl
+	call	__llneg
+	push	hl
+	pop	iy
+	ld	(ix - 3), de
+	ld	hl, (ix + 6)
+	ld	e, (ix + 9)
+	call	__lcmpzero
+	jp	m, BB0_7
+	ld	a, 0
+	jr	BB0_8
+BB0_5:
+	ld	de, -127
+	ld.sis	bc, 0
+	add	hl, de
+	push	hl
+	lea	hl, iy
+	ld	de, 0
+	call	__llshl
+	pop	iy
+	ld	(ix - 12), hl
+	ld	(ix - 9), de
+	ld	(ix - 6), bc
+	call	__llneg
+	push	hl
+	pop	iy
+	ld	(ix - 3), de
+	ld	hl, (ix + 6)
+	ld	e, (ix + 9)
+	call	__lcmpzero
+	jp	m, BB0_14
+	ld	a, 0
+	jr	BB0_15
+BB0_7:
+	ld	a, 1
+BB0_8:
+	bit	0, a
+	ld	de, (ix - 3)
+	jr	nz, BB0_10
+	ld	iy, (ix - 6)
+BB0_10:
+	bit	0, a
+	jr	nz, BB0_12
+	ld	de, 0
+BB0_12:
+	bit	0, a
+	jr	nz, BB0_21
+	ld.sis	bc, 0
+	jr	BB0_21
+BB0_14:
+	ld	a, 1
+BB0_15:
+	bit	0, a
+	ld	de, (ix - 3)
+	jr	nz, BB0_17
+	ld	iy, (ix - 12)
+BB0_17:
+	bit	0, a
+	jr	nz, BB0_19
+	ld	de, (ix - 9)
+BB0_19:
+	bit	0, a
+	jr	nz, BB0_21
+	ld	bc, (ix - 6)
+BB0_21:
+	lea	hl, iy
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__llneg
+	extern	__frameset
+	extern	__iand
+	extern	__lcmpzero
+	extern	__llshl
+	extern	__ior
+	extern	__lshru
+	extern	__ishru

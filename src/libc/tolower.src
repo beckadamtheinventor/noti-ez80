@@ -1,0 +1,22 @@
+	assume	adl=1
+
+	section	.text
+	public	_tolower
+
+_tolower:
+	pop	de
+	ex	(sp), hl
+	push	de
+	require	_tolower.internal
+
+	section	.text
+	public	_tolower.internal
+	; ASM interface: input/output char in L, destroys AF
+_tolower.internal:
+	ld	a, l
+	sub	a, 'A'
+	cp	a, 1+'Z'-'A'
+	ret	nc
+
+	set	5, l
+	ret

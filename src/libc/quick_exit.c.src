@@ -1,0 +1,75 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_at_quick_exit
+_at_quick_exit:
+	call	__frameset0
+	ld	hl, 6
+	push	hl
+	call	_malloc
+	push	hl
+	pop	iy
+	pop	hl
+	lea	hl, iy
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, .BB0_2
+	ld	hl, 1
+	jr	.BB0_3
+.BB0_2:
+	ld	hl, (ix + 6)
+	ld	de, (_quick_exit_functions)
+	ld	(iy), de
+	ld	(iy + 3), hl
+	ld	(_quick_exit_functions), iy
+	or	a, a
+	sbc	hl, hl
+.BB0_3:
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_quick_exit
+_quick_exit:
+	ld	hl, -3
+	call	__frameset
+.BB1_1:
+	ld	iy, (_quick_exit_functions)
+	lea	hl, iy
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, .BB1_3
+	ld	hl, (iy)
+	ld	(_quick_exit_functions), hl
+	ld	hl, (iy + 3)
+	ld	(ix - 3), hl
+	push	iy
+	call	_free
+	pop	hl
+	ld	hl, (ix - 3)
+	call	__indcallhl
+	jr	.BB1_1
+.BB1_3:
+	ld	hl, (ix + 6)
+	push	hl
+	call	__Exit
+	pop	hl
+	section	.text,"ax",@progbits
+
+	section	.bss,"aw",@nobits
+	private	_quick_exit_functions
+_quick_exit_functions:
+	rb	3
+
+	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
+	extern	__Unwind_SjLj_Register
+	extern	__frameset
+	extern	_malloc
+	extern	__Unwind_SjLj_Unregister
+	extern	__indcallhl
+	extern	__Exit
+	extern	_free
+	extern	__frameset0

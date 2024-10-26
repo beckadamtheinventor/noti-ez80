@@ -1,0 +1,294 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_gmtime
+_gmtime:
+	ld	hl, -24
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	bc, 1
+	xor	a, a
+	ld	hl, 2
+	ld	(ix - 18), hl
+	lea	hl, iy
+	ld	hl, (hl)
+	ld	e, (iy + 3)
+	ld	iy, 0
+	ld	(_gmtime.tm2), iy
+	ld	(_gmtime.tm2+3), iy
+	ld	(_gmtime.tm2+6), iy
+	ld	(ix - 15), bc
+	ld	(_gmtime.tm2+9), bc
+	ld	(_gmtime.tm2+12), iy
+	ld	bc, 70
+	ld	(_gmtime.tm2+15), bc
+	ld	(ix - 3), hl
+	ld	(ix - 9), e
+	ld	bc, 86400
+	call	__ldivu
+	ld.sis	de, 4
+	add.sis	hl, de
+	ld.sis	bc, 7
+	call	__sremu
+	ld	bc, 0
+	ld	c, l
+	ld	b, h
+	ld	(_gmtime.tm2+18), bc
+	ld	bc, 70
+	scf
+	sbc	hl, hl
+	ld	(_gmtime.tm2+24), hl
+	ld	de, 1970
+.BB0_1:
+	ld	(ix - 6), iy
+	add	iy, bc
+	push	de
+	pop	hl
+	ld	bc, 400
+	call	__idivu
+	call	__imulu
+	push	hl
+	pop	bc
+	ld	hl, 1970
+	or	a, a
+	sbc	hl, bc
+	ld	(ix - 24), hl
+	ld	(ix - 12), de
+	ex	de, hl
+	ld	bc, 100
+	call	__idivu
+	call	__imulu
+	ld	de, (ix - 6)
+	ld	bc, -1970
+	add	hl, bc
+	ld	(ix - 21), hl
+	or	a, a
+	sbc	hl, de
+	jr	nz, .BB0_3
+	ex	de, hl
+	ld	de, (ix - 24)
+	add	hl, de
+	jr	.BB0_4
+.BB0_3:
+	lea	hl, iy
+	ld	bc, 3
+	call	__iand
+.BB0_4:
+	ld	a, 1
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	ld	d, -1
+	ld	hl, (ix - 3)
+	ld	e, (ix - 9)
+	jr	z, .BB0_6
+	ld	d, 0
+.BB0_6:
+	bit	0, d
+	ld	bc, -1932032
+	jr	nz, .BB0_8
+	ld	bc, -2018432
+.BB0_8:
+	bit	0, d
+	call	__lcmpu
+	jr	c, .BB0_10
+	call	__lsub
+	ld	(ix - 3), hl
+	ld	(ix - 9), e
+	ld	iy, (ix - 6)
+	lea	hl, iy
+	ld	bc, 71
+	add	hl, bc
+	ld	(_gmtime.tm2+15), hl
+	inc	iy
+	ld	de, (ix - 12)
+	inc	de
+	ld	hl, 70
+	push	hl
+	pop	bc
+	jp	.BB0_1
+.BB0_10:
+	ld	bc, 86400
+	xor	a, a
+	call	__ldivu
+	ld	(_gmtime.tm2+21), hl
+	ld	a, 28
+	ld	(_gmtime.dpm+1), a
+	ld	hl, (ix - 6)
+	push	hl
+	pop	iy
+	ld	bc, 70
+	add	iy, bc
+	ex	de, hl
+	ld	hl, (ix - 21)
+	or	a, a
+	sbc	hl, de
+	jr	nz, .BB0_12
+	ld	hl, (ix - 12)
+	ld	bc, 400
+	call	__idivu
+	call	__imulu
+	push	hl
+	pop	bc
+	ld	hl, 1970
+	or	a, a
+	sbc	hl, bc
+	add	hl, de
+	jr	.BB0_13
+.BB0_12:
+	lea	hl, iy
+	ld	bc, 3
+	call	__iand
+.BB0_13:
+	push	af
+	ld	a, (ix - 9)
+	ld	iyl, a
+	pop	af
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, .BB0_15
+	ld	a, 29
+	ld	(_gmtime.dpm+1), a
+.BB0_15:
+	ld	hl, _gmtime.dpm
+	ld	de, 0
+	ld	(ix - 6), de
+	ld	d, iyl
+.BB0_16:
+	ld	bc, (ix - 6)
+	add	hl, bc
+	ld	iy, 0
+	push	af
+	ld	a, (hl)
+	ld	iyl, a
+	pop	af
+	ld	e, iyh
+	lea	hl, iy
+	ld	bc, 86400
+	xor	a, a
+	call	__lmulu
+	push	hl
+	pop	bc
+	ld	a, e
+	ld	hl, (ix - 3)
+	ld	e, d
+	call	__lcmpu
+	jr	c, .BB0_18
+	ld	e, 0
+	ld	hl, (ix - 6)
+	push	hl
+	pop	bc
+	inc	bc
+	ld	(ix - 9), bc
+	inc	hl
+	ld	(_gmtime.tm2+12), hl
+	lea	hl, iy
+	ld	bc, -86400
+	ld	a, -1
+	call	__lmulu
+	ld	bc, (ix - 3)
+	ld	a, d
+	call	__ladd
+	ld	(ix - 3), hl
+	ld	d, e
+	ld	hl, (ix - 9)
+	ld	(ix - 6), hl
+	ld	hl, _gmtime.dpm
+	jr	.BB0_16
+.BB0_18:
+	ld	bc, (ix - 3)
+	ld	iy, 86399
+.BB0_19:
+	lea	hl, iy
+	ld	e, 0
+	ld	a, d
+	call	__lcmpu
+	jr	nc, .BB0_21
+	push	bc
+	pop	hl
+	ld	e, d
+	ld	bc, -86400
+	ld	a, -1
+	call	__ladd
+	push	hl
+	pop	bc
+	ld	d, e
+	ld	hl, (ix - 18)
+	ld	(_gmtime.tm2+9), hl
+	inc	hl
+	ld	(ix - 18), hl
+	jr	.BB0_19
+.BB0_21:
+	ld	iy, 1
+.BB0_22:
+	ld	hl, 3599
+	ld	e, 0
+	ld	a, d
+	call	__lcmpu
+	jr	nc, .BB0_24
+	push	bc
+	pop	hl
+	ld	e, d
+	ld	bc, -3600
+	ld	a, -1
+	call	__ladd
+	push	hl
+	pop	bc
+	ld	d, e
+	ld	(_gmtime.tm2+6), iy
+	inc	iy
+	jr	.BB0_22
+.BB0_24:
+	ld	iy, 59
+.BB0_25:
+	lea	hl, iy
+	ld	e, 0
+	ld	a, d
+	call	__lcmpu
+	jr	nc, .BB0_27
+	push	bc
+	pop	hl
+	ld	e, d
+	ld	bc, -60
+	ld	a, b
+	call	__ladd
+	push	hl
+	pop	bc
+	ld	d, e
+	ld	hl, (ix - 15)
+	ld	(_gmtime.tm2+3), hl
+	inc	hl
+	ld	(ix - 15), hl
+	jr	.BB0_25
+.BB0_27:
+	ld	(_gmtime.tm2), bc
+	ld	hl, _gmtime.tm2
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.data,"aw",@progbits
+	private	_gmtime.dpm
+_gmtime.dpm:
+	db	""
+
+	section	.bss,"aw",@nobits
+	private	_gmtime.tm2
+_gmtime.tm2:
+	rb	27
+
+	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
+	extern	__idivu
+	extern	__ldivu
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__frameset
+	extern	__iand
+	extern	__sremu
+	extern	__lmulu
+	extern	__imulu
+	extern	__lsub
+	extern	__lcmpu
+	extern	__ladd

@@ -1,0 +1,75 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_fminf
+_fminf:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	e, (ix + 9)
+	ld	bc, (ix + 12)
+	ld	a, (ix + 15)
+	call	__fcmp
+	jr	z, .BB0_3
+	call	__fcmp
+	jp	m, .BB0_6
+	ld	d, 0
+	jp	.BB0_7
+.BB0_3:
+	call	__lcmpzero
+	jp	p, .BB0_10
+	push	de
+	push	hl
+	call	__isnanf
+	pop	de
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, .BB0_11
+	ld	a, 0
+	jr	.BB0_12
+.BB0_6:
+	ld	d, 1
+.BB0_7:
+	bit	0, d
+	jr	nz, .BB0_9
+	push	bc
+	pop	hl
+.BB0_9:
+	bit	0, d
+	jr	z, .BB0_15
+	jr	.BB0_16
+.BB0_10:
+	push	bc
+	pop	hl
+	jr	.BB0_15
+.BB0_11:
+	ld	a, -1
+.BB0_12:
+	bit	0, a
+	ld	hl, (ix + 6)
+	jr	nz, .BB0_14
+	ld	hl, (ix + 12)
+.BB0_14:
+	bit	0, a
+	ld	e, (ix + 9)
+	ld	a, (ix + 15)
+	jr	nz, .BB0_16
+.BB0_15:
+	ld	e, a
+.BB0_16:
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_fmin
+	label	_fmin at _fminf
+
+	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__lcmpzero
+	extern	__fcmp
+	extern	__frameset0
+	extern	__isnanf
