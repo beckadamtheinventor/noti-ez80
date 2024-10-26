@@ -1259,12 +1259,14 @@ _boot_SectorsBegin:
 
 boot_wait_key_cycle:
 	call boot_wait_key
-	push af
+	ld c,a
 .loop:
+	push bc
 	call boot_get_keycode
-	or a,a
-	jr nz,.loop
-	pop af
+	pop bc
+	cp a,c
+	jr z,.loop
+	ld a,c
 	ret
 boot_wait_key:
 	call boot_get_keycode
