@@ -234,13 +234,13 @@ include 'strings.asm'
 
 
 
-ScrapMem:=$D0017C
-FlashByte:=$D0017B
-BaseSP:=$D1A87E
-textColors:=$D1887C-3
-curHeapPtr:=$D1887C-6
-asm_program_size:=$D1887C-9
-start_of_dynamic_lib_ptr:=$D1887C-12
+ScrapMem:=ti.scrapMem
+FlashByte:=ti.flashByte
+BaseSP:=ti.stackTop
+textColors:=$D1887C
+curHeapPtr:=$D1887C+3
+asm_program_size:=$D1887C+6
+start_of_dynamic_lib_ptr:=$D1887C+9
 end_of_dynamic_lib:=$D3FFFF
-baseHeap:=$D1887C+1
+baseHeap:=$D1887C+12
 exec_memory:=$D1A881
